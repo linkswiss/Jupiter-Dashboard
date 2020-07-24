@@ -1,0 +1,180 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Hotel Book RQ
+      <jupiter-api-response-status *ngIf="jupiterHotelBookRS" [status]="jupiterHotelBookRS.Status"></jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form>
+
+        <!-- MAIN INPUT -->
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <!-- TODO Capire come risolvere -> problema sul dateRange continua a dare errori ma funziona è sbagliato come gestisce il dateRagen cercando di fare il clone, basta togliere l'ngmodel e tutto funziona-->
+            <div>Dates: <b>{{jupiterHotelBookRQ.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelBookRQ.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
+            <label for="dates" class="label">From Date - To Date Picker</label>
+            <!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
+            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
+            <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handleRangeChange($event)" [min]="jupiterHotelBookRQ.Request['_MinDate']" [(range)]="jupiterHotelBookRQ.Request['_DateRange']"></nb-rangepicker>
+
+            <!--            <label for="fromDate" class="label">From Date</label>-->
+            <!--            <input nbInput fullWidth id="fromDate" name="fromDate" placeholder="From Date" [nbDatepicker]="fromDate" [(ngModel)]="jupiterHotelAvailabilityRq.Request._FromDateMoment">-->
+            <!--            <nb-datepicker #fromDate format="DD/MM/YYYY" (dateChange)="handleFromDateChange($event)"></nb-datepicker>-->
+          </div>
+          <!--          <div class="form-group col-sm-3">-->
+          <!--            <label for="toDate" class="label">To Date</label>-->
+          <!--            <input nbInput fullWidth id="toDate" name="toDate" placeholder="To Date" [nbDatepicker]="toDate" [(ngModel)]="jupiterHotelAvailabilityRq.Request._ToDateMoment">-->
+          <!--            <nb-datepicker #toDate format="DD/MM/YYYY" (dateChange)="handleToDateChange($event)"></nb-datepicker>-->
+          <!--          </div>-->
+
+          <div class="form-group col-sm-4">
+            <label for="connectors" class="label">Search Connectors</label>
+            <nb-select #selectConnectors fullWidth id="connectors" placeholder="Search Connectors" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)"  [(selected)]="jupiterHotelBookRQ.Request.ConnectorCode">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelBookRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="debugConnectors" class="label">Debug Connectors</label>
+            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelBookRQ.Request.ConnectorsDebug">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+          </div>
+
+        </div>
+
+        <div class="row">
+          <div class="col-sm-6">
+            <h6>Credit Card Payment <button nbButton size="tiny" (click)="addCreditCard()" ngbTooltip="Add Credit Card" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+            <div *ngIf="jupiterHotelBookRQ.Request.CreditCardPayment" class="border-box">
+              <div class="float-right">
+                <button nbButton size="tiny" status="danger" (click)="deleteCreditCard()" ngbTooltip="Delete Credit Card" placement="top" container="body"><i class="fas fa-trash"></i></button>
+              </div>
+              <jupiter-form-data-inputs [(Data)]="jupiterHotelBookRQ.Request.CreditCardPayment"></jupiter-form-data-inputs>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <h6>Travel Company <button nbButton size="tiny" (click)="addTravelCompany()" ngbTooltip="Add Travel Company" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+            <div *ngIf="jupiterHotelBookRQ.Request.TravelCompany" class="border-box">
+              <div class="float-right">
+                <button nbButton size="tiny" status="danger" (click)="deleteTravelCompany()" ngbTooltip="Delete Travel Company" placement="top" container="body"><i class="fas fa-trash"></i></button>
+              </div>
+              <jupiter-form-data-inputs [(Data)]="jupiterHotelBookRQ.Request.TravelCompany"></jupiter-form-data-inputs>
+            </div>
+
+          </div>
+        </div>
+        <!-- END MAIN INPUT -->
+
+        <!-- INPUT CUSTOM DATA -->
+        <div *ngIf="jupiterHotelBookRQ.Request.ConnectorCustomData">
+          <h6>Connector Custom Data</h6>
+          <div class="border-box">
+            <div class="float-right">
+              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-2">
+                <span class="badge badge-pill badge-primary">{{jupiterHotelBookRQ.Request.ConnectorCustomData['_discriminator']}}</span>
+              </div>
+              <div class="form-group col-sm-10">
+                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelBookRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END INPUT CUSTOM DATA -->
+
+        <!--        <div *ngIf="jupiterHotelAvailabilityRq.Request.ConnectorsSettings && jupiterHotelAvailabilityRq.Request.ConnectorsSettings.length > 0">-->
+        <!--          <h6>Connector Custom Data</h6>-->
+        <!--          <div *ngFor="let connectorSettings of jupiterHotelAvailabilityRq.Request.ConnectorsSettings; let i = index;" class="border-box">-->
+        <!--            <div class="float-right">-->
+        <!--              <button nbButton size="tiny" status="danger" (click)="deleteCustomData(i)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
+        <!--            </div>-->
+        <!--            <div class="row">-->
+        <!--              <div class="form-group col-sm-2">-->
+        <!--                <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span>-->
+        <!--              </div>-->
+        <!--              <div class="form-group col-sm-10">-->
+        <!--                <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>-->
+        <!--              </div>-->
+        <!--            </div>-->
+        <!--          </div>-->
+        <!--        </div>-->
+
+        <!-- ROOMS -->
+        <h6>Rooms <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+        <div *ngFor="let room of jupiterHotelBookRQ.Request.RoomsToBook; let i = index;" class="border-box">
+          <div class="float-right">
+            <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
+          </div>
+          <div>(Room {{i}}) - Paxes <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button></div>
+
+<!--          <jupiter-form-data-inputs [(Data)]="room"></jupiter-form-data-inputs>-->
+
+          <div class="row m-1">
+            <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-12 border-box">
+              <div class="float-right">
+                <button *ngIf="paxIndex > 0" nbButton size="tiny" status="danger" (click)="removePax(room, paxIndex)" ngbTooltip="Delete this Pax" placement="top" container="body"><i class="fas fa-trash"></i></button>
+              </div>
+              <div>
+                <jupiter-form-data-inputs [(Data)]="pax"></jupiter-form-data-inputs>
+              </div>
+            </div>
+          </div>
+
+          <!-- ROOM CUSTOM DATA -->
+          <div>Room Custom Data</div>
+          <hr>
+          <div class="row">
+            <div class="form-group col-sm-6">
+              <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
+              <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+            <div class="col-sm-6">
+              <div *ngIf="room.ConnectorCustomData">
+                <jupiter-custom-data-inputs [(CustomData)]="room.ConnectorCustomData"></jupiter-custom-data-inputs>
+              </div>
+            </div>
+          </div>
+
+          <!-- TODO LIST OF CUSTOM DATA ON ROOMS -->
+          <!--          <div *ngIf="room.ConnectorCustomData">-->
+          <!--            <nb-accordion class="shadow-none border-box">-->
+          <!--              <nb-accordion-item *ngFor="let connectorSettings of step.ConnectorCustomData; let stepCustomDataIndex = index;">-->
+          <!--                <nb-accordion-item-header>-->
+          <!--                  <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>-->
+          <!--                  <div class="ml-1">-->
+          <!--                    <button nbButton size="tiny" status="danger" (click)="deleteStepCustomData(stepCustomDataIndex, step)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
+          <!--                  </div>-->
+          <!--                </nb-accordion-item-header>-->
+          <!--                <nb-accordion-item-body>-->
+          <!--                  <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>-->
+          <!--                </nb-accordion-item-body>-->
+          <!--              </nb-accordion-item>-->
+          <!--            </nb-accordion>-->
+          <!--          </div>-->
+
+          <!-- END ROOM CUSTOM DATA -->
+
+        </div>
+        <!-- END ROOMS -->
+
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="doBook()"><i class="fas fa-exchange-alt"></i>&nbsp;Book</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+
+<jupiter-api-messages-accordion Title="Single Hotel Avail" [ApiRs]="jupiterHotelBookRS"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Single Hotel Avail" [(ApiRq)]="jupiterHotelBookRQ" [ApiRs]="jupiterHotelBookRS"></jupiter-api-debug-accordion>
+

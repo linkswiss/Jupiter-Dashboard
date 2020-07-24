@@ -1,0 +1,65 @@
+<!--<h1>Dashboard</h1>-->
+
+<div class="row">
+  <div class="col-sm-6">
+    <nb-card>
+      <nb-card-header>Connectors</nb-card-header>
+      <nb-card-body>
+        <div *ngIf="connectors" class="mb-5">
+          <div *ngFor="let connectorGroup of connectors" class="border-box row">
+            <div class="col-sm-4" style="vertical-align: middle; margin: auto">
+              <span class="badge bg-primary text-white p-2 m-1">{{ connectorGroup[0].ConnectorCode }}</span>
+            </div>
+            <div class="col-sm-8">
+              <div *ngFor="let connectorSetting of connectorGroup; let connIndex = index;">
+                <div class="row">
+<!--                  <span class="badge bg-primary text-white p-2 m-1">{{ connectorSetting.ConnectorCode }}</span>-->
+                  <span class="badge bg-secondary text-white p-2 m-1">V {{connectorSetting.Version}}</span>
+                  <span class="badge bg-warning text-white p-2 m-1">{{ connectorSetting.Environment }}</span>
+                  <span *ngIf="connectorSetting.IsDefaultEnvironment" class="badge bg-success text-white p-2 m-1">Default</span>
+                </div>
+                <hr *ngIf="connIndex < connectorGroup.length-1" />
+              </div>
+            </div>
+            <!--            <div class="col-sm-4">-->
+            <!--              <span class="badge bg-primary text-white p-2 m-1">{{ connectorSetting.ConnectorCode }}</span>-->
+            <!--            </div>-->
+            <!--            <div class="col-sm-4">-->
+            <!--              <span class="badge bg-primary text-white p-2 m-1">V {{connectorSetting.Version}}</span>-->
+            <!--            </div>-->
+            <!--            <div class="col-sm-4">-->
+            <!--              <span *ngIf="connectorSetting.Environment === EEnvironment.PRODUCTION" class="badge bg-info text-white p-2 m-1">{{ connectorSetting.Environment }}</span>-->
+            <!--              <span *ngIf="connectorSetting.Environment === EEnvironment.TEST" class="badge bg-warning text-white p-2 m-1">{{ connectorSetting.Environment }}</span>-->
+            <!--            </div>-->
+          </div>
+        </div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div class="col-sm-6">
+    <nb-card>
+      <nb-card-header>Info</nb-card-header>
+      <nb-card-body>
+        <div>
+          <strong>Software Version:</strong><span class="ml-1 text-primary"><a target="_blank" href="https://dev.azure.com/tech0229/Jupiter-Core/_packaging?_a=package&feed=Jupiter-Core&package=Jupiter.BaseJupiterAPI&version={{appConfigService.jupiterRemoteAppSettings?.NugetPackageVersion}}&protocolType=NuGet">{{appConfigService.jupiterRemoteAppSettings?.NugetPackageVersion}}</a></span>
+        </div>
+        <div class="mt-2">
+          <strong>Powered by:</strong><span class="ml-1 text-primary"><a target="_blank" href="http://www.linkswiss.com">LinkSwiss ICT Solutions Sagl</a></span>
+        </div>
+        <div class="mt-2">
+          <strong>API Documentation:</strong><span class="ml-1 text-primary"><a target="_blank" [href]="appConfigService.config.defaultJupiterApiDocumentationUrl">Redoc Url</a></span>
+        </div>
+      </nb-card-body>
+    </nb-card>
+
+    <nb-card>
+      <nb-card-header>Kibana</nb-card-header>
+      <nb-card-body>
+        <div>URL: <a [href]="appConfigService.jupiterRemoteAppSettings.ElasticSearchSettings.KibanaUrl" target="_blank">{{appConfigService.jupiterRemoteAppSettings.ElasticSearchSettings.KibanaUrl}}</a></div>
+        <div class="mt-2">User: {{appConfigService.jupiterRemoteAppSettings.ElasticSearchSettings.User}}</div>
+        <div class="mt-2">Pass: {{appConfigService.jupiterRemoteAppSettings.ElasticSearchSettings.Password}}</div>
+      </nb-card-body>
+    </nb-card>
+  </div>
+
+</div>

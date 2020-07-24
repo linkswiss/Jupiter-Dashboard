@@ -1,0 +1,60 @@
+  <div class="container">
+    <div class="row justify-content-center align-items-center" style="height:100vh">
+      <div class="col-7">
+
+        <nb-card>
+          <nb-card-header class="text-center">
+            <h3>Jupiter Admin Login - {{apiName}}</h3>
+          </nb-card-header>
+          <nb-card-body>
+            <nb-alert *ngIf="errorMessage" [accent]="'danger'" size="xxsmall">
+              <div>{{errorMessage}}</div>
+            </nb-alert>
+
+            <!--<form autocomplete="off" [formGroup]="loginForm" (ngSubmit)="onSubmit()">-->
+            <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+              <div class="form-group">
+                <label class="label">Email address:</label>
+                <input nbInput fullWidth autofocus
+                       formControlName="Email" type="text" class="form-control" placeholder="Email address"
+                       [formControl]="loginForm.controls.Email"
+                       [status]="loginForm.controls.Email.dirty && loginForm.controls.Email.invalid ? 'danger' : ''">
+                <jupiter-form-input-error [control]="loginForm.controls.Email"></jupiter-form-input-error>
+              </div>
+
+              <div class="form-group">
+                <label class="label">Password:</label>
+                <input nbInput fullWidth autofocus
+                       formControlName="Password" type="password" class="form-control" placeholder="Password"
+                       [formControl]="loginForm.controls.Password"
+                       [status]="loginForm.controls.Password.dirty && loginForm.controls.Password.invalid ? 'danger' : ''">
+                <jupiter-form-input-error [control]="loginForm.controls.Password"></jupiter-form-input-error>
+              </div>
+              <div class="text-center">
+                <button type="submit" id="sendlogin" class="btn btn-primary" [disabled]="loginForm.invalid">login</button>
+              </div>
+            </form>
+          </nb-card-body>
+        </nb-card>
+
+      </div>
+    </div>
+  </div>
+
+
+<!--<h3>Settings</h3>-->
+
+<!--<nb-card>-->
+  <!--<nb-card-header>Dashboard Settings</nb-card-header>-->
+  <!--<nb-card-body>-->
+    <!--asdasd-->
+  <!--</nb-card-body>-->
+<!--</nb-card>-->
+
+
+<!--<nb-card>-->
+  <!--<nb-card-header>Jupiter Api Settings</nb-card-header>-->
+  <!--<nb-card-body>-->
+    <!--asdasd-->
+  <!--</nb-card-body>-->
+<!--</nb-card>-->

@@ -1,0 +1,13 @@
+<nb-card class="shadow-none">
+  <nb-card-header>Credit Card</nb-card-header>
+  <nb-card-body *ngIf="creditCardPayment">
+    <div>Type: <span class="badge badge-pill badge-primary">{{creditCardPayment.CreditCardType}}</span></div>
+    <div>Holder Name: {{creditCardPayment.CardHolderName}}</div>
+    <div>Number: {{creditCardPayment.CreditCardNumber}}</div>
+    <div>CVV: {{creditCardPayment.CreditCardCvv}}</div>
+    <div>Expire: {{creditCardPayment.ExpireDate}}</div>
+  </nb-card-body>
+  <nb-card-body *ngIf="!creditCardPayment">
+    Missing Credit Card Infos
+  </nb-card-body>
+</nb-card>

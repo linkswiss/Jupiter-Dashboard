@@ -1,0 +1,25 @@
+<nb-card class="shadow-none">
+  <nb-card-header>Travel Company</nb-card-header>
+  <nb-card-body *ngIf="travelCompany">
+    <div>Id: {{travelCompany['Id']}}</div>
+    <div>Name: {{travelCompany.Name}}</div>
+    <div>Vat: {{travelCompany.VatNumber}}</div>
+
+    <div>Emails: <span *ngIf="travelCompany.Emails"><span *ngFor="let email of travelCompany.Emails">{{email.Title}} {{email.Value}}</span></span></div>
+    <div>Pone Numbers: <span *ngIf="travelCompany.PhoneNumbers"><span *ngFor="let phone of travelCompany.PhoneNumbers">{{phone.Title}} {{phone.Value}}</span></span></div>
+    <div>Address: <span *ngIf="travelCompany.Addresses"><span *ngFor="let address of travelCompany.Addresses">{{address.Street}} {{address.Zip}} - {{address.City}} {{address.Country}}</span></span></div>
+
+    <div *ngIf="travelCompany['ConnectorCustomData']">
+      <div>Connector Custom Data:</div>
+      <pre class="border-box bg-light">{{travelCompany['ConnectorCustomData'] | json}}</pre>
+    </div>
+    <div *ngIf="travelCompany['CustomerCustomData']">
+      <div>Customer Custom Data:</div>
+      <pre class="border-box bg-light">{{travelCompany['CustomerCustomData'] | json}}</pre>
+    </div>
+
+  </nb-card-body>
+  <nb-card-body *ngIf="!travelCompany">
+    Missing Travel Company Infos
+  </nb-card-body>
+</nb-card>

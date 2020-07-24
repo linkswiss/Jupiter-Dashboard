@@ -1,0 +1,162 @@
+<nb-card>
+  <nb-card-body>
+    <nb-tabset (changeTab)="changeTab($event)">
+      <nb-tab tabTitle="Connectors" class="pb-4">
+
+        <h5>Enabled Connectors</h5>
+
+        <div *ngIf="appConfigService.jupiterRemoteAppSettings" class="mb-5">
+          <span *ngFor="let connector of appConfigService.jupiterRemoteAppSettings.Connectors.EnabledConnectors">
+            <span class="badge bg-primary text-white p-2 m-1">{{ connector }}</span>
+          </span>
+        </div>
+
+        <div>
+          <div class="row ml-1">
+            <div class="col-sm-2">
+              <strong>Connector</strong>
+            </div>
+            <div class="col-sm-2">
+              <strong>Environment</strong>
+            </div>
+            <div class="col-sm-2">
+              <strong>Connector Types</strong>
+            </div>
+            <div class="col-sm-2">
+              <strong>Operations</strong>
+            </div>
+            <div class="col-sm-4">
+              <strong>Configuration</strong>
+            </div>
+          </div>
+
+          <nb-list *ngIf="appConfigService.jupiterRemoteAppSettings">
+            <nb-list-item *ngFor="let connectorSetting of appConfigService.jupiterRemoteAppSettings.Connectors.ConnectorSettings">
+              <div class="row w-100" *ngIf="isEnabledConnector(connectorSetting.ConnectorCode)">
+                <div class="col-sm-2">
+                  <div>
+                    <span class="badge bg-primary text-white p-2 m-1">{{ connectorSetting.ConnectorCode }}</span>
+                  </div>
+                  <div>
+                    <span class="badge bg-primary text-white p-2 m-1">V {{connectorSetting.Version}}</span>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <span class="badge bg-warning text-white p-2 m-1">{{ connectorSetting.Environment }}</span>
+                  <span *ngIf="connectorSetting.IsDefaultEnvironment" class="badge bg-success text-white p-2 m-1">Default</span>
+                </div>
+                <div class="col-sm-2">
+                  <div>
+                    <span *ngFor="let type of connectorSetting.EnabledConnectorTypes">
+                      <span class="badge bg-info text-white p-2 m-1">{{ type }}</span>
+                    </span>
+                  </div>
+                  <div *ngIf="connectorSetting.DisabledConnectorTypes" class="mt-1">
+                    <h6>Disabled</h6>
+                    <span *ngFor="let type of connectorSetting.DisabledConnectorTypes">
+                      <span class="badge bg-warning text-white p-2 m-1">{{ type }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-sm-2">
+                  <div>
+                    <span *ngFor="let op of connectorSetting.EnabledOperations">
+                      <span class="badge bg-info text-white p-2 m-1">{{ op }}</span>
+                    </span>
+                  </div>
+                  <div *ngIf="connectorSetting.DisabledOperations" class="mt-1">
+                    <h6>Disabled</h6>
+                    <span *ngFor="let op of connectorSetting.DisabledOperations">
+                      <span class="badge bg-warning text-white p-2 m-1">{{ op }}</span>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <ace [mode]="'json'" [theme]="'monokai'" [value]="connectorSetting | json" style="height: 250px; width:100%; overflow: scroll;"></ace>
+                </div>
+              </div>
+            </nb-list-item>
+          </nb-list>
+
+        </div>
+
+        <!--<div *ngIf="jupiterAppSettings" class="mb-3">-->
+          <!--<span *ngFor="let connector of jupiterAppSettings.Connectors.EnabledConnectors" class="position-fixed">-->
+          <!--</span>-->
+        <!--</div>-->
+
+        <!--<nb-card size="medium">-->
+          <!--<nb-card-header>-->
+            <!--Enabled Connectors-->
+          <!--</nb-card-header>-->
+
+          <!--<nb-list *ngIf="jupiterAppSettings">-->
+            <!--<nb-list-item *ngFor="let connector of jupiterAppSettings.Connectors.EnabledConnectors">-->
+              <!--{{ connector }}-->
+            <!--</nb-list-item>-->
+          <!--</nb-list>-->
+        <!--</nb-card>-->
+
+          <!--<ngx-datatable class="material" [columnMode]="'force'" loadingIndicator="true" [rowHeight]="'auto'" [rows]="data" [columns]="columns"></ngx-datatable>-->
+
+
+      </nb-tab>
+      <nb-tab tabTitle="Published Routes">
+
+        <ngx-datatable class="material" [columnMode]="'force'" [rowHeight]="'auto'" [rows]="routesData" [columns]="routesColumns"></ngx-datatable>
+
+        <ng-template #methodTpl let-row="row" let-value="value">
+          <span *ngIf="value" [ngSwitch]="value">
+            <span *ngSwitchCase="'GET'" class="badge bg-success text-white p-2 m-1">{{value}}</span>
+            <span *ngSwitchCase="'POST'" class="badge bg-warning text-white p-2 m-1">{{value}}</span>
+            <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{value}}</span>
+          </span>
+        </ng-template>
+
+        <ng-template #authTpl let-row="row" let-value="value">
+          <span *ngIf="value">
+            <span *ngFor="let auth of value">
+              <span *ngIf="value" class="badge bg-primary text-white p-2 m-1">{{auth}}</span>
+            </span>
+          </span>
+        </ng-template>
+      </nb-tab>
+      <nb-tab tabTitle="Remote Cache">
+
+        <div class="mb-2">
+          <button class="btn btn-sm btn-primary" (click)="getCacheEntries()"><i class="fas fa-sync-alt"></i> Refresh List</button>
+          <button class="float-right btn btn-sm btn-danger" (click)="clearCache()" ngbTooltip="Delete All Cache Entries" placement="top" container="body"><i class="fas fa-trash"></i> Clear Remote Cache</button>
+        </div>
+
+        <div *ngIf="!cacheEntriesData || cacheEntriesData.length == 0" class="mt-5 text-center">
+          <h5 class="font-weight-bold">No Cached Entries</h5>
+        </div>
+
+        <ngx-datatable *ngIf="cacheEntriesData && cacheEntriesData.length > 0" class="material" [columnMode]="'force'" loadingIndicator="true" [rowHeight]="'auto'" [rows]="cacheEntriesData" [columns]="cacheEntriesColumns" [sorts]="cacheEntriesDefaultSort"></ngx-datatable>
+
+        <ng-template #cacheActionsTpl let-row="row" let-value="value">
+          <button class="btn btn-sm btn-danger" (click)="clearSingleCacheItem(row)" ngbTooltip="Delete This Cache Item" placement="top" container="body"><i class="fas fa-trash"></i></button>
+        </ng-template>
+
+        <ng-template #cacheTypeTpl let-row="row" let-value="value">
+          <!--<button class="btn btn-sm btn-danger" (click)="clearSingleCacheItem(row)" ngbTooltip="Delete This Cache Item" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
+          <span class="badge bg-info text-white p-2 m-1" placement="right" ngbPopover="{{row.CachedItemKey}}" popoverTitle="Cache Key" [autoClose]="true" triggers="mouseenter:mouseleave" container="body">{{value}}</span>
+        </ng-template>
+
+      </nb-tab>
+      <nb-tab tabTitle="Jupiter Settings">
+        <nb-tabset (changeTab)="changeTab($event)">
+          <nb-tab tabTitle="Dashboard Settings">
+            <ace [mode]="'json'" [theme]="'monokai'" [(value)]="appSettingsJsonString" style="height: 650px; width:100%; overflow: scroll;"></ace>
+          </nb-tab>
+          <nb-tab tabTitle="Jupiter Api Settings">
+            <!--<button class="mb-2 btn btn-primary" (click)="refreshRemoteSettings()"><i class="fas fa-sync-alt"></i> Refresh</button>-->
+            <ace *ngIf="jupiterApiSettingsJsonString" [mode]="'json'" [theme]="'monokai'" [(value)]="jupiterApiSettingsJsonString" style="height: 650px; width:100%; overflow: scroll;"></ace>
+          </nb-tab>
+        </nb-tabset>
+      </nb-tab>
+    </nb-tabset>
+  </nb-card-body>
+</nb-card>
+
+

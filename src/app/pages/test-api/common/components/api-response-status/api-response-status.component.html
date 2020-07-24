@@ -1,0 +1,13 @@
+<div *ngIf="status" class="ml-2">
+  <div [ngSwitch]="status">
+    <div *ngSwitchCase="eOperationStatus.SUCCESS">
+      <span class="badge badge-pill badge-success">{{status}}</span>
+    </div>
+    <div *ngSwitchCase="eOperationStatus.WARNING">
+      <span class="badge badge-pill badge-warning">{{status}}</span>
+    </div>
+    <div *ngSwitchCase="eOperationStatus.ERROR">
+      <span class="badge badge-pill badge-danger">{{status}}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,9 @@
+<nb-card style="min-width: 700px" [accent]="status">
+  <nb-card-header>{{title}}</nb-card-header>
+  <nb-card-body>
+    {{message}}
+  </nb-card-body>
+  <nb-card-footer class="text-center">
+    <button nbButton class="btn-primary" (click)="dismiss()">Close</button>
+  </nb-card-footer>
+</nb-card>

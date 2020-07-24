@@ -1,0 +1,105 @@
+<nb-accordion multi class="shadow-none border-box p-0">
+  <nb-accordion-item *ngFor="let room of rooms">
+    <nb-accordion-item-header>
+      <div class="font-weight-bold">{{room.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="room['_Debug'] = !room['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span></div>
+
+      <div *ngIf="room['BookingStatus']" class="pl-1">
+        <jupiter-booking-status [status]="room['BookingStatus']"></jupiter-booking-status>
+      </div>
+
+      <div *ngIf="room.Rates && room.Rates[0] &&  room.Rates[0].Total" style="position: absolute; right: 50px">
+        <span class="mr-1 text-secondary">from</span>
+        <span class="mr-1 font-weight-bold h6" *ngIf="showPricePerDay">{{(room.Rates[0].Total.Amount/daysCount | number)}}/day</span>
+        <span class="mr-1 font-weight-bold h6" *ngIf="!showPricePerDay">{{room.Rates[0].Total.Amount | number}}</span>
+        <span>{{room.Rates[0].Total.Currency}}</span>
+      </div>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <jupiter-single-room-details [room]="room" [openDetails]="false"></jupiter-single-room-details>
+
+      <!-- RATES -->
+      <div>Rates: {{room.Rates.length}}</div>
+      <div *ngFor="let rate of room.Rates" class="border-box">
+        <div class="row">
+          <div class="col-sm-8">
+            <div *ngIf="rate['FromDate'] || rate['ToDate']" class="border-box">
+              <div>Reservation From Date: {{rate['FromDate'] | amDateFormat:'DD/MM/YYYY'}}</div>
+              <div>Reservation To Date: {{rate['ToDate'] | amDateFormat: 'DD/MM/YYYY'}}</div>
+            </div>
+
+            <div>Rate Id: {{rate.Id}} <span class="pt-1 pl-1 cursor-pointer" (click)="rate['_Debug'] = !rate['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span></div>
+            <div>RatePlan Code: {{rate.RatePlanCode}}</div>
+            <div>RatePlan Name: {{rate.RatePlanName}}</div>
+            <div>MealPlan Code: {{rate.MealPlanCode}}</div>
+            <div>MealPlan Name: {{rate.MealPlanName}}</div>
+            <div>Occupancy: {{rate.Occupancy}}</div>
+            <div>Avg Night Price: {{rate.AverageNightlyRate?.Amount}} {{rate.AverageNightlyRate?.Currency}}</div>
+
+            <!--                        <div>Refundable: {{rate.Refundable}}</div>-->
+            <div class="mt-1">Cancel Policy:
+              <div *ngIf="rate.CancelPolicies">
+                <div *ngFor="let policy of rate.CancelPolicies">
+                  <span *ngIf="policy && policy.PolicyText" class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{policy.PolicyText}}" placement="right" container="body"> <i class="fas fa-info-circle info-icon"></i> Code: {{policy.PolicyCode}} | Amount: {{policy.Amount?.TotalAmount?.Currency}} {{policy.Amount?.TotalAmount?.Amount | number}} | Deadline: {{policy.PolicyDeadline?.AbsoluteDeadLine | amDateFormat: 'DD/MM/YYYY HH:mm:ss'}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-1">Payment Terms:
+              <div *ngIf="rate.PaymentTerms">
+                <span *ngIf="rate.PaymentTerms && rate.PaymentTerms.PolicyText" class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{rate.PaymentTerms.PolicyText}}" placement="right" container="body"> <i class="fas fa-info-circle info-icon"></i> Code: {{rate.PaymentTerms?.PolicyCode}} | Amount: {{rate.PaymentTerms?.Amount?.TotalAmount?.Currency}} {{rate.PaymentTerms?.Amount?.TotalAmount?.Amount | number}} | Deadline: {{rate.PaymentTerms.PolicyDeadline?.AbsoluteDeadLine | amDateFormat: 'DD/MM/YYYY HH:mm:ss'}}</span>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4 text-right">
+            <span class="mr-1 font-weight-bold h6" *ngIf="showPricePerDay">{{(rate.Total.Amount/daysCount | number)}}/day</span>
+            <span class="mr-1 font-weight-bold h6" *ngIf="!showPricePerDay">{{rate.Total.Amount | number}}</span>
+            <span>{{rate.Total.Currency}}</span>
+            <div [ngSwitch]="rate.Refundable">
+              <span *ngSwitchCase="true" class="badge badge-pill badge-success">Refundable</span>
+              <span *ngSwitchCase="false" class="badge badge-pill badge-warning">Not Refundable</span>
+            </div>
+            <div class="mt-1">Taxes
+              <div *ngIf="rate.Total.Taxes && rate.Total.Taxes.TaxList">
+                <div *ngFor="let tax of rate.Total.Taxes.TaxList">
+                  <span class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{tax.Description}}" placement="left" container="body"> <i class="fas fa-info-circle info-icon"></i> {{tax.Code}} - {{tax.Currency}} {{tax.Amount | number}}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-1">
+              <div>
+                <button class="btn btn-sm btn-primary" (click)="priceVerify(rate, room.ConnectorMatch.ConnectorCode)"><i class="fas fa-lemon"></i> Price Verify</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <hr>
+        <div>RatePlan Description:</div>
+        <p class="text-secondary" [innerHTML]="rate.RatePlanDescription"></p>
+        <div>MealPlan Description:</div>
+        <p class="text-secondary" [innerHTML]="rate.MealPlanDescription"></p>
+        <div>RatePlan Promo Description:</div>
+        <p class="text-secondary" [innerHTML]="rate.RatePlanPromoDescription"></p>
+
+        <!-- Rate Debug & Custom Data -->
+        <nb-accordion multi class="shadow-none border-box p-0">
+          <nb-accordion-item *ngIf="rate.ConnectorCustomData">
+            <nb-accordion-item-header>Custom Data</nb-accordion-item-header>
+            <nb-accordion-item-body>
+              <pre class="border-box bg-light">{{rate.ConnectorCustomData | json}}</pre>
+            </nb-accordion-item-body>
+          </nb-accordion-item>
+          <nb-accordion-item *ngIf="rate['_Debug']">
+            <nb-accordion-item-header>Rate Debug Json</nb-accordion-item-header>
+            <nb-accordion-item-body>
+              <ace [mode]="'json'" [theme]="'monokai'" [value]="rate | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+            </nb-accordion-item-body>
+          </nb-accordion-item>
+        </nb-accordion>
+
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>

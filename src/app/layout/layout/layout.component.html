@@ -1,0 +1,63 @@
+<!--<nb-layout>-->
+  <!--<nb-layout-header fixed>-->
+    <!--<app-header></app-header>-->
+  <!--</nb-layout-header>-->
+
+  <!--<nb-sidebar>Sidebar Content</nb-sidebar>-->
+
+  <!--<nb-layout-column>-->
+  <!--Page Content-->
+
+
+    <!--<i class="fa fa-adjust"></i>-->
+    <!--<div>aaa</div>-->
+    <!--<i class="eva eva-github"></i>-->
+
+
+    <!--&lt;!&ndash;<app-header>test</app-header>&ndash;&gt;-->
+  <!--<h1>Example heading <span class="badge badge-secondary">New</span></h1>-->
+  <!--</nb-layout-column>-->
+<!--</nb-layout>-->
+
+<!--<nb-layout windowMode>-->
+<nb-layout>
+  <nb-layout-header fixed>
+    <jupiter-header></jupiter-header>
+  </nb-layout-header>
+
+  <nb-sidebar class="menu-sidebar"
+              tag="menu-sidebar"
+              responsive
+              [end]="false">
+    <!--<nb-sidebar-header *ngIf="currentTheme !== 'corporate'">-->
+    <!--<a href="#" class="btn btn-hero-success main-btn">-->
+    <!--<i class="ion ion-social-github"></i> <span>Support Us</span>-->
+    <!--</a>-->
+    <!--</nb-sidebar-header>-->
+    <ng-content select="jupiter-menu"></ng-content>
+  </nb-sidebar>
+
+  <nb-layout-column class="main-content">
+    <ng-content select="router-outlet"></ng-content>
+  </nb-layout-column>
+
+  <!--<nb-layout-column start class="small" *ngIf="layout.id === 'two-column' || layout.id === 'three-column'">-->
+    <!--<nb-menu [items]="subMenu"></nb-menu>-->
+  <!--</nb-layout-column>-->
+
+  <!--<nb-layout-column class="small" *ngIf="layout.id === 'three-column'">-->
+    <!--<nb-menu [items]="subMenu"></nb-menu>-->
+  <!--</nb-layout-column>-->
+
+  <nb-layout-footer>
+    <jupiter-footer class="container-fluid"></jupiter-footer>
+  </nb-layout-footer>
+
+  <!--<nb-sidebar class="settings-sidebar"-->
+  <!--tag="settings-sidebar"-->
+  <!--state="collapsed"-->
+  <!--fixed-->
+  <!--[end]="sidebar.id !== 'end'">-->
+  <!--<ngx-theme-settings></ngx-theme-settings>-->
+  <!--</nb-sidebar>-->
+</nb-layout>

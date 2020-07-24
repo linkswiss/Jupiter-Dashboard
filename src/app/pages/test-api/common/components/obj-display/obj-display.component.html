@@ -1,0 +1,25 @@
+<div [class]="StyleClass">
+  <div *ngFor="let prop of allProps; let i = index;">
+    <div [ngSwitch]="getTypeof(prop)">
+      <div *ngSwitchCase="'object'">
+        <div *ngIf="DisplayObjects">
+          <div>{{prop}}:</div>
+          <jupiter-obj-display [Data]="Data[prop]" [StyleClass]="'border-box'"></jupiter-obj-display>
+        </div>
+      </div>
+      <div *ngSwitchCase="'array'">
+        <div *ngIf="DisplayArray">
+          <div>{{prop}}:</div>
+          <div class="row">
+            <div *ngFor="let arrayItem of Data[prop]" class="col-md-6">
+              <jupiter-obj-display [Data]="arrayItem" [StyleClass]="'border-box'"></jupiter-obj-display>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngSwitchDefault>
+        <div><span class="text-black-50 mr-1">{{prop}}:</span>{{Data[prop]}}</div>
+      </div>
+    </div>
+  </div>
+</div>

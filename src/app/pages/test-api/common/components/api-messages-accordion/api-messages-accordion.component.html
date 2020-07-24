@@ -1,0 +1,61 @@
+<nb-accordion *ngIf="ApiRs" class="mb-2">
+  <nb-accordion-item [expanded]="ApiRs.Status === EOperationStatus.ERROR || ApiRs.Status === EOperationStatus.WARNING">
+    <nb-accordion-item-header>{{Title}} - Api Messages/Connectors Details</nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <div *ngIf="ApiRs.Messages && ApiRs.Messages.length > 0">
+        <h6>Mesages</h6>
+        <div *ngFor="let message of ApiRs.Messages" class="row border-box">
+          <div class="col-sm-2">
+            <span class="badge badge-pill badge-primary">{{message.ConnectorCode}}</span>
+          </div>
+          <div class="col-sm-2">
+            <div [ngSwitch]="message.Type">
+              <span *ngSwitchCase="EMessageType.INFO" class="badge badge-pill badge-info">{{message.Type}}</span>
+              <span *ngSwitchCase="EMessageType.WARNING" class="badge badge-pill badge-warning">{{message.Type}}</span>
+              <span *ngSwitchCase="EMessageType.ERROR" class="badge badge-pill badge-danger">{{message.Type}}</span>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            {{message.Text}}
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="ApiRs.ConnectorsResponseDetails && ApiRs.ConnectorsResponseDetails.length > 0">
+        <h6>Connectors Response Details</h6>
+        <div *ngFor="let connectorResponseDetails of ApiRs.ConnectorsResponseDetails" class="row border-box">
+          <div class="col-sm-2">
+            <span class="badge badge-pill badge-primary">{{connectorResponseDetails.ConnectorCode}}</span>
+            <span class="badge badge-pill badge-warning">{{connectorResponseDetails.Environment}}</span>
+          </div>
+          <div class="col-sm-2">
+            <div [ngSwitch]="connectorResponseDetails.Status">
+              <span *ngSwitchCase="EH2HOperationStatus.START" class="badge badge-pill badge-light">{{connectorResponseDetails.Status}}</span>
+              <span *ngSwitchCase="EH2HOperationStatus.PENDING" class="badge badge-pill badge-warning">{{connectorResponseDetails.Status}}</span>
+              <span *ngSwitchCase="EH2HOperationStatus.SUCCESS" class="badge badge-pill badge-success">{{connectorResponseDetails.Status}}</span>
+              <span *ngSwitchCase="EH2HOperationStatus.WARNING" class="badge badge-pill badge-warning">{{connectorResponseDetails.Status}}</span>
+              <span *ngSwitchCase="EH2HOperationStatus.ERROR" class="badge badge-pill badge-danger">{{connectorResponseDetails.Status}}</span>
+            </div>
+          </div>
+          <div class="col-sm-8">
+            <div *ngFor="let message of connectorResponseDetails.Messages" class="row border-box">
+              <div class="col-sm-2">
+                <div [ngSwitch]="message.Type">
+                  <span *ngSwitchCase="EMessageType.INFO" class="badge badge-pill badge-info">{{message.Type}}</span>
+                  <span *ngSwitchCase="EMessageType.WARNING" class="badge badge-pill badge-warning">{{message.Type}}</span>
+                  <span *ngSwitchCase="EMessageType.ERROR" class="badge badge-pill badge-danger">{{message.Type}}</span>
+                </div>
+              </div>
+              <div class="col-sm-10">
+                {{message.Text}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+
+
+

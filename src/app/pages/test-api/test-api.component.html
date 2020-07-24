@@ -1,0 +1,175 @@
+<!--<h3 class="mb-3">Api Test Tool</h3>-->
+
+<div class="card">
+  <div class="card-body">
+    <!--<nb-accordion>-->
+    <!--<nb-accordion-item>-->
+    <!--<nb-accordion-item-header>Configuration</nb-accordion-item-header>-->
+    <!--<nb-accordion-item-body>-->
+    <!--<nb-checkbox [(ngModel)]="showSplitted">Show Spitted RQ/RS</nb-checkbox>-->
+    <!--<div>-->
+    <!--<nb-select placeholder="Select Method" [(selected)]="selectedMethod">-->
+    <!--<nb-option-group title="Hotel Methods">-->
+    <!--<nb-option *ngFor="let method of hotelApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
+    <!--</nb-option-group>-->
+    <!--<nb-option-group title="Flight Methods">-->
+    <!--<nb-option *ngFor="let method of flightApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
+    <!--</nb-option-group>-->
+    <!--<nb-option-group title="Utility Methods">-->
+    <!--<nb-option *ngFor="let method of utilityApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
+    <!--</nb-option-group>-->
+    <!--</nb-select>-->
+    <!--</div>-->
+    <!--</nb-accordion-item-body>-->
+    <!--</nb-accordion-item>-->
+    <!--</nb-accordion>-->
+
+    <!--<div>-->
+    <!--<h6>{{selectedMethod}}</h6>-->
+    <!--</div>-->
+
+    <nb-flip-card *ngIf="!showSplitted" [flipped]="flipped" [showToggleButton]="false">
+      <nb-card-front>
+        <nb-card status="info">
+          <nb-card-header>
+            <div class="row">
+              <div class="col-sm-2">
+                <h3>Request</h3>
+              </div>
+              <div class="col-sm-4">
+                <nb-select placeholder="Select Method" (selectedChange)="loadSamples($event)" [(selected)]="selectedMethod" [fullWidth]="true" [size]="'small'" [outline]="true">
+                  <nb-option-group title="Destination Methods">
+                    <nb-option *ngFor="let method of destinationApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
+                  <nb-option-group title="Hotel Methods">
+                    <nb-option *ngFor="let method of hotelApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
+                  <nb-option-group title="Flight Methods">
+                    <nb-option *ngFor="let method of flightApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
+                  <nb-option-group title="Train Methods">
+                    <nb-option *ngFor="let method of trainApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
+                  <nb-option-group title="Utility Methods">
+                    <nb-option *ngFor="let method of utilityApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
+                </nb-select>
+              </div>
+              <div class="col-sm-2">
+                <button [disabled]="!selectedMethod" class="btn btn-sm btn-primary ml-2" style="margin-top: 3px" (click)="send()"><i class="fas fa-exchange-alt"></i>&nbsp;Send</button>
+              </div>
+              <div class="col-sm-4">
+                <span class="float-right">
+                    <button *ngIf="responseJson" class="btn btn-sm bg-secondary mr-1" (click)="toggleFlipped()"><i class="fas fa-chevron-right"></i>&nbsp;Show Response</button>
+                </span>
+              </div>
+            </div>
+          </nb-card-header>
+          <nb-card-body *ngIf="selectedMethod">
+            <nb-card>
+              <nb-card-body>
+                <div class="row mb-2">
+                  <div class="col-md-8">
+                    <div *ngIf="sampleRequestList && sampleRequestList.length > 0">
+                      <nb-select placeholder="Select Sample" (selectedChange)="loadSingleSampleRequest($event)" [fullWidth]="true" [size]="'small'" [outline]="true">
+                        <nb-option *ngFor="let sample of sampleRequestList" [value]="sample">{{sample.SampleType}} - {{sample.Name}}</nb-option>
+                      </nb-select>
+                    </div>
+                    <div *ngIf="!sampleRequestList || sampleRequestList.length === 0">
+                      <h5>No samples for {{selectedMethod.name}}</h5>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <button class="btn btn-sm btn-primary" (click)="loadAllSamples()" ngbTooltip="Load All Samples" placement="top" container="body"><i class="fas fa-cloud-download-alt"></i>&nbsp;Load All</button>
+                    <button class="btn btn-sm btn-primary ml-1" (click)="newSampleRequest(selectedMethod.name)" ngbTooltip="New Sample" placement="top" container="body"><i class="fas fa-plus"></i>&nbsp;New Sample</button>
+                  </div>
+                </div>
+
+                <div class="row" *ngIf="sampleRequest">
+                  <div class="col-md-8">
+                    <div class="row">
+                      <div class="col-sm-8">
+                        <input nbInput fullWidth autofocus type="text" [(ngModel)]="sampleRequest.Name" class="form-control" placeholder="Sample Name">
+                      </div>
+                      <div class="col-sm-4">
+                        <button class="btn btn-sm btn-primary" [disabled]="!sampleRequest.Name || !requestJson" (click)="saveSample()" ngbTooltip="Save Sample Request" placement="top" container="body"><i class="fas fa-save"></i></button>
+                        <button class="btn btn-sm btn-danger ml-1" [disabled]="!sampleRequest.Id" (click)="deleteSample()" ngbTooltip="Delete Sample Request" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 align-middle m-auto font-size-small">
+                    <span class="badge bg-warning text-white p-2">{{sampleRequest.SampleType}}</span>
+
+                    <div>Id: {{sampleRequest.Id}}</div>
+                    <div>
+                      <span *ngIf="sampleRequest.SavedAtUtc">Saved: {{sampleRequest.SavedAtUtc}}</span>
+                    </div>
+                  </div>
+                  <!--<div class="col-md-2">-->
+                    <!--<button class="btn btn-sm btn-danger float-right" [disabled]="!sampleRequest.Id" (click)="deleteSample()" ngbTooltip="Delete Sample Request" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
+                    <!--<button class="btn btn-sm btn-primary float-right mr-1" [disabled]="!sampleRequest.Name || !requestJson" (click)="saveSample()" ngbTooltip="Save Sample Request" placement="top" container="body"><i class="fas fa-save"></i></button>-->
+                  <!--</div>-->
+                </div>
+
+              </nb-card-body>
+            </nb-card>
+            <ace [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
+          </nb-card-body>
+        </nb-card>
+      </nb-card-front>
+      <nb-card-back>
+        <nb-card [status]="responseStatus">
+          <nb-card-header>
+            <div class="row">
+              <div class="col-sm-2">
+                <h3>Response</h3>
+              </div>
+              <div class="col-sm-10">
+                <span class="float-right">
+                    <button class="btn btn-sm bg-secondary" (click)="toggleFlipped()"><i class="fas fa-chevron-left"></i>&nbsp;Show Request</button>
+                </span>
+              </div>
+            </div>
+          </nb-card-header>
+          <nb-card-body>
+            <ace [mode]="'json'" [theme]="'monokai'" [(value)]="responseJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
+          </nb-card-body>
+        </nb-card>
+      </nb-card-back>
+    </nb-flip-card>
+
+    <nb-accordion>
+      <nb-accordion-item>
+        <nb-accordion-item-header>Connectors Debug</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          <nb-tabset *ngIf="response && response.ConnectorsResponseDetails">
+            <nb-tab *ngFor="let connector of response.ConnectorsResponseDetails" tabTitle="{{connector.ConnectorCode}}" class="pt-3">
+              <div class="row" *ngIf="connector.ConnectorDebugData">
+                <div class="col-md-6">
+                  <h6>Request:</h6>
+                  <ace #aceConnectorRq [mode]="'xml'" [theme]="'monokai'" [value]="connector.ConnectorDebugData.Request" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+                <div class="col-sm-6">
+                  <h6>Response:</h6>
+                  <ace #aceConnectorRs [mode]="'xml'" [theme]="'monokai'" [value]="connector.ConnectorDebugData.Response" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+              </div>
+            </nb-tab>
+          </nb-tabset>
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+    </nb-accordion>
+
+    <!--<div *ngIf="showSplitted" class="row mt-3">-->
+    <!--<div class="col-md-6">-->
+    <!--<h6>Request</h6>-->
+    <!--<ace [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
+
+    <!--</div>-->
+    <!--<div class="col-md-6">-->
+    <!--<h6>Response</h6>-->
+    <!--<ace [mode]="'json'" [theme]="'monokai'" [(value)]="responseJson" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
+    <!--</div>-->
+    <!--</div>-->
+  </div>
+</div>

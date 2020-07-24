@@ -1,0 +1,70 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemBookSearchRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Book Search RQ
+      <jupiter-api-response-status *ngIf="jupiterHotelBookSearchRS" [status]="jupiterHotelBookSearchRS.Status"></jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form>
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <!-- TODO Capire come risolvere -> problema sul dateRange continua a dare errori ma funziona è sbagliato come gestisce il dateRagen cercando di fare il clone, basta togliere l'ngmodel e tutto funziona-->
+            <div>Dates: <b>{{jupiterHotelBookSearchRQ.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelBookSearchRQ.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
+            <label for="dates" class="label">From Date - To Date Picker</label>
+            <!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
+            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
+            <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handlesearchRangeChange($event)" [(range)]="jupiterHotelBookSearchRQ.Request['_DateRange']"></nb-rangepicker>
+
+            <!--            <label for="fromDate" class="label">From Date</label>-->
+            <!--            <input nbInput fullWidth id="fromDate" name="fromDate" placeholder="From Date" [nbDatepicker]="fromDate" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._FromDateMoment">-->
+            <!--            <nb-datepicker #fromDate format="DD/MM/YYYY" (dateChange)="handleFromDateChange($event)"></nb-datepicker>-->
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="connectors" class="label">Connector</label>
+            <nb-select fullWidth id="connectors" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="bookSearchConnectorsChanged($event)" [(selected)]="jupiterHotelBookSearchRQ.Request.ConnectorCode">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelBookSearchRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="debugConnectors" class="label">Debug Connectors</label>
+            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelBookSearchRQ.Request.ConnectorsDebug">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+          </div>
+
+        </div>
+
+        <div *ngIf="jupiterHotelBookSearchRQ.Request.ConnectorCustomData">
+          <h6>Connector Custom Data</h6>
+          <div class="border-box">
+            <div class="float-right">
+              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-2">
+                <span class="badge badge-pill badge-primary">{{jupiterHotelBookSearchRQ.Request.ConnectorCustomData['_discriminator']}}</span>
+              </div>
+              <div class="form-group col-sm-10">
+                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelBookSearchRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="searchBook()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+<jupiter-api-messages-accordion Title="Book Search" [ApiRs]="jupiterHotelBookSearchRS"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Book Search" [(ApiRq)]="jupiterHotelBookSearchRQ" [ApiRs]="jupiterHotelBookSearchRS"></jupiter-api-debug-accordion>
+

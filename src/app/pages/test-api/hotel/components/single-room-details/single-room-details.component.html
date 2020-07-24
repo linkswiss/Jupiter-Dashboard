@@ -1,0 +1,77 @@
+<div *ngIf="room">
+  <div>
+    <!-- MAIN INFOS -->
+    <div class="font-weight-bold">{{room.Name}}</div>
+    <div><span>Id:</span><span class="ml-1">{{room.Id}}</span></div>
+    <div class="mb-1 text-secondary">Room Type Code: {{room.RoomTypeCode}}</div>
+
+    <div>Connectors Match:
+      <div>
+        <span class="badge badge-info text-white p-2 m-1">{{room.ConnectorMatch.ConnectorCode}} {{room.ConnectorMatch.RefId}}</span>
+      </div>
+    </div>
+  </div>
+  <nb-accordion class="shadow-none border-box p-0" multi>
+    <!-- ROOM DETAILS-->
+    <nb-accordion-item [expanded]="openDetails">
+      <nb-accordion-item-header>Room Details</nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <div class="mb-1">Room Name: {{room.Name}} </div>
+        <div class="mb-1">Room Id: {{room.Id}}</div>
+        <div class="mb-1">Room Type Code: {{room.RoomTypeCode}}</div>
+        <div class="mb-1">Room Type Name: {{room.RoomTypeName}}</div>
+
+        <hr>
+        <div class="mb-1">Amenities: <div *ngIf="room.Amenities"><span *ngFor="let amenity of room.Amenities" class="badge badge-pill badge-secondary">{{amenity}}</span></div></div>
+
+        <!-- POLICIES -->
+        <hr>
+        <div>Room Policies:
+          <div *ngIf="room.RoomPolicies">
+            <div *ngFor="let policy of room.RoomPolicies">
+              <span *ngIf="policy && policy.PolicyText" class="pl-1 cursor-pointer"> Code: {{policy.PolicyCode}} - Text: {{policy.PolicyText}}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMAGES -->
+        <hr>
+        <div>Images:
+          <div *ngIf="room.Images" class="row">
+            <div class="col-sm-3" *ngFor="let image of room.Images">
+              <img class="room-image" [src]="image.OriginalUrl">
+            </div>
+          </div>
+        </div>
+
+        <!-- DESCRIPTION -->
+        <hr>
+        <div class="mb-1">Room Description:</div>
+        <p class="text-secondary" [innerHTML]="room.Description"></p>
+        <div class="mb-1">Room Type Description:</div>
+        <p class="text-secondary" [innerHTML]="room.RoomTypeDescription"></p>
+
+        <!-- IMAGES -->
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+
+    <!-- ROOM CUSTOM DATA-->
+    <nb-accordion-item *ngIf="room['ConnectorCustomData']">
+      <nb-accordion-item-header>Room Custom Data</nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <pre class="border-box bg-light">{{room['ConnectorCustomData'] | json}}</pre>
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+
+    <!-- ROOM DEBUG-->
+    <nb-accordion-item *ngIf="room['_Debug']">
+      <nb-accordion-item-header>Room Debug Json</nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <ace [mode]="'json'" [theme]="'monokai'" [value]="room | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+
+  </nb-accordion>
+
+</div>

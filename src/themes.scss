@@ -1,0 +1,86 @@
+//@import '~@nebular/theme/styles/theming';
+//@import '~@nebular/theme/styles/themes/corporate';
+//
+//$nb-themes: nb-register-theme((
+//  // add your variables here like:
+//  // color-bg: #4ca6ff,
+//  // app wise variables for each theme
+//
+//  color-primary: #4c88f7,
+//  color-info: #5dcae3,
+//  color-success: #40dc7e,
+//  color-warning: #ffa100,
+//  color-danger: #ff4d6a,
+//
+//  sidebar-header-gap: 2rem,
+//  sidebar-header-height: initial,
+//  layout-content-width: 1400px,
+//
+//  font-main: Roboto,
+//  font-secondary: Exo,
+//
+//  switcher-background: #2b2d34,
+//  switcher-background-percentage: 14%,
+//  drops-icon-line-gadient: -webkit-linear-gradient(#e9e8eb, #a7a2be),
+//
+//  list-item-border-width: 1px,
+//
+//  slide-out-container-width: 30%,
+//  slide-out-background: 	linear-gradient(270deg, #f7fafb 0%, #ecf2f5 100%),
+//  slide-out-shadow-color: 0 4px 14px 0 #a2d2c8,
+//  slide-out-shadow-color-rtl: 0 4px 14px 0 #a2d2c8,
+//
+//  chart-panel-summary-box-shadow: none,
+//  chart-panel-summary-background-color: #f7fafb,
+//  chart-panel-summary-border-color: #ebeff1,
+//  chart-panel-summary-border-width: 1px,
+//
+//  ecommerce-card-border-width: 1px,
+//
+//  progress-bar-background: linear-gradient(90deg, #ff9f6f 0%, #ff8b97 100%),
+//
+//), corporate, corporate);
+
+
+//NEW NEBULAR
+@import '~@nebular/theme/styles/theming';
+@import '~@nebular/theme/styles/themes/default';
+
+$nb-themes: nb-register-theme((
+  font-family-primary: Exo,
+  font-family-secondary: Exo,
+
+  header-text-color: #ffffff,
+  //header-background-color: #7ca7ff,
+  header-background-color: #101010,
+  user-initials-text-color: #ffffff,
+  user-name-text-color: #ffffff,
+  user-title-text-color: #ffffff,
+
+  card-header-info-background-color: #69c0ff,
+
+  menu-item-icon-color: #b4b9c1,
+  menu-item-icon-margin: 0 0.5rem 0 0,
+  menu-item-icon-width: 1.2rem,
+  menu-text-font-weight: 400,
+
+  text-heading-1-font-weight: 500,
+  text-heading-2-font-weight: 500,
+  text-heading-3-font-weight: 500,
+  text-heading-4-font-weight: 500,
+  text-heading-5-font-weight: 500,
+  text-heading-6-font-weight: 500,
+
+  // add your variables here like:
+
+  // color-primary-100: #f2f6ff,
+  // color-primary-200: #d9e4ff,
+  // color-primary-300: #a6c1ff,
+  // color-primary-400: #598bff,
+  // color-primary-500: #3366ff,
+  // color-primary-600: #274bdb,
+  // color-primary-700: #1a34b8,
+  // color-primary-800: #102694,
+  // color-primary-900: #091c7a,
+
+), default, default);

@@ -1,0 +1,287 @@
+
+<nb-card>
+  <nb-card-header>
+    PNR: {{currentPnr.PnrNumber}} <jupiter-booking-status [status]="currentPnr['BookingStatus']"></jupiter-booking-status>
+  </nb-card-header>
+  <nb-card-body>
+
+    <div class="row align-items-center">
+      <div class="col-sm-10 pr-0">
+        <div *ngFor="let segment of currentPnr.FlightSegments; let segIndex = index;" class="container p-0">
+          <div *ngIf="segIndex > 0 && segment.StepGroupId !== currentPnr.FlightSegments[segIndex-1].StepGroupId" class="border-bottom border-primary mt-3 mb-3"></div>
+          <div *ngIf="segIndex > 0 && segment.StepGroupId === currentPnr.FlightSegments[segIndex-1].StepGroupId" class="row align-items-center">
+            <div class="col-sm-4"></div>
+            <div class="col-sm-4 text-center">-- Connection: {{segment.ConnectionTime.substr(0,5)}} --</div>
+          </div>
+          <div class="row align-items-center">
+            <div class="col-sm-2">
+              <!--<h1>{{segment.StepGroupId}}</h1>-->
+              <span class="pr-2">{{segment.Id}} - <img [src]="segment.MarketingCarrier.IataCode | carrierImage" width="32px"/></span>
+              <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.MarketingCarrier.Name}}" placement="top" container="body">{{segment.MarketingCarrier.IataCode}} {{segment.MarketingCarrier.FlightNumber}}</span>
+              <span *ngIf="segment.MarketingCarrier.IataCode !== segment.OperatingCarrier.IataCode" class="badge badge-warning text-white p-2 m-1 cursor-pointer" ngbTooltip="Operating Carrier: {{segment.OperatingCarrier.Name}}" placement="top" container="body">{{segment.OperatingCarrier.IataCode}}</span>
+            </div>
+            <div class="col-sm-2">
+              <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.DepartureAirport.Name}} ({{segment.DepartureAirport.CityName}})" placement="top" container="body">{{segment.DepartureAirport.IataCode}}</span>
+              <span class="font-weight-bold ml-1 mr-1">--</span>
+              <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalAirport.Name}} ({{segment.ArrivalAirport.CityName}})" placement="top" container="body">{{segment.ArrivalAirport.IataCode}}</span>
+            </div>
+            <!--<div class="col-sm-2">-->
+            <div class="col-sm-4 text-center">
+              <span class="font-weight-bold pr-2">{{segment.DepartureDate | amDateFormat:'HH:mm'}}</span>
+              <span class="font-italic font-size-small">{{segment.DepartureDate | amDateFormat:'DD/MM'}}</span>
+              <!--</div>-->
+              <!--<div class="col-sm-2">-->
+              <span class="font-weight-bold pr-2 pl-5">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>
+              <span class="font-italic font-size-small">{{segment.ArrivalDate | amDateFormat:'DD/MM'}}</span>
+            </div>
+
+            <div class="col-sm-4">
+
+              <div *ngFor="let paxFare of currentPnr.Fare.PaxFareList" class="row mb-1">
+                <span *ngIf="currentPnr.Fare.PaxFareList && currentPnr.Fare.PaxFareList.length > 1" class="badge bg-hint text-white p-2 m-1">{{paxFare.PaxCount}} {{paxFare.PaxType}}</span>
+
+                <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="cursor-pointer">
+                      <span [ngSwitch]="paxFare.FlightSegmentDetails[segIndex].FareType" ngbTooltip="Fare Type: {{paxFare.FlightSegmentDetails[segIndex].FareType}}" placement="right" container="body">
+                        <span *ngSwitchCase="'PUBLIC'" class="badge bg-hint text-white p-2 m-1">PU</span>
+                        <span *ngSwitchCase="'PRIVATE'" class="badge badge-info text-white p-2 m-1">PR</span>
+                        <span *ngSwitchCase="'TO'" class="badge badge-primary text-white p-2 m-1">TO</span>
+                        <span *ngSwitchDefault class="badge badge-warning text-white p-2 m-1">?</span>
+                      </span>
+                    </span>
+
+                <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="cursor-pointer">
+                      <span [ngSwitch]="paxFare.FlightSegmentDetails[segIndex].Cabin" ngbTooltip="Cabin: {{paxFare.FlightSegmentDetails[segIndex].Cabin}}" placement="right" container="body">
+                        <span *ngSwitchCase="'ECONOMY'" class="badge bg-hint text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchCase="'PREMIUM_ECONOMY'" class="badge bg-hint text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchCase="'BUSINESS'" class="badge badge-info text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchCase="'PREMIUM_BUSINESS'" class="badge badge-info text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchCase="'FIRST'" class="badge badge-primary text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchCase="'PREMIUM_FIRST'" class="badge badge-primary text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>
+                        <span *ngSwitchDefault class="badge badge-warning text-white p-2 m-1">?</span>
+                      </span>
+                    </span>
+
+                <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="pt-1 pl-1 cursor-pointer" ngbTooltip="Baggage: {{paxFare.FlightSegmentDetails[segIndex]?.BaggageDetails?.BaggageCount}} pieces" placement="right" container="body">
+                      <span *ngIf="paxFare.FlightSegmentDetails[segIndex] && paxFare.FlightSegmentDetails[segIndex].BaggageDetails && paxFare.FlightSegmentDetails[segIndex].BaggageDetails.BaggageCount > 0">
+                        <i class="fas fa-camera fa-suitcase-rolling info-icon text-primary"></i>
+                      </span>
+                      <span *ngIf="!paxFare.FlightSegmentDetails[segIndex] || !paxFare.FlightSegmentDetails[segIndex].BaggageDetails || paxFare.FlightSegmentDetails[segIndex].BaggageDetails.BaggageCount === 0">
+                        <i class="fas fa-camera fa-suitcase-rolling info-icon text-black-50"></i>
+                      </span>
+                    </span>
+
+                <span class="pt-1 pl-1 cursor-pointer" [ngbPopover]="fareTemplate" placement="right" container="body" popoverTitle="Fare Infos" triggers="mouseenter:mouseleave">
+                      <i class="fas fa-info-circle info-icon text-black-50"></i>
+                    </span>
+
+                <span *ngIf="paxFare.Refundable === false" class="pt-1 pl-1 cursor-pointer" ngbTooltip="Not Refundable" placement="right" container="body"> <i class="fas fa-exclamation-triangle text-warning info-icon"></i></span>
+
+                <ng-template #fareTemplate>
+                  <div>Pax Fare: <span class="badge badge-pill badge-primary">{{paxFare.PaxCount}} {{paxFare.PaxType}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareType: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareType}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareType Code: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareTypeCode}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareBasis: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareBasis}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Cabin: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].Cabin}} - {{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Avail: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].ClassAvail}} {{paxFare.FlightSegmentDetails[segIndex].Class}}</span></div>
+                  <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Bag: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex]?.BaggageDetails?.BaggageCount}}</span></div>
+                </ng-template>
+
+                <span class="pt-1 pl-1 cursor-pointer" [ngbPopover]="fareDebug" placement="right" container="body" popoverTitle="Pax Fare Debug" triggers="click:click">
+                      <i class="fas fa-bug text-black-50"></i>
+                    </span>
+
+                <ng-template #fareDebug>
+                  <pre>Fare Json: {{paxFare | json }}</pre>
+                </ng-template>
+
+              </div>
+            </div>
+          </div>
+          <!--<div *ngIf="result.FlightSegments.length > 1 && segIndex < result.FlightSegments.length -1 && segment.StepGroupId === result.FlightSegments[segIndex+1].StepGroupId" class="m-3"></div>-->
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div [ngSwitch]="currentPnr.ConnectorCode" class="text-right">
+          <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare.Id}}</span>
+          <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare.Id}}</span>
+          <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{currentPnr.ConnectorCode}}</span>
+
+          <span class="float-right">
+                <i class="fas fa-bug" (click)="isDebug = true;"></i>
+              </span>
+        </div>
+
+        <div class="text-right">
+          <div>
+            <span class="font-weight-bold h5">{{currentPnr.Fare.Amount.Amount}}</span>
+            <span>{{currentPnr.Fare.Amount.Currency}}</span>
+          </div>
+          <div *ngIf="currentPnr.Fare.FeeList && currentPnr.Fare.FeeList.length > 0">
+            <span class="text-warning font-weight-bold cursor-pointer" [ngbPopover]="feesTemplate" placement="left" container="body" popoverTitle="Fee List" triggers="mouseenter:mouseleave">Included Fees <i class="fas fa-info-circle"></i></span>
+
+            <ng-template #feesTemplate>
+              <div *ngFor="let fee of currentPnr.Fare.FeeList">
+                <div class="font-weight-bold">{{fee.Code}} - {{fee.Name}}</div>
+                <div>{{fee.Amount}} {{fee.Currency}}</div>
+                <hr>
+              </div>
+            </ng-template>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <nb-accordion class="shadow-none border-box p-0">
+      <nb-accordion-item expanded="false">
+        <nb-accordion-item-header class="font-weight-bold">PNR Infos</nb-accordion-item-header>
+        <nb-accordion-item-body>
+          <!-- Details and Pax -->
+          <div class="row">
+            <div class="col-sm-6">
+              <nb-card class="shadow-none">
+                <nb-card-header>Book Infos</nb-card-header>
+                <nb-card-body>
+                  <div><span class="text-black-50 mr-2">Pnr:</span> {{currentPnr.PnrNumber}}</div>
+                  <div><span class="text-black-50 mr-2">Status:</span> <jupiter-booking-status [status]="currentPnr['BookingStatus']"></jupiter-booking-status></div>
+                  <div><span class="text-black-50 mr-2">Date:</span> {{currentPnr.PnrDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
+                  <div><span class="text-black-50 mr-2">LastTicket Date:</span> {{currentPnr.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
+                  <div><span class="text-black-50 mr-2">Cancel Date:</span> {{currentPnr.CancelDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
+
+                  <div *ngIf="currentPnr['ConnectorCustomData']">
+                    <div>Connector Custom Data:</div>
+                    <pre class="border-box bg-light">{{currentPnr['ConnectorCustomData'] | json}}</pre>
+                  </div>
+                  <div *ngIf="currentPnr['CustomerCustomData']">
+                    <div>Customer Custom Data:</div>
+                    <pre class="border-box bg-light">{{currentPnr['CustomerCustomData'] | json}}</pre>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+
+              <jupiter-credit-card-payment [creditCardPayment]="currentPnr.CreditCardPayment"></jupiter-credit-card-payment>
+              <jupiter-travel-company [travelCompany]="currentPnr.TravelCompany"></jupiter-travel-company>
+
+            </div>
+            <div class="col-sm-6">
+              <jupiter-pax-list-details [paxes]="currentPnr.Paxes"></jupiter-pax-list-details>
+            </div>
+          </div>
+
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item expanded="false">
+        <nb-accordion-item-header class="font-weight-bold">Fares</nb-accordion-item-header>
+        <nb-accordion-item-body>
+
+          <div *ngIf="currentPnr.Fare && currentPnr.Fare.PaxFareList">
+            <div *ngFor="let fare of currentPnr.Fare.PaxFareList; let paxFareIndex = index;">
+
+              <div *ngIf="paxFareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
+              <div class="row">
+                <nb-card class="shadow-none col-sm-6">
+                  <nb-card-header>Fare Infos</nb-card-header>
+                  <nb-card-body>
+                    <div><span class="text-black-50 mr-1">Id:</span> {{fare.Id}}</div>
+                    <div><span class="text-black-50 mr-1">Pax:</span> {{fare.PaxCount}} {{fare.PaxType}}</div>
+                    <div><span class="text-black-50 mr-1">Refundable:</span> {{fare.Refundable}}</div>
+                    <div><span class="text-black-50 mr-1">LastTicket Date:</span> {{fare.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
+                    <!--                  <div><span class="text-black-50">Segments:</span>-->
+                    <!--                    <div *ngIf="fare.FlightSegmentDetails" class="row">-->
+                    <!--                      <div class="col-md-4">-->
+                    <!--                        <jupiter-obj-display *ngFor="let segmentDetail of fare.FlightSegmentDetails" [Data]="segmentDetail" [StyleClass]="'border-box col-md-4'"></jupiter-obj-display>-->
+                    <!--                      </div>-->
+                    <!--                    </div>-->
+                    <!--                  </div>-->
+
+                    <div><span class="text-black-50 mr-1">Amount:</span> <span class="font-weight-bold">{{fare.Amount.Amount}}</span> {{fare.Amount.Currency}}</div>
+                    <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>
+                    <div><span class="text-black-50 mr-1">Tax:</span> {{fare.Amount.Taxes?.Amount}} {{fare.Amount.Taxes?.Currency}}</div>
+                    <div><span class="text-black-50 mr-1">Tax List:</span>
+                      <div *ngIf="fare.Amount.Taxes && fare.Amount.Taxes.TaxList" class="row">
+                        <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >
+                          <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>
+                        </div>
+                      </div>
+                    </div>
+
+                  </nb-card-body>
+                </nb-card>
+
+                <nb-card class="shadow-none col-sm-6">
+                  <nb-card-header>Fare Segments</nb-card-header>
+                  <nb-card-body>
+                    <div>
+                      <!--                    <span class="text-black-50 mr-1">Segments:</span>-->
+                      <div *ngIf="fare.FlightSegmentDetails" class="row">
+                        <div *ngFor="let segmentDetail of fare.FlightSegmentDetails" class="col-sm-6">
+                          <jupiter-obj-display [Data]="segmentDetail" [StyleClass]="'border-box'"></jupiter-obj-display>
+                        </div>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </nb-card>
+              </div>
+
+<!--                  <jupiter-obj-display [Data]="fare"></jupiter-obj-display>-->
+            </div>
+
+          </div>
+
+
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item expanded="false">
+        <nb-accordion-item-header class="font-weight-bold">Remarks</nb-accordion-item-header>
+        <nb-accordion-item-body>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <nb-card class="shadow-none">
+                <nb-card-header>Remarks and OSI</nb-card-header>
+                <nb-card-body>
+                  <div class="row">
+                    <div *ngFor="let remark of currentPnr.Remarks; let remarkIndex = index;" class="col-md-6">
+                      <jupiter-obj-display [Data]="remark" [StyleClass]="'border-box'"></jupiter-obj-display>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+            <div class="col-sm-6">
+              <nb-card class="shadow-none">
+                <nb-card-header>OSI/SSR</nb-card-header>
+                <nb-card-body>
+                  <div class="row">
+                    <div *ngFor="let osi of currentPnr.OsiSsr; let osiIndex = index;" class="col-md-6">
+                      <jupiter-obj-display [Data]="osi" [StyleClass]="'border-box'"></jupiter-obj-display>
+                    </div>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+    </nb-accordion>
+
+    <div *ngIf="isDebug">
+      <nb-card>
+        <nb-card-header>
+          <span class="h4">Result Json</span>
+          <span class="float-right">
+                <button class="btn btn-sm btn-warning" (click)="isDebug = false;"><i class="fas fa-times"></i> </button>
+            </span>
+        </nb-card-header>
+        <nb-card-body>
+          <ace [mode]="'json'" [theme]="'monokai'" [value]="getJson(currentPnr)" style="height: 650px; width:100%; overflow: scroll;"></ace>
+          <!--<pre>{{result | json}}</pre>-->
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+

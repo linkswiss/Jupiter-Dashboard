@@ -1,0 +1,38 @@
+<nb-card [accent]="">
+  <nb-card-header *ngIf="showHeader">Sabre Session Pool</nb-card-header>
+  <nb-card-body>
+    <div class="mb-2">
+      <button class="btn btn-sm btn-primary" (click)="sabreGetAllSessions()"><i class="fas fa-sync-alt"></i> Refresh List</button>
+      <button class="float-right btn btn-sm btn-warning" (click)="sabreRefreshSessionsPool()" ngbTooltip="Refresh Sabre Session Pool" placement="top" container="body"><i class="fas fa-sync-alt"></i> Refresh Pool</button>
+    </div>
+
+    <div *ngIf="!sabreGdsSessionsData || sabreGdsSessionsData.length == 0" class="mt-5 text-center">
+      <h5 class="font-weight-bold">No Sessions Entries</h5>
+    </div>
+
+    <ngx-datatable *ngIf="sabreGdsSessionsData && sabreGdsSessionsData.length > 0" class="material" [columnMode]="'force'" loadingIndicator="true" [rowHeight]="'auto'" [rows]="sabreGdsSessionsData" [columns]="sabreGdsSessionsColumns" [sorts]="sabreGdsSessionsDefaultSort"></ngx-datatable>
+
+    <ng-template #sabreSessionActionsTpl let-row="row" let-value="value">
+      <button class="btn btn-sm btn-danger" (click)="sabreDeleteSession(row)" ngbTooltip="Delete This Session Item" placement="top" container="body"><i class="fas fa-trash"></i></button>
+    </ng-template>
+
+    <ng-template #environmentTpl let-row="row" let-value="value">
+      <span class="badge bg-warning text-white p-2 m-1">{{value}}</span>
+    </ng-template>
+
+    <ng-template #sessionTypeTpl let-row="row" let-value="value">
+      <span *ngIf="value === 'SESSION'" class="badge bg-primary text-white p-2 m-1">{{value}}</span>
+      <span *ngIf="value === 'TOKEN'" class="badge bg-warning text-white p-2 m-1">{{value}}</span>
+    </ng-template>
+
+    <ng-template #sessionStatusTpl let-row="row" let-value="value">
+      <span *ngIf="value === 'AVAILABLE'" class="badge bg-primary text-white p-2 m-1">{{value}}</span>
+      <span *ngIf="value !== 'AVAILABLE'" class="badge bg-warning text-white p-2 m-1">{{value}}</span>
+    </ng-template>
+
+    <ng-template #copyToClipboardTpl let-row="row" let-value="value">
+      <button *ngIf="value" class="btn btn-sm btn-primary action-button" (click)="copyToClipboard(value)" placement="top" ngbPopover="{{value}}" popoverTitle="Copy to Clipboard" [autoClose]="true" triggers="mouseenter:mouseleave" container="body"><i class="fas fa-copy"></i></button>
+      <!--<span class="badge bg-info text-white p-2 m-1" placement="right" ngbPopover="{{value}}" popoverTitle="Binary Security Token" [autoClose]="true" triggers="mouseenter:mouseleave" container="body">Security Token</span>-->
+    </ng-template>
+  </nb-card-body>
+</nb-card>

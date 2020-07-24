@@ -1,0 +1,68 @@
+<h3 class="mb-3">User List</h3>
+
+
+<nb-card>
+  <nb-card-body>
+    <!--<ngx-datatable class="material" [columnMode]="'force'" [rows]="data" [columns]="columns"></ngx-datatable>-->
+    <ngx-datatable class="material" [columnMode]="'force'" [rowHeight]="'auto'" [rows]="data" [columns]="columns"></ngx-datatable>
+    <!--<ngx-datatable class="bootstrap" [columnMode]="'force'" [rows]="data" [columns]="columns"></ngx-datatable>-->
+
+  </nb-card-body>
+</nb-card>
+
+<!--<ng-template #actionTpl let-row="row" let-value="value">-->
+  <!--&lt;!&ndash;<button class="btn btn-sm btn-primary action-button" (click)="actionDo(row)"><i class="fas fa-edit"></i></button>&ndash;&gt;-->
+  <!--<button class="btn btn-sm btn-primary action-button" (click)="generateToken(row)" placement="top" ngbTooltip="Generate Token"><i class="fas fa-key"></i></button>-->
+  <!--&lt;!&ndash;<strong>aaa {{value}}</strong>&ndash;&gt;-->
+<!--</ng-template>-->
+
+<ng-template #roleTpl let-row="row" let-value="value">
+  <span class="position-fixed">
+    <nb-badge [text]="value" position="top start p-2"></nb-badge>
+  </span>
+</ng-template>
+
+<ng-template #tokenTpl let-row="row" let-value="value">
+  <button *ngIf="!value" class="btn btn-sm btn-warning action-button" (click)="generateToken(row)" placement="top" ngbTooltip="Generate Token"><i class="fas fa-plus"></i> <i class="fas fa-key"></i></button>
+  <button *ngIf="value" class="btn btn-sm btn-primary action-button" (click)="copyTokenToClipboard(value)" placement="left" ngbPopover="{{value}}" popoverTitle="Copy to Clipboard" [autoClose]="false" triggers="mouseenter:mouseleave" container="body"><i class="fas fa-copy"></i> <i class="fas fa-key"></i></button>
+  <button *ngIf="value" class="btn btn-sm btn-danger action-button ml-1" (click)="deleteToken(row)" placement="top" ngbTooltip="Delete Token"><i class="fas fa-trash"></i> <i class="fas fa-key"></i></button>
+</ng-template>
+
+
+<nb-accordion>
+  <nb-accordion-item>
+    <nb-accordion-item-header>Debug Current User</nb-accordion-item-header>
+    <nb-accordion-item-body>
+
+          <div class="row">
+            <div class="col-sm">
+              <nb-card>
+                <nb-card-header>User</nb-card-header>
+                <nb-card-body>
+                  <h5>User model: </h5>
+                  <ace [mode]="'json'" [theme]="'monokai'" [value]="getJsonObject(userService.currentUser)" style="height: 300px; width:100%; overflow: scroll;"></ace>
+                </nb-card-body>
+              </nb-card>
+            </div>
+            <div class="col-sm">
+              <nb-card>
+                <nb-card-header>JWT Token</nb-card-header>
+                <nb-card-body>
+                  <div>
+                    <h5>Token decoded: </h5>
+                    <span *ngIf="!userService.getJupiterDashboardApiJwtToken()">Missing Token</span>
+                    <ace *ngIf="userService.getJupiterDashboardApiJwtToken()" [mode]="'json'" [theme]="'monokai'" [value]="getJsonObject(jwtHelperService.decodeToken())" style="height: 300px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                  <div class="pt-2">
+                    <h5 class="d-inline">Token Expire at: </h5>
+                    <span *ngIf="!userService.getJupiterDashboardApiJwtToken()">Missing Token</span>
+                    <span *ngIf="userService.getJupiterDashboardApiJwtToken()">{{jwtHelperService.getTokenExpirationDate()}}</span>
+                  </div>
+                </nb-card-body>
+              </nb-card>
+            </div>
+          </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>

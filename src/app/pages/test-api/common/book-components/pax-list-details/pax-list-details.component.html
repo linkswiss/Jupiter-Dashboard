@@ -1,0 +1,28 @@
+<nb-card class="shadow-none">
+  <nb-card-header>Pax Details</nb-card-header>
+  <nb-card-body *ngIf="paxes">
+    <div *ngFor="let pax of paxes; let paxIndex = index;">
+      <div *ngIf="paxIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
+
+      <div>Id: {{pax['Id']}}</div>
+      <div>Title: {{pax.PaxTitle}}</div>
+      <div>FirstName: {{pax.FirstName}}</div>
+      <div>Middle: {{pax.MiddleName}}</div>
+      <div>LastName: {{pax.LastName}}</div>
+      <div>Birth Date: {{pax.BirthDate | amDateFormat:'DD/MM/YYYY'}}</div>
+      <div>Emails: <span *ngIf="pax.Emails"><span *ngFor="let email of pax.Emails">{{email.Title}} {{email.Value}}</span></span></div>
+      <div>Pone Numbers: <span *ngIf="pax.PhoneNumbers"><span *ngFor="let phone of pax.PhoneNumbers">{{phone.Title}} {{phone.Value}}</span></span></div>
+      <div>Address: <span *ngIf="pax.Address">{{pax.Address.Street}} {{pax.Address.Zip}} - {{pax.Address.City}} {{pax.Address.Country}}</span></div>
+      <div>Loyalty Cards: <span *ngIf="pax.LoyaltyCards"><span *ngFor="let loyalty of pax.LoyaltyCards">{{loyalty.MembershipId}} {{loyalty.CardExpirationDate}}</span></span></div>
+      <div>Documents:
+        <pre *ngIf="pax.Documents" class="border-box bg-light">{{pax.Documents | json}}</pre>
+      </div>
+      <div>Company:
+        <pre *ngIf="pax.Company" class="border-box bg-light">{{pax.Company | json}}</pre>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-body *ngIf="!paxes">
+    Missing Infos
+  </nb-card-body>
+</nb-card>

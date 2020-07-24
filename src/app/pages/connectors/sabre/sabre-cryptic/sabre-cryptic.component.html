@@ -1,0 +1,64 @@
+<nb-card [nbSpinner]="loading" nbSpinnerStatus="primary">
+  <nb-card-header *ngIf="showHeader">Sabre Cryptic</nb-card-header>
+  <nb-card-body>
+    <div class="row" style="height:500px; max-height: 500px">
+      <div class="col-sm-12">
+        <nb-card class="cryptic-terminal sabre-color">
+          <nb-card-body>
+            <pre class="text-white">{{crypticResponse}}</pre>
+          </nb-card-body>
+        </nb-card>
+      </div>
+    </div>
+  </nb-card-body>
+  <nb-card-footer>
+    <div class="row">
+      <div class="col-sm-6">
+        <form [formGroup]="crypticForm" (ngSubmit)="sendCryptic()">
+          <div class="form-group">
+
+            <div class="input-group mb-3">
+              <input #sendCrypticInput
+                     nbInput autofocus
+                     formControlName="Command" type="text" class="form-control sabre-color" placeholder="Command"
+                     style="text-transform: uppercase;"
+                     [formControl]="crypticForm.controls.Command"
+                     [status]="crypticForm.controls.Command.dirty && crypticForm.controls.Command.invalid ? 'danger' : ''">
+
+              <div class="input-group-append">
+                <button  type="submit" id="sendcryptic" class="btn btn-sm btn-primary" [disabled]="crypticForm.invalid"><i class="fas fa-exchange-alt"></i> Send</button>
+              </div>
+              <!--<jupiter-form-input-error [control]="crypticForm.controls.Command"></jupiter-form-input-error>-->
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="col-sm-6">
+        <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment" (ConnectorsEnvironmentChange)="changeConnectorsEnvironment()"></jupiter-connectors-environment>
+      </div>
+    </div>
+  </nb-card-footer>
+</nb-card>
+
+<nb-accordion>
+  <nb-accordion-item>
+    <nb-accordion-item-header>Debug</nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <nb-card>
+        <nb-card-header>Debug</nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-sm-6">
+              <h6>JSON Response:</h6>
+              <pre>{{apiCallRS | json}}</pre>
+            </div>
+            <div class="col-sm-6">
+              <h6>Session:</h6>
+              <pre>{{crypticSession | json}}</pre>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>

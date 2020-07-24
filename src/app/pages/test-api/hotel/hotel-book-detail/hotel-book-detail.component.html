@@ -1,0 +1,200 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemBookDetailRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Book Detail RQ
+      <jupiter-api-response-status *ngIf="jupiterHotelBookDetailRS" [status]="jupiterHotelBookDetailRS.Status"></jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form>
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <label for="ConnectorBookingReferenceDetail" class="label">Connector Booking Reference</label>
+            <input nbInput fullWidth id="ConnectorBookingReferenceDetail" name="ConnectorBookingReferenceDetail" placeholder="Connector Booking Reference" [(ngModel)]="jupiterHotelBookDetailRQ.Request.ConnectorBookingReference">
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="connectorsDetail" class="label">Connector</label>
+            <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterHotelBookDetailRQ.Request.ConnectorCode">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelBookDetailRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="debugConnectors" class="label">Debug Connectors</label>
+            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelBookDetailRQ.Request.ConnectorsDebug">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+          </div>
+        </div>
+
+        <div *ngIf="jupiterHotelBookDetailRQ.Request.ConnectorCustomData">
+          <h6>Connector Custom Data</h6>
+          <div class="border-box">
+            <div class="float-right">
+              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-2">
+                <span class="badge badge-pill badge-primary">{{jupiterHotelBookDetailRQ.Request.ConnectorCustomData['_discriminator']}}</span>
+              </div>
+              <div class="form-group col-sm-10">
+                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelBookDetailRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="doBookDetail()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+<jupiter-api-messages-accordion Title="Book Detail" [ApiRs]="jupiterHotelBookDetailRS"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Book Detail" [(ApiRq)]="jupiterHotelBookDetailRQ" [ApiRs]="jupiterHotelBookDetailRS"></jupiter-api-debug-accordion>
+
+<nb-card *ngIf="jupiterHotelBookDetailRS && jupiterHotelBookDetailRS.Response">
+  <nb-card-header>Book Detail RS</nb-card-header>
+  <nb-card-body>
+
+    <!-- Book Details -->
+    <div *ngFor="let bookDetail of jupiterHotelBookDetailRS.Response.BookDetails; let bookIndex = index;">
+
+      <!-- Book Detail Table -->
+      <div class="mt-3">
+        <h5>Book Detail Table</h5>
+        <table width="100%" class="table table-bordered table-striped">
+          <tr>
+            <th>Connector</th>
+            <th>Status</th>
+            <th>Book Date</th>
+            <th>Book Reference</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+          <tr>
+            <td>
+              <span class="badge badge-pill badge-primary">{{bookDetail.ConnectorCode}}</span>
+            </td>
+            <td>
+              <jupiter-booking-status [status]="bookDetail.BookingStatus"></jupiter-booking-status>
+            </td>
+            <td>
+              {{bookDetail.BookDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}
+            </td>
+            <td>
+              {{bookDetail.ConnectorBookingReference}}
+            </td>
+            <td>
+              <span class="mr-1 font-weight-bold h5">{{bookDetail.TotalAmount?.Amount | number}}</span>
+              <span>{{bookDetail.TotalAmount?.Currency}}</span>
+            </td>
+            <td>
+              <div *ngIf="bookDetail.BookingStatus !== EBookingStatus.DELETED && bookDetail.BookingStatus !== EBookingStatus.ERROR">
+                <button nbButton status="danger" size="small" (click)="deleteBookFromDetail(bookDetail)"><i class="fas fa-trash"></i> Delete Book</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Details and Pax -->
+      <div class="row">
+        <div class="col-sm-6">
+          <nb-card class="shadow-none">
+            <nb-card-header>Book Infos</nb-card-header>
+            <nb-card-body>
+              <div class="border-box">
+                <div class="mt-1">Amout Without Tax:
+                  <span>{{bookDetail.TotalAmount?.AmountWithoutTax | number}}</span><span>{{bookDetail.TotalAmount?.Currency}}</span>
+                </div>
+                <div class="mt-1">Taxes
+                  <div *ngIf="bookDetail.TotalAmount && bookDetail.TotalAmount.Taxes && bookDetail.TotalAmount.Taxes.TaxList">
+                    <div *ngFor="let tax of bookDetail.TotalAmount.Taxes.TaxList">
+                      <span class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{tax.Description}}" placement="left" container="body"> <i class="fas fa-info-circle info-icon"></i> {{tax.Code}} - {{tax.Currency}} {{tax.Amount | number}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div>Notes: {{bookDetail.Notes}}</div>
+              <div>Custom Data:</div>
+              <pre class="border-box bg-light">{{bookDetail.ConnectorCustomData | json}}</pre>
+            </nb-card-body>
+          </nb-card>
+
+          <jupiter-credit-card-payment [creditCardPayment]="bookDetail.CreditCardPayment"></jupiter-credit-card-payment>
+<!--          <jupiter-travel-company [travelCompany]="bookDetail.TravelCompany"></jupiter-travel-company>-->
+        </div>
+        <div class="col-sm-6">
+          <jupiter-pax-list-details [paxes]="bookDetail.Paxes"></jupiter-pax-list-details>
+        </div>
+      </div>
+
+      <!-- Extras -->
+      <nb-card>
+        <nb-card-header>Extras</nb-card-header>
+        <nb-card-body *ngIf="bookDetail.Extras">
+          <div *ngFor="let extra of bookDetail.Extras">
+            <pre class="border-box bg-light">{{extra | json}}</pre>
+          </div>
+        </nb-card-body>
+      </nb-card>
+
+      <!-- Book Detail Hotels -->
+      <div *ngIf="bookDetail.Hotels">
+
+        <div *ngFor="let hotel of bookDetail.Hotels; let hotelIndex = index;">
+          <nb-card>
+            <nb-card-header>
+              {{hotel.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="hotel['_Debug'] = !hotel['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span>
+
+              <div *ngIf="hotel.Rooms && hotel.Rooms[0].Rates && hotel.Rooms[0].Rates[0].Total" class="float-right">
+                <span class="mr-1 text-secondary">from</span>
+                <span class="mr-1 font-weight-bold h5" *ngIf="showPricePerDay">{{(hotel.Rooms[0].Rates[0].Total.Amount / daysCount | number)}}/day</span>
+                <span class="mr-1 font-weight-bold h5" *ngIf="!showPricePerDay">{{hotel.Rooms[0].Rates[0].Total.Amount | number}}</span>
+                <span>{{hotel.Rooms[0].Rates[0].Total.Currency}}</span>
+              </div>
+
+            </nb-card-header>
+            <nb-card-body>
+              <!-- HOTEL DETAILS -->
+              <jupiter-single-hotel-details [hotel]="hotel" [openDetails]="false"></jupiter-single-hotel-details>
+
+              <!-- ACTIONS -->
+              <nb-accordion class="shadow-none border-box p-0">
+                <nb-accordion-item [expanded]="true">
+                  <nb-accordion-item-header>Connectors Actions</nb-accordion-item-header>
+                  <nb-accordion-item-body>
+                    <div *ngFor="let match of hotel.ConnectorsMatch">
+                      <span class="badge badge-info text-white p-2 m-1">{{match.ConnectorCode}} {{match.RefId}}</span>
+  <!--                    <button nbButton size="tiny" class="ml-1" (click)="goToSingleHotelAvail(hotel, match.ConnectorCode)"><i class="fas fa-search"></i> &nbsp;Single Avail</button>-->
+  <!--                    <button nbButton size="tiny" class="ml-1" (click)="goToHotelDetail(hotel, match.ConnectorCode)"><i class="fas fa-search"></i> &nbsp;Hotel Details</button>-->
+                    </div>
+                  </nb-accordion-item-body>
+                </nb-accordion-item>
+              </nb-accordion>
+
+              <!-- ROOMS -->
+              <jupiter-hotel-rooms-avail [rooms]="hotel.Rooms" [daysCount]="daysCount" [showPricePerDay]="showPricePerDay"></jupiter-hotel-rooms-avail>
+
+            </nb-card-body>
+          </nb-card>
+
+        </div>
+
+      </div>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<div *ngIf="jupiterHotelBookDetailRS && jupiterHotelBookDetailRS.Response && jupiterHotelBookCancelRQ">
+  <jupiter-api-messages-accordion Title="Book Cancel" [ApiRs]="jupiterHotelBookCancelRS"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Book Cancel" [(ApiRq)]="jupiterHotelBookCancelRQ" [ApiRs]="jupiterHotelBookCancelRS"></jupiter-api-debug-accordion>
+</div>

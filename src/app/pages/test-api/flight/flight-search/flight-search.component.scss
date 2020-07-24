@@ -1,0 +1,27 @@
+.iata-input{
+  text-transform: uppercase;
+}
+
+.step-divider{
+  border: 2px solid;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.segment-divider{
+  border: 1px solid #999999;
+  margin-top: 10px;
+}
+
+.info-icon{
+  font-size: 1.2rem;
+}
+
+.step-request{
+    //background-color: #ececec;
+    /* background-color: white; */
+    border-radius: 5px;
+    padding: 15px;
+    border: 2px solid #ececec;
+    margin-bottom: 15px;
+}

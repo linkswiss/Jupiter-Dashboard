@@ -1,0 +1,107 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Hotel Detail RQ
+      <jupiter-api-response-status *ngIf="jupiterHotelDetailRS" [status]="jupiterHotelDetailRS.Status"></jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form>
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <label for="HotelRefIds" class="label">Hotel Ref Ids</label>
+            <tag-input id="HotelRefIds" name="HotelRefIds" placeholder="Hotel Ref Ids" fullWidth (onAdd)="utils.addTagInputValue($event, jupiterHotelDetailRQ.Request.HotelRefIds)" [(ngModel)]="jupiterHotelDetailRQ.Request.HotelRefIds" ></tag-input>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="connectorsDetail" class="label">Connector</label>
+            <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterHotelDetailRQ.Request.ConnectorCode">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelDetailRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="debugConnectors" class="label">Debug Connectors</label>
+            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelDetailRQ.Request.ConnectorsDebug">
+              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+            </nb-select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="form-group col-sm-4">
+            <label for="PreferredCurrency" class="label">Preferred Currency</label>
+            <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency" [(ngModel)]="jupiterHotelDetailRQ.Request.PreferredCurrency">
+          </div>
+
+          <div class="form-group col-sm-4">
+            <label for="PreferredLanguage" class="label">Preferred Language</label>
+            <input nbInput fullWidth id="PreferredLanguage" name="PreferredLanguage" placeholder="Preferred Language" [(ngModel)]="jupiterHotelDetailRQ.Request.PreferredLanguage">
+          </div>
+          <div class="form-group col-sm-4">
+            <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterHotelDetailRQ.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
+          </div>
+        </div>
+
+        <div *ngIf="jupiterHotelDetailRQ.Request.ConnectorCustomData">
+          <h6>Connector Custom Data</h6>
+          <div class="border-box">
+            <div class="float-right">
+              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+            </div>
+            <div class="row">
+              <div class="form-group col-sm-2">
+                <span class="badge badge-pill badge-primary">{{jupiterHotelDetailRQ.Request.ConnectorCustomData['_discriminator']}}</span>
+              </div>
+              <div class="form-group col-sm-10">
+                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelDetailRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="doHotelDetails()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+
+<jupiter-api-messages-accordion Title="Hotel Details" [ApiRs]="jupiterHotelDetailRS"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Hotel Details" [(ApiRq)]="jupiterHotelDetailRQ" [ApiRs]="jupiterHotelDetailRS"></jupiter-api-debug-accordion>
+
+<div class="mt-4" *ngIf="jupiterHotelDetailRS && jupiterHotelDetailRS.Response && jupiterHotelDetailRS.Response.Hotels">
+  <div class="row">
+    <div class="col-md-12">
+      <div *ngFor="let hotel of jupiterHotelDetailRS.Response.Hotels; let hotelIndex = index;">
+
+        <nb-card>
+          <nb-card-header>
+            {{hotel.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="hotel['_Debug'] = !hotel['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span>
+          </nb-card-header>
+          <nb-card-body>
+            <jupiter-single-hotel-details [hotel]="hotel" [openDetails]="true"></jupiter-single-hotel-details>
+            <div>Rooms:</div>
+            <nb-accordion multi class="shadow-none border-box p-0">
+              <nb-accordion-item *ngFor="let room of hotel.Rooms">
+                <nb-accordion-item-header>
+                  <div class="font-weight-bold">{{room.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="room['_Debug'] = !room['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span></div>
+                </nb-accordion-item-header>
+                <nb-accordion-item-body>
+                  <jupiter-single-room-details [room]="room" [openDetails]="true"></jupiter-single-room-details>
+                </nb-accordion-item-body>
+              </nb-accordion-item>
+            </nb-accordion>
+          </nb-card-body>
+        </nb-card>
+
+      </div>
+
+    </div>
+  </div>
+</div>

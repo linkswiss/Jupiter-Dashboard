@@ -1,0 +1,43 @@
+<div class="row">
+  <div *ngFor="let prop of allProps; let i = index;" class="form-group col-sm-6">
+    <!--    {{getTypeof(prop)}}-->
+    <div [ngSwitch]="getType(prop)">
+      <div *ngSwitchCase="PROP_INPUT_TYPE.TEXT">
+        <label class="label">{{prop}} (Text)</label>
+        <input nbInput [id]="prop+i" fullWidth [(ngModel)]="Data[prop]">
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.NUM">
+        <label class="label">{{prop}} (NUMBER)</label>
+        <input nbInput [id]="prop+i" fullWidth [(ngModel)]="Data[prop]">
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.DATE">
+        <label class="label">{{prop}} (Date)</label>
+        <input nbInput fullWidth [nbDatepicker]="dateProp" [(ngModel)]="Data['_'+prop+'Moment']">
+        <nb-datepicker #dateProp format="DD/MM/YYYY" (dateChange)="handleDateChange($event, prop)"></nb-datepicker>
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.TAG">
+        <label class="label">{{prop}} (Array)</label>
+        <tag-input fullWidth (onAdd)="utils.addTagInputValue($event, Data[prop])" [(ngModel)]="Data[prop]" ></tag-input>
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.ENUM">
+        <label class="label">{{prop}} (Enum)</label>
+        <nb-select fullWidth [multiple]="false" [outline]="true" [(selected)]="Data[prop]">
+          <nb-option *ngFor="let enumVal of dataInputSettings.enums[prop]" [value]="enumVal">{{enumVal}}</nb-option>
+        </nb-select>
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.CHECK">
+        <nb-checkbox fullWidth name="ExactMatchOnly" [(ngModel)]="Data[prop]">{{prop}}</nb-checkbox>
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.OBJ">
+        <label class="label">{{prop}} (Object)</label>
+        <jupiter-custom-data-inputs [(CustomData)]="Data[prop]"></jupiter-custom-data-inputs>
+      </div>
+      <div *ngSwitchCase="PROP_INPUT_TYPE.OBJ_ARRAY">
+        <label class="label">{{prop}} (Object Array)</label>
+        <div *ngFor="let arrayItem of Data[prop]">
+          <jupiter-custom-data-inputs [(CustomData)]="Data[prop]"></jupiter-custom-data-inputs>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

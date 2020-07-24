@@ -1,0 +1,16 @@
+<nb-card style="min-width: 700px" accent="danger">
+  <nb-card-header>{{title}}</nb-card-header>
+  <nb-card-body>
+    <div *ngIf="error['status']">Status: {{error['status']}}</div>
+    <div *ngIf="error['message']">Message: {{error['message']}}</div>
+    <div *ngIf="error['response']" class="mt-3">
+      <ace [mode]="'json'" [theme]="'monokai'" [value]="error['response']" style="height: 500px; width:100%; overflow: scroll;"></ace>
+    </div>
+    <div *ngIf="!error['response']">
+      <ace [mode]="'json'" [theme]="'monokai'" [value]="error | json" style="height: 500px; width:100%; overflow: scroll;"></ace>
+    </div>
+  </nb-card-body>
+  <nb-card-footer class="text-center">
+    <button nbButton class="btn-primary" (click)="dismiss()">Close</button>
+  </nb-card-footer>
+</nb-card>
