@@ -20,6 +20,7 @@ import {AppConfigService} from '../../../../services/app-config/app-config.servi
 import Utils from '../../../../utility/utils';
 import {NbAccordionItemComponent, NbDialogService, NbRangepickerComponent, NbTooltipDirective} from '@nebular/theme';
 import {DialogApiErrorComponent} from '../../common/components/dialog-api-error/dialog-api-error.component';
+import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {Moment} from 'moment';
 
@@ -47,6 +48,7 @@ export class HotelCalendarAvailComponent implements OnInit {
   connectors: EH2HConnectorCode[] = null;
 
   constructor(private dialogService: NbDialogService, private jupiterApiService: JupiterApiService, public appConfigService: AppConfigService) {
+    const name = Calendar.name; // add this line in your constructor 
   }
 
   ngOnInit() {
