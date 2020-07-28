@@ -8,7 +8,7 @@ export const environment = {
   jupiterPublishedApiVersion: ['1.0'],
   jupiterDefaultApiVersion: '1.0',
   jupiterDefaultDashboardApiVersion: '1.0-dashboard',
-  jupiterBaseApiUrl: 'https://localhost:5001',
+  jupiterBaseApiUrl: 'http://localhost:5000',
   jupiterApiDocumentationPath: '/api_docs',
 
   jupiterDashboardApiPath: '/jupiter-dashboard-api',

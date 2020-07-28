@@ -7,6 +7,9 @@ import { UserAuthRQ } from '../../../api/dashboard/model/userAuthRQ';
 import { AppConfigService } from '../../../services/app-config/app-config.service';
 import { UserService } from '../../../services/user/user.service';
 import { FormGroupTyped } from '../../../utility/form-group-typed';
+import * as Store from 'electron-store';
+
+//import Store = require('electron-store');
 
 @Component({
   selector: 'jupiter-login',
@@ -19,6 +22,22 @@ export class LoginComponent implements OnInit {
   apiName = '';
 
   constructor(private router: Router, public appConfigService: AppConfigService, private userService: UserService) {
+
+    type StoreType = {
+      isRainbow: boolean,
+      unicorn?: string
+    }
+    const store = new Store<StoreType>({
+      defaults: {
+        isRainbow: true
+      }
+    });
+    console.log(store.get('isRainbow'));
+
+    store.set('unicorn', "PIdPPO");
+
+    console.log(store.get('unicorn'));
+
     this.appConfigService.getApiName().subscribe(apiName => {
       this.apiName = apiName;
     });

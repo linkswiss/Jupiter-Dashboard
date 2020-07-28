@@ -64,6 +64,7 @@ import { TravelCompanyComponent } from './test-api/common/book-components/travel
 import { ObjDisplayComponent } from './test-api/common/components/obj-display/obj-display.component';
 import { TrainAvailComponent } from './test-api/train/train-avail/train-avail.component';
 import dayGridPlugin from '@fullcalendar/daygrid'; 
+
 // import 'brace/ext/searchbox';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
