@@ -129,7 +129,7 @@
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
-                            <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
+                            <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="jupiterHotelBookRQ.Request.RoomsToBook[i]['_ConnectorCustomDataConnectorCode']">
                                 <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
                             </nb-select>
                         </div>
