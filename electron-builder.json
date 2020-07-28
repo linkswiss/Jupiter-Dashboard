@@ -26,7 +26,7 @@
         ]
     },
     "mac": {
-        "icon": "dist/assets/icons",
+        "icon": "dist/assets/icons/icon.png",
         "target": [
             "dmg"
         ]
