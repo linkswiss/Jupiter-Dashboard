@@ -74,41 +74,10 @@ export function jwtOptionsFactory(appConfigService: AppConfigService) {
     NbDatepickerModule.forRoot(),
     NbMomentDateModule,
     MomentModule,
-
-    // JwtModule.forRoot({
-    //   jwtOptionsProvider: {
-    //       provide: JWT_OPTIONS,
-    //       useFactory: jwtOptionsFactory,
-    //       deps: [UserService],
-    //   }
-    //   // config:
-    //   //   tokenGetter: tokenGetter,
-    //   //   // throwNoTokenError: true,
-    //   //   whitelistedDomains: [environment.jupiterBaseApiUrl],
-    //   //   blacklistedRoutes: [
-    //   //     '/users/authenticate',
-    //   //     '/users/refresh-token',
-    //   //     'SampleData/WeatherForecasts'
-    //   //   ],
-    //   // }
-    // }),
     AppRoutingModule,
-
-    // NgbModule.forRoot(),
-    //
-    // NbThemeModule.forRoot({ name: 'corporate' }),
-    // NbSidebarModule.forRoot(),
-    // NbMenuModule.forRoot(),
-    // NbDialogModule.forRoot(),
-    // NbWindowModule.forRoot(),
-    // NbToastrModule.forRoot(),
-    // NbActionsModule,
-    // NbLayoutModule,
-
-    // ServicesModule.forRoot(),
-    LayoutModule.forRoot(),
     UtilityModule.forRoot(),
     PagesModule,
+    LayoutModule.forRoot(),
   ],
   providers: [
     Title,

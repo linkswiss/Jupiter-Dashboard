@@ -126,8 +126,8 @@ const NB_THEME_PROVIDERS = [
 })
 
 export class LayoutModule {
-  static forRoot(): ModuleWithProviders {
-    return <ModuleWithProviders>{
+  static forRoot(): ModuleWithProviders<LayoutModule> {
+    return {
       ngModule: LayoutModule,
       providers: [...NB_THEME_PROVIDERS],
     };
