@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, CanActivateChild, Router, UrlTree } from '@angular/router';
 import { tap } from 'rxjs/operators';
 import { UserService } from '../services/user/user.service';
+import { AppConfigService } from '../services/app-config/app-config.service';
 
 @Injectable()
 export class AuthGuard implements CanActivateChild {
@@ -13,8 +14,8 @@ export class AuthGuard implements CanActivateChild {
     return this.userService.isAuthenticatedOrRefresh()
                .pipe(
                  tap(authenticated => {
-                   if (!authenticated) {
-                     this.router.navigate(['auth/login']);
+                    if (!authenticated) {
+                      this.router.navigate(['auth/login']);
                    }
                  }),
                );

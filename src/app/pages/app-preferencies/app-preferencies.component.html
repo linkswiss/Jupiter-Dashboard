@@ -1,0 +1,82 @@
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="height:100vh">
+        <div class="col-7">
+
+            <nb-card>
+                <nb-card-header class="text-center">
+                    <h3>Jupiter App Preferencies</h3>
+                </nb-card-header>
+                <nb-card-body>
+
+                    <ngx-datatable class="material" [columnMode]="'force'" [rowHeight]="'auto'" [rows]="endpoints" [columns]="endpointsColumns"></ngx-datatable>
+
+                    <ng-template #defaultTpl let-row="row" let-value="value">
+                        <button *ngIf="value" class="btn btn-sm btn-success action-button"><i class="fas fa-check"></i></button>
+                        <button *ngIf="!value" class="btn btn-sm btn-info action-button" (click)="setEndpointAsDefault(row)"><i class="fas fa-square"></i></button>
+                        <!--<button *ngIf="!value" class="btn btn-sm btn-info action-button" (click)="setEndpointAsDefault(row)" placement="top" ngbTooltip="Set Default Endpoint"><i class="fas fa-square"></i></button>-->
+                    </ng-template>
+
+                    <ng-template #deleteTpl let-row="row" let-value="value">
+                        <button *ngIf="!value" class="btn btn-sm btn-danger action-button" (click)="deleteEndpoint(row)" placement="top" ngbTooltip="Delete Endpoint"><i class="fas fa-minus"></i></button>
+                    </ng-template>
+
+                    <br />
+                    <form [formGroup]="endpointForm" (ngSubmit)="onSubmit()">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label class="label">Name:</label>
+                                    <input nbInput fullWidth autofocus formControlName="Name" type="text" class="form-control" placeholder="Name" [formControl]="endpointForm.controls.Name" [status]="endpointForm.controls.Name.dirty && endpointForm.controls.Name.invalid ? 'danger' : ''">
+                                    <jupiter-form-input-error [control]="endpointForm.controls.Name"></jupiter-form-input-error>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-group">
+                                    <label class="label">Endpoint Url:</label>
+                                    <input nbInput fullWidth autofocus formControlName="Url" type="text" class="form-control" placeholder="Url" [formControl]="endpointForm.controls.Url" [status]="endpointForm.controls.Url.dirty && endpointForm.controls.Url.invalid ? 'danger' : ''">
+                                    <jupiter-form-input-error [control]="endpointForm.controls.Url"></jupiter-form-input-error>
+                                </div>
+                            </div>
+                            <!--
+                            <div class="col-md-2">
+                                <div class="form-group">
+                                    <label class="label">Default:</label>
+                                    <input nbInput autofocus formControlName="Default" type="checkbox" class="form-control" placeholder="Default">
+                                </div>
+                            </div>
+                            -->
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" id="saveEndpoint" class="btn btn-primary" [disabled]="endpointForm.invalid">Add</button>
+                        </div>
+                    </form>
+                    <!--<form autocomplete="off" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label class="label">Email address:</label>
+              <input nbInput fullWidth autofocus
+                     formControlName="Email" type="text" class="form-control" placeholder="Email address"
+                     [formControl]="loginForm.controls.Email"
+                     [status]="loginForm.controls.Email.dirty && loginForm.controls.Email.invalid ? 'danger' : ''">
+              <jupiter-form-input-error [control]="loginForm.controls.Email"></jupiter-form-input-error>
+            </div>
+
+            <div class="form-group">
+              <label class="label">Password:</label>
+              <input nbInput fullWidth autofocus
+                     formControlName="Password" type="password" class="form-control" placeholder="Password"
+                     [formControl]="loginForm.controls.Password"
+                     [status]="loginForm.controls.Password.dirty && loginForm.controls.Password.invalid ? 'danger' : ''">
+              <jupiter-form-input-error [control]="loginForm.controls.Password"></jupiter-form-input-error>
+            </div>
+            <div class="text-center">
+              <button type="submit" id="sendlogin" class="btn btn-primary" [disabled]="loginForm.invalid">login</button>
+            </div>
+          </form>
+          -->
+                </nb-card-body>
+            </nb-card>
+
+        </div>
+    </div>
+</div>

@@ -23,20 +23,16 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, public appConfigService: AppConfigService, private userService: UserService) {
 
-    type StoreType = {
-      isRainbow: boolean,
-      unicorn?: string
+    let endpoints = this.appConfigService.getEndpoints();
+
+    if (endpoints.length === 0) {
+      
+    } else {
+      
     }
-    const store = new Store<StoreType>({
-      defaults: {
-        isRainbow: true
-      }
-    });
-    console.log(store.get('isRainbow'));
 
-    store.set('unicorn', "PIdPPO");
+    this.router.navigate(['/app/preferencies']);
 
-    console.log(store.get('unicorn'));
 
     this.appConfigService.getApiName().subscribe(apiName => {
       this.apiName = apiName;

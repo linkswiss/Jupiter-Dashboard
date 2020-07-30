@@ -63,6 +63,7 @@ import { PaxListDetailsComponent } from './test-api/common/book-components/pax-l
 import { TravelCompanyComponent } from './test-api/common/book-components/travel-company/travel-company.component';
 import { ObjDisplayComponent } from './test-api/common/components/obj-display/obj-display.component';
 import { TrainAvailComponent } from './test-api/train/train-avail/train-avail.component';
+import {AppPreferenciesComponent} from './app-preferencies/app-preferencies.component';
 import dayGridPlugin from '@fullcalendar/daygrid'; 
 
 // import 'brace/ext/searchbox';
@@ -135,6 +136,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     TravelCompanyComponent,
     ObjDisplayComponent,
     TrainAvailComponent,
+    AppPreferenciesComponent,
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [

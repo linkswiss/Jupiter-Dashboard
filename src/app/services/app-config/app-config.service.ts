@@ -13,6 +13,9 @@ import {Title} from '@angular/platform-browser';
 
 const {version: appVersion} = require('../../../../package.json');
 
+import * as ElectronStore from 'electron-store';
+import {UserSettings, Endpoint} from './user-settings.model';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -119,7 +122,15 @@ export class AppConfigService implements OnInit {
   // jupiterRemoteAppSettings: AppSettings = null;
   jupiterRemoteAppSettings: IAppSettings = null;
 
+  store = new ElectronStore<UserSettings>({
+    defaults: {
+      Endpoints: []
+    }
+  });
+
   constructor(private httpClient: HttpClient, private router: Router) {
+    
+
     // Set the complete url on APIs
     for (let controller in this.config.dashboardApi.methods) {
       for (let method in this.config.dashboardApi.methods[controller]) {
@@ -151,6 +162,55 @@ export class AppConfigService implements OnInit {
     // });
   }
 
+  getEndpoints(): Endpoint[] {
+    
+    
+    console.log(this.store.get('Endpoints'));
+
+    return this.store.get('Endpoints');
+  }
+
+  setEndpoint(endpoint: Endpoint) {
+    
+    let endpoints = this.store.get('Endpoints');
+
+    if (endpoints.length === 0){
+      endpoint.Default = true;
+    }
+
+    endpoints.push(endpoint);
+
+    this.store.set('Endpoints', endpoints);
+  }
+
+  setEndpointAsDefault(endpoint: Endpoint) {
+    let endpoints = this.store.get('Endpoints');
+
+    endpoints.forEach((e) => {
+      e.Default = false;
+      if (e.Url === endpoint.Url){
+        e.Default = true;
+      }
+    });
+
+    this.store.set('Endpoints', endpoints);
+  }
+
+  deleteEndpoint(endpoint: Endpoint) {
+    
+    let endpoints = this.store.get('Endpoints');
+
+    _.remove(endpoints, (n) => {
+      return n.Url === endpoint.Url;
+    });
+
+    if (endpoint.Default && endpoints.length > 0) {
+      endpoints[0].Default = true;
+    }
+
+    this.store.set('Endpoints', endpoints);
+  }
+
   /**
    * Get the JupiterAppSettings from API
    */
@@ -169,6 +229,8 @@ export class AppConfigService implements OnInit {
             } else {
               this.jupiterRemoteAppSettings = null;
               obs.error(error);
+              console.log('Redirect to App Preferencies');
+              this.router.navigate(['app/preferencies']);
             }
           });
     });

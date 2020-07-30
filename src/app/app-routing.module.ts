@@ -31,6 +31,8 @@ import {HotelBookComponent} from './pages/test-api/hotel/hotel-book/hotel-book.c
 import {HotelAvailExtrasComponent} from './pages/test-api/hotel/hotel-avail-extras/hotel-avail-extras.component';
 import {HotelPriceVerifyComponent} from './pages/test-api/hotel/hotel-price-verify/hotel-price-verify.component';
 import {TrainAvailComponent} from "./pages/test-api/train/train-avail/train-avail.component";
+import { AppPreferenciesComponent } from './pages/app-preferencies/app-preferencies.component';
+import { LayoutEmptyComponent } from './layout/layout-empty/layout-empty.component';
 
 const routes: Routes = [
   // { path: 'pages', component: LayoutComponent},
@@ -199,6 +201,13 @@ const routes: Routes = [
       {path: 'login', component: LoginComponent},
       {path: 'logout', component: LogoutComponent},
     ],
+  },
+  {
+    path: 'app',
+    component: AuthComponent,
+    children: [
+      {path: 'preferencies', component: AppPreferenciesComponent}
+    ]
   },
   {path: '**', redirectTo: 'not-found'},
 
