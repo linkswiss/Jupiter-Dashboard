@@ -20,8 +20,9 @@ import {UserSettings, Endpoint} from './user-settings.model';
   providedIn: 'root',
 })
 export class AppConfigService implements OnInit {
+  defaultEndpoint: Endpoint;
   baseCurrentUrl = `https://${window.location.host}`;
-  config = {
+  config: any; /*{
     name: 'Jupiter Admin',
     dashboardVersion: appVersion,
     defaultJupiterApiDocumentationUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}/${environment.jupiterDefaultApiVersion}${environment.jupiterApiDocumentationPath}`,
@@ -117,7 +118,7 @@ export class AppConfigService implements OnInit {
     },
     environment: environment,
     // lang: 'en',
-  };
+  };*/
 
   // jupiterRemoteAppSettings: AppSettings = null;
   jupiterRemoteAppSettings: IAppSettings = null;
@@ -129,9 +130,10 @@ export class AppConfigService implements OnInit {
   });
 
   constructor(private httpClient: HttpClient, private router: Router) {
-    
+    this.loadDefaultEndpoint();
 
     // Set the complete url on APIs
+    /*
     for (let controller in this.config.dashboardApi.methods) {
       for (let method in this.config.dashboardApi.methods[controller]) {
         this.config.dashboardApi.methods[controller][method] = this.config.dashboardApi.defaultApiUrl + this.config.dashboardApi.methods[controller][method];
@@ -142,6 +144,7 @@ export class AppConfigService implements OnInit {
         this.config.jupiterApi.methods[controller][method] = this.config.jupiterApi.defaultApiUrl + this.config.jupiterApi.methods[controller][method];
       }
     }
+    */
 
     // this.config.dashboardApi.methods
 
@@ -161,12 +164,136 @@ export class AppConfigService implements OnInit {
     //
     // });
   }
+  loadDefaultEndpoint() {
+    let endpoints = this.store.get('Endpoints');
+    console.log(endpoints);
+    if (!endpoints || endpoints.length === 0) {
+      
+      this.router.navigate(['/app/preferencies']);
+    }
+
+    this.defaultEndpoint = _.find(endpoints, 'Default');
+
+    if (this.defaultEndpoint) {
+      this.baseCurrentUrl = this.defaultEndpoint.Url;
+    }
+
+    this.loadConfig(this.baseCurrentUrl);
+  }
+
+  loadConfig(endpointUrl: string) {
+    this.config = {
+      name: 'Jupiter Admin',
+      dashboardVersion: appVersion,
+      defaultJupiterApiDocumentationUrl: `${endpointUrl}/${environment.jupiterDefaultApiVersion}${environment.jupiterApiDocumentationPath}`,
+      defaultJupiterDashboardApiDocumentationUrl: `${endpointUrl}/${environment.jupiterDefaultDashboardApiVersion}${environment.jupiterApiDocumentationPath}`,
+      defaultJupiterApiModelsDocumentationUrl: `${endpointUrl}/1.0-modelsjupiter${environment.jupiterApiDocumentationPath}`,
+      defaultJupiterDashboardApiModelsDocumentationUrl: `${endpointUrl}/1.0-modelsdashboard${environment.jupiterApiDocumentationPath}`,
+      dashboardApi: {
+        baseApiUrl: endpointUrl,
+        apiPath: environment.jupiterDashboardApiPath,
+        defaultApiVersion: environment.jupiterDefaultDashboardApiVersion,
+        defaultApiUrl: `${endpointUrl}${environment.jupiterDashboardApiPath}/${environment.jupiterDefaultDashboardApiVersion}`,
+        // baseUrl: '',
+        methods: {
+          user: {
+            authenticate: '/users/authenticate',
+            refreshToken: '/users/refresh-token',
+            logout: '/users/logout',
+            createJupiterApiToken: '/users/create-jupiter-api-token/{userId}',
+            deleteJupiterApiToken: '/users/delete-jupiter-api-token/{userId}',
+            getUser: '/users/get/{userId}',
+            getAllUsers: '/users/get-all-users',
+          },
+          utility: {
+            getJupiterSettings: '/utility/jupiter-settings',
+            getPublishedRoutes: '/utility/published-routes',
+            getCacheEntries: '/utility/cache-entries',
+            clearCache: '/utility/clear-cache',
+            clearSingleCacheItem: '/utility/clear-cache-item/{cacheKey}',
+            getErrorLogs: '/utility/get-error-logs',
+          },
+          sabre: {
+            getAllSessions: '/sabre/get-all-sessions',
+            deleteSession: '/sabre/delete-session/{id}',
+            refreshSessionsPool: '/sabre/refresh-session-pool',
+          },
+          sampleRequest: {
+            saveSamplesRequests: '/SampleRequest/save-sample-request',
+            deleteSamplesRequests: '/SampleRequest/delete-sample-request',
+            getSampleRequests: '/SampleRequest/get-sample-requests/{sampleType}',
+            getAllSampleRequests: '/SampleRequest/get-all-sample-requests',
+          },
+        },
+      },
+      jupiterApi: {
+        baseApiUrl: endpointUrl,
+        apiPath: environment.jupiterApiPath,
+        defaultApiVersion: environment.jupiterDefaultApiVersion,
+        defaultApiUrl: `${endpointUrl}${environment.jupiterApiPath}/${environment.jupiterDefaultApiVersion}`,
+        methods: {
+          destination: {
+            list: '/destination/destination-list',
+            updateStaticData: '/destination/destination-list-static-data-update',
+          },
+          hotel: {
+            avail: '/hotel/avail',
+            singleHotelAvail: '/hotel/single-hotel-avail',
+            calendarHotelAvail: '/hotel/calendar-avail',
+            extrasHotelAvail: '/hotel/extras-avail',
+            priceVerify: '/hotel/price-verify',
+            hotelDetails: '/hotel/hotel-details',
+            hotelBook: '/hotel/hotel-book',
+            hotelBookModify: '/hotel/hotel-book-modify',
+            hotelBookCancel: '/hotel/hotel-book-cancel',
+            hotelBookSearch: '/hotel/hotel-book-search',
+            hotelBookDetails: '/hotel/hotel-book-detail',
+            hotelChainList: '/hotel/chain-list',
+            HotelChainListUpdateStaticData: '/hotel/hotel-chain-list-static-data-update',
+          },
+          train: {
+            avail: '/train/avail',
+          },
+          flight: {
+            sessionCreate: '/flight/session-create',
+            sessionClose: '/flight/session-close',
+            sessionRefresh: '/flight/session-refresh',
+            sessionTokenCreate: '/flight/session-token-create',
+            ignoreTransaction: '/flight/ignore-transaction',
+            cryptic: '/flight/cryptic',
+            avail: '/flight/avail',
+            details: '/flight/details',
+            pnrPriceVerify: '/flight/pnr-price-verify',
+            book: '/flight/book',
+            pnrRetrieve: '/flight/pnr-retrieve',
+          },
+          utility: {
+            ping: '/utility/ping',
+            settings: '/utility/settings',
+            apiName: '/utility/api-name',
+            generateTypescriptClient: '/utility/typescript-client',
+            generateCSharpClient: '/utility/csharp-client',
+          },
+        },
+      },
+      environment: environment,
+      // lang: 'en',
+    };
+
+    // Set the complete url on APIs
+    for (let controller in this.config.dashboardApi.methods) {
+      for (let method in this.config.dashboardApi.methods[controller]) {
+        this.config.dashboardApi.methods[controller][method] = this.config.dashboardApi.defaultApiUrl + this.config.dashboardApi.methods[controller][method];
+      }
+    }
+    for (let controller in this.config.jupiterApi.methods) {
+      for (let method in this.config.jupiterApi.methods[controller]) {
+        this.config.jupiterApi.methods[controller][method] = this.config.jupiterApi.defaultApiUrl + this.config.jupiterApi.methods[controller][method];
+      }
+    }
+  }
 
   getEndpoints(): Endpoint[] {
-    
-    
-    console.log(this.store.get('Endpoints'));
-
     return this.store.get('Endpoints');
   }
 
@@ -181,6 +308,7 @@ export class AppConfigService implements OnInit {
     endpoints.push(endpoint);
 
     this.store.set('Endpoints', endpoints);
+    this.loadDefaultEndpoint();
   }
 
   setEndpointAsDefault(endpoint: Endpoint) {
@@ -194,6 +322,8 @@ export class AppConfigService implements OnInit {
     });
 
     this.store.set('Endpoints', endpoints);
+
+    this.loadDefaultEndpoint();
   }
 
   deleteEndpoint(endpoint: Endpoint) {
@@ -209,6 +339,7 @@ export class AppConfigService implements OnInit {
     }
 
     this.store.set('Endpoints', endpoints);
+    this.loadDefaultEndpoint();
   }
 
   /**

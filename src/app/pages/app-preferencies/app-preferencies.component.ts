@@ -68,6 +68,7 @@ export class AppPreferenciesComponent implements OnInit {
   setEndpointAsDefault(endpoint: Endpoint) {
     this.appConfigService.setEndpointAsDefault(endpoint);
     this.endpoints = this.appConfigService.getEndpoints();
+    this.appConfigService.loadDefaultEndpoint();
   }
 
 }

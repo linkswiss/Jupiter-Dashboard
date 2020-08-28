@@ -23,16 +23,15 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router, public appConfigService: AppConfigService, private userService: UserService) {
 
+    /*
     let endpoints = this.appConfigService.getEndpoints();
 
     if (endpoints.length === 0) {
-      
+      this.router.navigate(['/app/preferencies']);
     } else {
-      
+      this.appConfigService.loadDefaultEndpoint();
     }
-
-    this.router.navigate(['/app/preferencies']);
-
+    */
 
     this.appConfigService.getApiName().subscribe(apiName => {
       this.apiName = apiName;

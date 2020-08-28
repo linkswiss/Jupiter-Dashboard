@@ -5,6 +5,7 @@
             <nb-card>
                 <nb-card-header class="text-center">
                     <h3>Jupiter App Preferencies</h3>
+                    <button *ngIf="appConfigService.defaultEndpoint" class="btn btn-xs btn-info" (click)="router.navigate(['/auth/login']);">Return to Login</button>
                 </nb-card-header>
                 <nb-card-body>
 
