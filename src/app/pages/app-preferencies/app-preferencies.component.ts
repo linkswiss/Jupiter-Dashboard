@@ -21,7 +21,7 @@ export class AppPreferenciesComponent implements OnInit {
   public endpointForm: FormGroupTyped<Endpoint>;
   public endpointsColumns = [];
 
-  constructor(private router: Router, public appConfigService: AppConfigService) { 
+  constructor(public router: Router, public appConfigService: AppConfigService) { 
     this.endpoints = this.appConfigService.getEndpoints();
 
     //URL REGEX

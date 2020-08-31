@@ -21,7 +21,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   apiName = '';
 
-  constructor(private router: Router, public appConfigService: AppConfigService, private userService: UserService) {
+  constructor(public router: Router, public appConfigService: AppConfigService, private userService: UserService) {
 
     /*
     let endpoints = this.appConfigService.getEndpoints();
