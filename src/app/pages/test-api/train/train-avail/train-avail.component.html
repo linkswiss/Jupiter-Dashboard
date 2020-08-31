@@ -1,106 +1,106 @@
 <nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
-  <nb-accordion-item #accordionItemRq expanded="true">
-    <nb-accordion-item-header class="font-weight-bold">Train Avail Rq
-      <jupiter-api-response-status *ngIf="jupiterTrainAvailabilityRs" [status]="jupiterTrainAvailabilityRs.Status"></jupiter-api-response-status>
-    </nb-accordion-item-header>
-    <nb-accordion-item-body>
+    <nb-accordion-item #accordionItemRq expanded="true">
+        <nb-accordion-item-header class="font-weight-bold">Train Avail Rq
+            <jupiter-api-response-status *ngIf="jupiterTrainAvailabilityRs" [status]="jupiterTrainAvailabilityRs.Status"></jupiter-api-response-status>
+        </nb-accordion-item-header>
+        <nb-accordion-item-body>
 
-      <form *ngIf="jupiterTrainAvailabilityRq.Request">
-        <!-- MAIN INPUT -->
-        <div>
-          <div class="row">
-            <div class="form-group col-sm-4">
-              <label for="adultCount" class="label">Adult Count</label>
-              <nb-select fullWidth id="adultCount" placeholder="Adult Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.AdultCount">
-                <nb-option [value]="1">1</nb-option>
-                <nb-option [value]="2">2</nb-option>
-                <nb-option [value]="3">3</nb-option>
-                <nb-option [value]="4">4</nb-option>
-              </nb-select>
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="childCount" class="label">Child Count</label>
-              <nb-select fullWidth id="childCount" placeholder="Child Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.ChildCount">
-                <nb-option [value]="-1">-1</nb-option>
-                <nb-option [value]="0">0</nb-option>
-                <nb-option [value]="1">1</nb-option>
-                <nb-option [value]="2">2</nb-option>
-                <nb-option [value]="3">3</nb-option>
-                <nb-option [value]="4">4</nb-option>
-              </nb-select>
-            </div>
-            <div class="form-group col-sm-4">
-              <label for="infantCount" class="label">Infant Count</label>
-              <nb-select fullWidth id="infantCount" placeholder="Infant Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.InfantCount">
-                <nb-option [value]="0">0</nb-option>
-                <nb-option [value]="1">1</nb-option>
-                <nb-option [value]="2">2</nb-option>
-                <nb-option [value]="3">3</nb-option>
-                <nb-option [value]="4">4</nb-option>
-              </nb-select>
-            </div>
-          </div>
-          <div class="row">
+            <form *ngIf="jupiterTrainAvailabilityRq.Request">
+                <!-- MAIN INPUT -->
+                <div>
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label for="adultCount" class="label">Adult Count</label>
+                            <nb-select fullWidth id="adultCount" placeholder="Adult Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.AdultCount">
+                                <nb-option [value]="1">1</nb-option>
+                                <nb-option [value]="2">2</nb-option>
+                                <nb-option [value]="3">3</nb-option>
+                                <nb-option [value]="4">4</nb-option>
+                            </nb-select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="childCount" class="label">Child Count</label>
+                            <nb-select fullWidth id="childCount" placeholder="Child Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.ChildCount">
+                                <nb-option [value]="-1">-1</nb-option>
+                                <nb-option [value]="0">0</nb-option>
+                                <nb-option [value]="1">1</nb-option>
+                                <nb-option [value]="2">2</nb-option>
+                                <nb-option [value]="3">3</nb-option>
+                                <nb-option [value]="4">4</nb-option>
+                            </nb-select>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label for="infantCount" class="label">Infant Count</label>
+                            <nb-select fullWidth id="infantCount" placeholder="Infant Count" [outline]="true" [(selected)]="jupiterTrainAvailabilityRq.Request.InfantCount">
+                                <nb-option [value]="0">0</nb-option>
+                                <nb-option [value]="1">1</nb-option>
+                                <nb-option [value]="2">2</nb-option>
+                                <nb-option [value]="3">3</nb-option>
+                                <nb-option [value]="4">4</nb-option>
+                            </nb-select>
+                        </div>
+                    </div>
+                    <div class="row">
 
-            <div class="form-group col-sm-4">
-              <label for="connectors" class="label">Search Connectors</label>
-              <nb-select #selectConnectors fullWidth id="connectors" placeholder="Search Connectors" [multiple]="true" [outline]="true" (selectedChange)="searchConnectorsChanged($event);selectConnectors.hide();"  [(selected)]="jupiterTrainAvailabilityRq.Request.ConnectorsSearch">
-                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-              </nb-select>
-              <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterTrainAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
-            </div>
+                        <div class="form-group col-sm-4">
+                            <label for="connectors" class="label">Search Connectors</label>
+                            <nb-select #selectConnectors fullWidth id="connectors" placeholder="Search Connectors" [multiple]="true" [outline]="true" (selectedChange)="searchConnectorsChanged($event);selectConnectors.hide();" [(selected)]="jupiterTrainAvailabilityRq.Request.ConnectorsSearch">
+                                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                            </nb-select>
+                            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterTrainAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
+                        </div>
 
-            <div class="form-group col-sm-4">
-              <label for="debugConnectors" class="label">Debug Connectors</label>
-              <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterTrainAvailabilityRq.Request.ConnectorsDebug">
-                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-              </nb-select>
-            </div>
+                        <div class="form-group col-sm-4">
+                            <label for="debugConnectors" class="label">Debug Connectors</label>
+                            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterTrainAvailabilityRq.Request.ConnectorsDebug">
+                                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                            </nb-select>
+                        </div>
 
-            <div class="form-group col-sm-4">
-              <div>
-                <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterTrainAvailabilityRq.ForceNotCachedResponse">Force NotCached Response</nb-checkbox>
-              </div>
-            </div>
+                        <div class="form-group col-sm-4">
+                            <div>
+                                <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterTrainAvailabilityRq.ForceNotCachedResponse">Force NotCached Response</nb-checkbox>
+                            </div>
+                        </div>
 
-          </div>
-        <!-- END MAIN INPUT -->
-          <!-- INPUT CUSTOM DATA -->
-          <div *ngIf="jupiterTrainAvailabilityRq.Request.ConnectorCustomData && jupiterTrainAvailabilityRq.Request.ConnectorCustomData.length > 0">
-            <nb-accordion class="shadow-none border-box">
-              <nb-accordion-item *ngFor="let connectorSettings of jupiterTrainAvailabilityRq.Request.ConnectorCustomData; let customDataIndex = index;">
-                <nb-accordion-item-header>
-                  <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>
-                  <div class="ml-1">
-                    <button nbButton size="tiny" status="danger" (click)="deleteCustomData(customDataIndex)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
-                  </div>
-                </nb-accordion-item-header>
-                <nb-accordion-item-body>
-                  <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>
-                </nb-accordion-item-body>
-              </nb-accordion-item>
-            </nb-accordion>
-          </div>
-          <!-- END INPUT CUSTOM DATA -->
-        </div>
-        <!-- STEP LIST -->
-        <h6>Train Steps <button nbButton size="tiny" (click)="addStep()" ngbTooltip="Add a Step" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
-        <div *ngIf="jupiterTrainAvailabilityRq.Request.TrainSteps">
-          <div *ngFor="let step of jupiterTrainAvailabilityRq.Request.TrainSteps; let stepIndex = index;" class="border-box">
-            <div class="float-right">
-              <button *ngIf="stepIndex > 0" nbButton size="tiny" status="danger" (click)="deleteStep(stepIndex)" ngbTooltip="Delete this Step" placement="top" container="body"><i class="fas fa-trash"></i></button>
-            </div>
-
-            <!-- STEP REQUEST -->
-            <div>
-              <div class="row">
-                <div class="form-group col-sm-3">
-                  <!--                <div>Date: <b>{{step.DepartureDate | amDateFormat:'DD/MM/YYYY'}}</b></div>-->
-                  <label class="label">Departure Date</label>
-                  <input nbInput id="DepartureDate{{stepIndex+1}}" name="DepartureDate{{stepIndex+1}}" fullWidth [nbDatepicker]="depDate" [(ngModel)]="step['_DepartureDateMoment']">
-                  <nb-datepicker #depDate format="DD/MM/YYYY" (dateChange)="handleDateChange($event, step)"></nb-datepicker>
+                    </div>
+                    <!-- END MAIN INPUT -->
+                    <!-- INPUT CUSTOM DATA -->
+                    <div *ngIf="jupiterTrainAvailabilityRq.Request.ConnectorCustomData && jupiterTrainAvailabilityRq.Request.ConnectorCustomData.length > 0">
+                        <nb-accordion class="shadow-none border-box">
+                            <nb-accordion-item *ngFor="let connectorSettings of jupiterTrainAvailabilityRq.Request.ConnectorCustomData; let customDataIndex = index;">
+                                <nb-accordion-item-header>
+                                    <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>
+                                    <div class="ml-1">
+                                        <button nbButton size="tiny" status="danger" (click)="deleteCustomData(customDataIndex)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                                    </div>
+                                </nb-accordion-item-header>
+                                <nb-accordion-item-body>
+                                    <jupiter-custom-data-inputs [(CustomData)]="jupiterTrainAvailabilityRq.Request.ConnectorCustomData[customDataIndex]"></jupiter-custom-data-inputs>
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+                        </nb-accordion>
+                    </div>
+                    <!-- END INPUT CUSTOM DATA -->
                 </div>
-                <!--
+                <!-- STEP LIST -->
+                <h6>Train Steps <button nbButton size="tiny" (click)="addStep()" ngbTooltip="Add a Step" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+                <div *ngIf="jupiterTrainAvailabilityRq.Request.TrainSteps">
+                    <div *ngFor="let step of jupiterTrainAvailabilityRq.Request.TrainSteps; let stepIndex = index;" class="border-box">
+                        <div class="float-right">
+                            <button *ngIf="stepIndex > 0" nbButton size="tiny" status="danger" (click)="deleteStep(stepIndex)" ngbTooltip="Delete this Step" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                        </div>
+
+                        <!-- STEP REQUEST -->
+                        <div>
+                            <div class="row">
+                                <div class="form-group col-sm-3">
+                                    <!--                <div>Date: <b>{{step.DepartureDate | amDateFormat:'DD/MM/YYYY'}}</b></div>-->
+                                    <label class="label">Departure Date</label>
+                                    <input nbInput id="DepartureDate{{stepIndex+1}}" name="DepartureDate{{stepIndex+1}}" fullWidth [nbDatepicker]="depDate" [(ngModel)]="step['_DepartureDateMoment']">
+                                    <nb-datepicker #depDate format="DD/MM/YYYY" (dateChange)="handleDateChange($event, step)"></nb-datepicker>
+                                </div>
+                                <!--
                 <div class="form-group col-sm-3">
                   <label for="DepartureApt{{stepIndex+1}}" class="label">Departure Airport</label>
                   <input nbInput fullWidth id="DepartureApt{{stepIndex+1}}" name="DepartureApt{{stepIndex+1}}" placeholder="Departure IATA" class="iata-input" (ngModelChange)="setDepartureAirport($event, step)" [ngModel]="step.DepartureAirport">
@@ -118,81 +118,81 @@
                   </nb-select>
                 </div>
                 -->
-              </div>
-              <div class="row">
-                <div class="col-sm-3">
-                  <nb-checkbox fullWidth name="OnlyDirectTrains{{stepIndex+1}}" [(ngModel)]="step.OnlyDirectTrains">Only Direct Trains</nb-checkbox>
-                  <!--
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    <nb-checkbox fullWidth name="OnlyDirectTrains{{stepIndex+1}}" [(ngModel)]="step.OnlyDirectTrains">Only Direct Trains</nb-checkbox>
+                                    <!--
                   <nb-checkbox fullWidth name="BaggageIncluded{{stepIndex+1}}" [(ngModel)]="step.BaggageIncluded">Baggage</nb-checkbox>
                   <nb-checkbox fullWidth name="EnableJumpCabin{{stepIndex+1}}" [(ngModel)]="step.EnableJumpCabin">Jump Cabin</nb-checkbox>
                   -->
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="DepartureTime{{stepIndex+1}}" class="label">Departure Time (hh:mm)</label>
+                                    <input nbInput fullWidth id="DepartureTime{{stepIndex+1}}" name="DepartureTime{{stepIndex+1}}" placeholder="Departure Time" class="iata-input" [(ngModel)]="step.DepartureTime">
+                                    <label for="DepartureTimeWindow{{stepIndex+1}}" class="label">Departure TimeWindow (Number)</label>
+                                    <input nbInput fullWidth id="DepartureTimeWindow{{stepIndex+1}}" name="DepartureTimeWindow{{stepIndex+1}}" placeholder="Departure TimeWindow" class="iata-input" [(ngModel)]="step.DepartureTimeWindow">
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="ExcludedCarriers{{stepIndex+1}}" class="label">Excluded Carriers</label>
+                                    <tag-input fullWidth id="ExcludedCarriers{{stepIndex+1}}" name="ExcludedCarriers{{stepIndex+1}}" placeholder="ExcludedCarriers" (onAdd)="utils.addTagInputValue($event, step.ExcludedCarriers)" [(ngModel)]="step.ExcludedCarriers"></tag-input>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label for="IncludedCarriers{{stepIndex+1}}" class="label">Included Carriers</label>
+                                    <tag-input fullWidth id="IncludedCarriers{{stepIndex+1}}" name="IncludedCarriers{{stepIndex+1}}" placeholder="IncludedCarriers" (onAdd)="utils.addTagInputValue($event, step.IncludedCarriers)" [(ngModel)]="step.IncludedCarriers"></tag-input>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP CUSTOM DATA -->
+                        <div>
+
+                            <hr>
+                            <div>Step Custom Data</div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label for="step{{stepIndex}}ConnectorCode" class="label">Connector Custom Data</label>
+                                    <nb-select fullWidth id="step{{stepIndex}}ConnectorCode" placeholder="Connectors" [multiple]="true" [outline]="true" (selectedChange)="stepConnectorCustomDataConnectorCodeChanged($event, step)" [(selected)]="step['_ConnectorCustomDataConnectors']">
+                                        <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                                    </nb-select>
+                                </div>
+                            </div>
+
+                            <!-- CUSTOM DATA LIST -->
+                            <div *ngIf="step.ConnectorCustomData && step.ConnectorCustomData.length > 0">
+                                <nb-accordion class="shadow-none border-box">
+                                    <nb-accordion-item *ngFor="let connectorSettings of step.ConnectorCustomData; let stepCustomDataIndex = index;">
+                                        <nb-accordion-item-header>
+                                            <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>
+                                            <div class="ml-1">
+                                                <button nbButton size="tiny" status="danger" (click)="deleteStepCustomData(stepCustomDataIndex, step)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                                            </div>
+                                        </nb-accordion-item-header>
+                                        <nb-accordion-item-body>
+                                            <jupiter-custom-data-inputs [(CustomData)]="step.ConnectorCustomData[stepCustomDataIndex]"></jupiter-custom-data-inputs>
+                                        </nb-accordion-item-body>
+                                    </nb-accordion-item>
+                                </nb-accordion>
+                            </div>
+                            <!-- END CUSTOM DATA LIST -->
+
+                        </div>
+                        <!-- END STEP CUSTOM DATA -->
+
+                    </div>
                 </div>
-                <div class="col-sm-3">
-                  <label for="DepartureTime{{stepIndex+1}}" class="label">Departure Time (hh:mm)</label>
-                  <input nbInput fullWidth id="DepartureTime{{stepIndex+1}}" name="DepartureTime{{stepIndex+1}}" placeholder="Departure Time" class="iata-input" [(ngModel)]="step.DepartureTime">
-                  <label for="DepartureTimeWindow{{stepIndex+1}}" class="label">Departure TimeWindow (Number)</label>
-                  <input nbInput fullWidth id="DepartureTimeWindow{{stepIndex+1}}" name="DepartureTimeWindow{{stepIndex+1}}" placeholder="Departure TimeWindow" class="iata-input" [(ngModel)]="step.DepartureTimeWindow">
+                <!-- END STEP LIST -->
+            </form>
+
+            <!-- SEARCH BTN -->
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <button class="btn btn-sm btn-primary" (click)="searchTrains()"><i class="fas fa-exchange-alt"></i> Search</button>
                 </div>
-                <div class="col-sm-3">
-                  <label for="ExcludedCarriers{{stepIndex+1}}" class="label">Excluded Carriers</label>
-                  <tag-input fullWidth id="ExcludedCarriers{{stepIndex+1}}" name="ExcludedCarriers{{stepIndex+1}}" placeholder="ExcludedCarriers" (onAdd)="utils.addTagInputValue($event, step.ExcludedCarriers)" [(ngModel)]="step.ExcludedCarriers" ></tag-input>
-                </div>
-                <div class="col-sm-3">
-                  <label for="IncludedCarriers{{stepIndex+1}}" class="label">Included Carriers</label>
-                  <tag-input fullWidth id="IncludedCarriers{{stepIndex+1}}" name="IncludedCarriers{{stepIndex+1}}" placeholder="IncludedCarriers" (onAdd)="utils.addTagInputValue($event, step.IncludedCarriers)" [(ngModel)]="step.IncludedCarriers" ></tag-input>
-                </div>
-              </div>
             </div>
 
-            <!-- STEP CUSTOM DATA -->
-            <div>
-
-              <hr>
-              <div>Step Custom Data</div>
-              <div class="row">
-                <div class="form-group col-sm-6">
-                  <label for="step{{stepIndex}}ConnectorCode" class="label">Connector Custom Data</label>
-                  <nb-select fullWidth id="step{{stepIndex}}ConnectorCode" placeholder="Connectors" [multiple]="true" [outline]="true" (selectedChange)="stepConnectorCustomDataConnectorCodeChanged($event, step)" [(selected)]="step['_ConnectorCustomDataConnectors']">
-                    <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-                  </nb-select>
-                </div>
-              </div>
-
-              <!-- CUSTOM DATA LIST -->
-              <div *ngIf="step.ConnectorCustomData && step.ConnectorCustomData.length > 0">
-                <nb-accordion class="shadow-none border-box">
-                  <nb-accordion-item *ngFor="let connectorSettings of step.ConnectorCustomData; let stepCustomDataIndex = index;">
-                    <nb-accordion-item-header>
-                      <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>
-                      <div class="ml-1">
-                        <button nbButton size="tiny" status="danger" (click)="deleteStepCustomData(stepCustomDataIndex, step)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
-                      </div>
-                    </nb-accordion-item-header>
-                    <nb-accordion-item-body>
-                      <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>
-                    </nb-accordion-item-body>
-                  </nb-accordion-item>
-                </nb-accordion>
-              </div>
-              <!-- END CUSTOM DATA LIST -->
-
-            </div>
-            <!-- END STEP CUSTOM DATA -->
-
-          </div>
-        </div>
-        <!-- END STEP LIST -->
-      </form>
-
-      <!-- SEARCH BTN -->
-      <div class="row">
-        <div class="col-sm-12 text-center">
-          <button class="btn btn-sm btn-primary" (click)="searchTrains()"><i class="fas fa-exchange-alt"></i> Search</button>
-        </div>
-      </div>
-
-    </nb-accordion-item-body>
-  </nb-accordion-item>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
 </nb-accordion>
 
 <!-- TRAIN AVAIL MESSAGES/DEBUG -->
@@ -203,71 +203,71 @@
 <!-- TRAIN AVAIL RESPONSE -->
 <div *ngIf="jupiterTrainAvailabilityRs && jupiterTrainAvailabilityRs.Response && jupiterTrainAvailabilityRs.Response.TrainResults">
 
-  <virtual-scroll [items]="jupiterTrainAvailabilityRs.Response.TrainResults" (update)="viewPortItems = $event" style="height: 700px">
-    <nb-card *ngFor="let result of viewPortItems; let resIndex = index;" class="mb-2">
-      <nb-card-body class="m-0 p-0 pt-1 pb-1">
-        <!--<div class="container" *ngFor="let fare of result.SolutionFareList; let fareIndex = index;">
+    <virtual-scroll [items]="jupiterTrainAvailabilityRs.Response.TrainResults" (update)="viewPortItems = $event" style="height: 700px">
+        <nb-card *ngFor="let result of viewPortItems; let resIndex = index;" class="mb-2">
+            <nb-card-body class="m-0 p-0 pt-1 pb-1">
+                <!--<div class="container" *ngFor="let fare of result.SolutionFareList; let fareIndex = index;">
           <div *ngIf="fareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
           -->
-          <div class="row align-items-center">
-            <div class="col-md-12 pr-0">
-              <div *ngFor="let segment of result.TrainSegments; let segIndex = index;" class="container p-0">
-                <!--
+                <div class="row align-items-center">
+                    <div class="col-md-12 pr-0">
+                        <div *ngFor="let segment of result.TrainSegments; let segIndex = index;" class="container p-0">
+                            <!--
                 <div *ngIf="segIndex > 0 && segment.StepGroupId !== result.TrainSegments[segIndex-1].StepGroupId" class="border-bottom border-primary mt-3 mb-3"></div>
                 <div *ngIf="segIndex > 0 && segment.StepGroupId === result.TrainSegments[segIndex-1].StepGroupId" class="row align-items-center">
                   <div class="col-sm-5"></div>
                   <div class="col-sm-4 text-center" *ngIf="segment.Duration">-- Duration: {{segment.Duration}} --</div>
                 </div>
                 -->
-                <div class="row align-items-center">
-                  <div class="col-md-3">
-                    <span>{{segment.StepGroupId}}</span>
-                    <span class="pr-2"><img [src]="segment.Train.CarrierCode | trainCarrierImage" width="32px"/></span>
-                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.Train.Description}}" placement="top" container="body">{{segment.Train.Description}}&nbsp;{{segment.Train.Number}}</span>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.DepartureStation.Name}} ({{segment.DepartureStation.Code}})" placement="top" container="body">{{segment.DepartureStation.Name}}</span>
+                            <div class="row align-items-center">
+                                <div class="col-md-3">
+                                    <span>{{segment.StepGroupId}}</span>
+                                    <span class="pr-2"><img [src]="segment.Train.CarrierCode | trainCarrierImage" width="32px"/></span>
+                                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.Train.Description}}" placement="top" container="body">{{segment.Train.Description}}&nbsp;{{segment.Train.Number}}</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.DepartureStation.Name}} ({{segment.DepartureStation.Code}})" placement="top" container="body">{{segment.DepartureStation.Name}}</span>
 
-                  </div>
-                  <!--<div class="col-sm-2">-->
-                  <div class="col-md-4 text-center">
-                    <span class="font-weight-bold pr-2">{{segment.DepartureDate | amDateFormat:'HH:mm'}}</span>
-                    <span class="font-italic font-size-small">{{segment.DepartureDate | amDateFormat:'DD/MM'}}</span>
-                    <!--</div>-->
-                    <!--<div class="col-sm-2">-->
-                    <span class="font-weight-bold pr-2 pl-5">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>
-                    <span class="font-italic font-size-small">{{segment.ArrivalDate | amDateFormat:'DD/MM'}}</span>
-                  </div>
-                  <div class="col-md-2">
-                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalStation.Name}} ({{segment.ArrivalStation.Code}})" placement="top" container="body">{{segment.ArrivalStation.Name}}</span>
-                  </div>
+                                </div>
+                                <!--<div class="col-sm-2">-->
+                                <div class="col-md-4 text-center">
+                                    <span class="font-weight-bold pr-2">{{segment.DepartureDate | amDateFormat:'HH:mm'}}</span>
+                                    <span class="font-italic font-size-small">{{segment.DepartureDate | amDateFormat:'DD/MM'}}</span>
+                                    <!--</div>-->
+                                    <!--<div class="col-sm-2">-->
+                                    <span class="font-weight-bold pr-2 pl-5">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>
+                                    <span class="font-italic font-size-small">{{segment.ArrivalDate | amDateFormat:'DD/MM'}}</span>
+                                </div>
+                                <div class="col-md-2">
+                                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalStation.Name}} ({{segment.ArrivalStation.Code}})" placement="top" container="body">{{segment.ArrivalStation.Name}}</span>
+                                </div>
 
-                  <div class="col-md-1">
-                    <span class="mr-2"><i class="fas fa-bug" (click)="result['_Debug'] = !result['_Debug'];"></i></span>
-                  </div>
-                </div>
-
-                <div *ngFor="let solution of result.SolutionFareList; let segIndex = index;" class="row container">
-                  <div>
-                    <div *ngFor="let fare of solution.SegmentFareList" class="row">
-                      <div *ngFor="let f of fare.FareList" class="col-md-6 pt-4">
-                        <div *ngIf="isSegmentFare(fare.SegmentRefIds, segment.Id)">
-
-                        <strong>{{f.ClassName}} ({{f.ClassCode}})</strong>
-                          <div class="row" *ngFor="let o of f.Offers">
-                            <div class="col-md-8">
-                              {{o.Name}}
+                                <div class="col-md-1">
+                                    <span class="mr-2"><i class="fas fa-bug" (click)="result['_Debug'] = !result['_Debug'];"></i></span>
+                                </div>
                             </div>
-                            <div class="col-md-4 right">
-                              {{o.Amount.Currency}} {{o.Amount.Amount | number:'0.2'}}
+
+                            <div *ngFor="let solution of result.SolutionFareList; let segIndex = index;" class="row container">
+                                <div>
+                                    <div *ngFor="let fare of solution.SegmentFareList" class="row">
+                                        <div *ngFor="let f of fare.FareList" class="col-md-6 pt-4">
+                                            <div *ngIf="isSegmentFare(fare.SegmentRefIds, segment.Id)">
+
+                                                <strong>{{f.ClassName}} ({{f.ClassCode}})</strong>
+                                                <div class="row" *ngFor="let o of f.Offers">
+                                                    <div class="col-md-8">
+                                                        {{o.Name}}
+                                                    </div>
+                                                    <div class="col-md-4 right">
+                                                        {{o.Amount.Currency}} {{o.Amount.Amount | number:'0.2'}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <!--
+                            <!--
                 <div *ngIf="result['_Debug']">
                   <nb-card>
                     <nb-card-header>
@@ -283,9 +283,9 @@
                   </nb-card>
                 </div>
                 -->
-              </div>
-            </div>
-            <!--
+                        </div>
+                    </div>
+                    <!--
             <div class="col-sm-2 text-right">
               <div [ngSwitch]="fare.ConnectorCode" class="text-right">
                 <span class="badge badge-pill badge-secondary text-white p-1 m-1">{{fare.Id}}</span>
@@ -325,26 +325,26 @@
             </div>
             -->
 
-          </div>
-        <!--
+                </div>
+                <!--
        </div>-->
 
-        <div *ngIf="result['_Debug']">
-          <nb-card>
-            <nb-card-header>
-              <span class="h4">Result Json</span>
-              <span class="float-right">
+                <div *ngIf="result['_Debug']">
+                    <nb-card>
+                        <nb-card-header>
+                            <span class="h4">Result Json</span>
+                            <span class="float-right">
                   <button class="btn btn-sm btn-warning" (click)="result['_Debug'] = !result['_Debug'];"><i class="fas fa-times"></i> </button>
               </span>
-            </nb-card-header>
-            <nb-card-body>
-              <ace [mode]="'json'" [theme]="'monokai'" [value]="result | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                        </nb-card-header>
+                        <nb-card-body>
+                            <ace [mode]="'json'" [theme]="'monokai'" [value]="result | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                        </nb-card-body>
+                    </nb-card>
+                </div>
             </nb-card-body>
-          </nb-card>
-        </div>
-      </nb-card-body>
-    </nb-card>
-  </virtual-scroll>
+        </nb-card>
+    </virtual-scroll>
 
 </div>
 <!-- END TRAIN AVAIL RESPONSE -->

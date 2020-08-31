@@ -63,6 +63,9 @@ import { PaxListDetailsComponent } from './test-api/common/book-components/pax-l
 import { TravelCompanyComponent } from './test-api/common/book-components/travel-company/travel-company.component';
 import { ObjDisplayComponent } from './test-api/common/components/obj-display/obj-display.component';
 import { TrainAvailComponent } from './test-api/train/train-avail/train-avail.component';
+import {AppPreferenciesComponent} from './app-preferencies/app-preferencies.component';
+import dayGridPlugin from '@fullcalendar/daygrid'; 
+
 // import 'brace/ext/searchbox';
 
 const DEFAULT_ACE_CONFIG: AceConfigInterface = {
@@ -70,6 +73,10 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
   mode: 'json',
   showPrintMargin: false,
 };
+
+FullCalendarModule.registerPlugins([ // register FullCalendar plugins
+  dayGridPlugin
+]);
 
 @NgModule({
   imports: [
@@ -129,6 +136,7 @@ const DEFAULT_ACE_CONFIG: AceConfigInterface = {
     TravelCompanyComponent,
     ObjDisplayComponent,
     TrainAvailComponent,
+    AppPreferenciesComponent,
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [

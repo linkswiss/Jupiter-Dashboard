@@ -20,6 +20,7 @@ import {AppConfigService} from '../../../../services/app-config/app-config.servi
 import Utils from '../../../../utility/utils';
 import {NbAccordionItemComponent, NbDialogService, NbRangepickerComponent, NbTooltipDirective} from '@nebular/theme';
 import {DialogApiErrorComponent} from '../../common/components/dialog-api-error/dialog-api-error.component';
+import { Calendar, CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import {Moment} from 'moment';
 
@@ -32,8 +33,14 @@ export class HotelCalendarAvailComponent implements OnInit {
   @ViewChild('accordionItemRq', {static: true}) accordionItemRq: NbAccordionItemComponent;
   @ViewChild('rangePicker', {static: true}) rangePicker: NbRangepickerComponent<Moment>;
 
-  calendarPlugins = [dayGridPlugin];
-  calendarEvents = null;
+  calendarOptions: CalendarOptions = {
+    initialView: 'dayGridMonth',
+    events: [],
+    eventColor: 'CadetBlue'
+  };
+  
+  //calendarPlugins = [dayGridPlugin];
+  //calendarEvents = null;
 
   utils = Utils;
   loading = false;
@@ -47,6 +54,7 @@ export class HotelCalendarAvailComponent implements OnInit {
   connectors: EH2HConnectorCode[] = null;
 
   constructor(private dialogService: NbDialogService, private jupiterApiService: JupiterApiService, public appConfigService: AppConfigService) {
+    const name = Calendar.name; // add this line in your constructor 
   }
 
   ngOnInit() {
@@ -237,7 +245,7 @@ export class HotelCalendarAvailComponent implements OnInit {
 
   processResponse() {
     if (this.jupiterHotelCalendarAvailabilityRs && this.jupiterHotelCalendarAvailabilityRs.Response && this.jupiterHotelCalendarAvailabilityRs.Response.DaysAvails && this.jupiterHotelCalendarAvailabilityRs.Response.DaysAvails.length > 0) {
-      this.calendarEvents = [];
+      this.calendarOptions.events = [];
 
       for (let dayAvail of this.jupiterHotelCalendarAvailabilityRs.Response.DaysAvails) {
 
@@ -259,7 +267,7 @@ export class HotelCalendarAvailComponent implements OnInit {
 
         for (let i = 0; i < days; i++) {
           let fromDate = moment(dayAvail.FromDate);
-          this.calendarEvents.push({
+          this.calendarOptions.events.push({
             title: titlePrice,
             description: `<div class="font-size-small">RatePlanCode: ${dayAvail.RatePlanCode}</div>
                 <div class="font-size-small">Close: ${dayAvail.Close}</div>
@@ -281,7 +289,7 @@ export class HotelCalendarAvailComponent implements OnInit {
    */
   searchHotelsCalendar() {
     this.loading = true;
-    this.calendarEvents = [];
+    this.calendarOptions.events = [];
 
     this.jupiterApiService.hotelCalendarAvailability(this.jupiterHotelCalendarAvailabilityRq).subscribe(response => {
       this.jupiterHotelCalendarAvailabilityRs = response;
