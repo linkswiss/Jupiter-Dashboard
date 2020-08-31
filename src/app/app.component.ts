@@ -6,6 +6,7 @@ import {UserAuthRQ} from './api/dashboard/model/userAuthRQ';
 import {Observable} from 'rxjs';
 import {User} from './api/dashboard/model/user';
 import {HttpClient} from '@angular/common/http';
+import * as WebFont from 'webfontloader';
 
 @Component({
   selector: 'jupiter-app',
@@ -13,6 +14,12 @@ import {HttpClient} from '@angular/common/http';
 })
 export class AppComponent {
   public constructor(private titleService: Title, public appConfigService: AppConfigService) {
+    WebFont.load({
+      google: {
+          families: ['Exo', 'Roboto']
+      }
+  });
+
     this.appConfigService.getApiName().subscribe(apiName => {
       this.setTitle(apiName);
     });
