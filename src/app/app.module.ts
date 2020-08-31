@@ -20,9 +20,8 @@ import {
 } from '@nebular/theme';
 import { LayoutModule } from './layout/layout.module';
 import { PagesModule } from './pages/pages.module';
-import { AppConfigService } from './services/app-config/app-config.service';
+import { AppConfigService, jwtOptions } from './services/app-config/app-config.service';
 import { JWT_OPTIONS, JwtInterceptor, JwtModule } from '@auth0/angular-jwt';
-
 
 import { environment } from '../environments/environment';
 import { DashboardApiService } from './services/dashboard-api/dashboard-api.service';
@@ -30,31 +29,6 @@ import { JupiterApiService } from './services/jupiter-api/jupiter-api.service';
 import { UserService } from './services/user/user.service';
 import { RefreshTokenInterceptor } from './utility/refresh-token.interceptor';
 import { UtilityModule } from './utility/utility.module';
-
-// export function tokenGetter() {
-//   return localStorage.getItem(environment.jupiterDashboardJwtKey);
-// }
-
-export function jwtOptionsFactory(appConfigService: AppConfigService) {
-  return {
-    tokenGetter: () => {
-      let currentUserStored = localStorage.getItem('currentUser');
-      if (currentUserStored) {
-        let currentUser = JSON.parse(currentUserStored);
-        return currentUser ? currentUser.Token : null;
-      } else {
-        return null;
-      }
-      // return userService.getJupiterDashboardApiJwtToken();
-    },
-    whitelistedDomains: [appConfigService.config.jupiterApi.baseApiUrl.replace('https://', '').replace('http://', '')],
-    blacklistedRoutes: [
-      appConfigService.config.dashboardApi.methods.user.authenticate,
-      appConfigService.config.dashboardApi.methods.user.refreshToken,
-      // appConfigService.config.jupiterApi.methods.flight.cryptic,
-    ],
-  };
-}
 
 @NgModule({
   declarations: [
@@ -67,8 +41,7 @@ export function jwtOptionsFactory(appConfigService: AppConfigService) {
     JwtModule.forRoot({
       jwtOptionsProvider: {
         provide: JWT_OPTIONS,
-        useFactory: jwtOptionsFactory,
-        deps: [AppConfigService],
+        useFactory: jwtOptions.options,
       },
     }),
     NbDatepickerModule.forRoot(),

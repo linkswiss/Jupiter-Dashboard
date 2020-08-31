@@ -15,6 +15,53 @@ const {version: appVersion} = require('../../../../package.json');
 
 import * as ElectronStore from 'electron-store';
 import {UserSettings, Endpoint} from './user-settings.model';
+import { JwtHelperService } from '@auth0/angular-jwt';
+
+
+export function tokenGetter() {
+  let currentUserStored = localStorage.getItem('currentUser');
+  if (currentUserStored) {
+    let currentUser = JSON.parse(currentUserStored);
+    return currentUser ? currentUser.Token : null;
+  } else {
+    return null;
+  }
+}
+
+export function jwtOptionsFactory(options) {
+  let whitelist = options.whitelistedDomains || [];
+  let blacklist = options.blacklistedRoutes || [];
+
+  function addToDomainWhitelist(domain) {
+    if (!whitelist.includes(domain)) {
+      whitelist.push(domain);
+    }
+  }
+
+  function addToDomainBlacklist(domain) {
+    if (!blacklist.includes(domain)) {
+      blacklist.push(domain);
+    }
+  }
+
+  return {
+    addToDomainWhitelist,
+    addToDomainBlacklist,
+    options: () => ({
+      ...options,
+      whitelistedDomains: whitelist,
+      blacklistedRoutes: blacklist
+    }),
+  };
+}
+
+
+export const jwtOptions = jwtOptionsFactory({
+  tokenGetter,
+  whitelistedDomains: [],
+  blacklistedRoutes: []
+});
+
 
 @Injectable({
   providedIn: 'root',
@@ -22,103 +69,7 @@ import {UserSettings, Endpoint} from './user-settings.model';
 export class AppConfigService implements OnInit {
   defaultEndpoint: Endpoint;
   baseCurrentUrl = `https://${window.location.host}`;
-  config: any; /*{
-    name: 'Jupiter Admin',
-    dashboardVersion: appVersion,
-    defaultJupiterApiDocumentationUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}/${environment.jupiterDefaultApiVersion}${environment.jupiterApiDocumentationPath}`,
-    defaultJupiterDashboardApiDocumentationUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}/${environment.jupiterDefaultDashboardApiVersion}${environment.jupiterApiDocumentationPath}`,
-    defaultJupiterApiModelsDocumentationUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}/1.0-modelsjupiter${environment.jupiterApiDocumentationPath}`,
-    defaultJupiterDashboardApiModelsDocumentationUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}/1.0-modelsdashboard${environment.jupiterApiDocumentationPath}`,
-    dashboardApi: {
-      baseApiUrl: environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl,
-      apiPath: environment.jupiterDashboardApiPath,
-      defaultApiVersion: environment.jupiterDefaultDashboardApiVersion,
-      defaultApiUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}${environment.jupiterDashboardApiPath}/${environment.jupiterDefaultDashboardApiVersion}`,
-      // baseUrl: '',
-      methods: {
-        user: {
-          authenticate: '/users/authenticate',
-          refreshToken: '/users/refresh-token',
-          logout: '/users/logout',
-          createJupiterApiToken: '/users/create-jupiter-api-token/{userId}',
-          deleteJupiterApiToken: '/users/delete-jupiter-api-token/{userId}',
-          getUser: '/users/get/{userId}',
-          getAllUsers: '/users/get-all-users',
-        },
-        utility: {
-          getJupiterSettings: '/utility/jupiter-settings',
-          getPublishedRoutes: '/utility/published-routes',
-          getCacheEntries: '/utility/cache-entries',
-          clearCache: '/utility/clear-cache',
-          clearSingleCacheItem: '/utility/clear-cache-item/{cacheKey}',
-          getErrorLogs: '/utility/get-error-logs',
-        },
-        sabre: {
-          getAllSessions: '/sabre/get-all-sessions',
-          deleteSession: '/sabre/delete-session/{id}',
-          refreshSessionsPool: '/sabre/refresh-session-pool',
-        },
-        sampleRequest: {
-          saveSamplesRequests: '/SampleRequest/save-sample-request',
-          deleteSamplesRequests: '/SampleRequest/delete-sample-request',
-          getSampleRequests: '/SampleRequest/get-sample-requests/{sampleType}',
-          getAllSampleRequests: '/SampleRequest/get-all-sample-requests',
-        },
-      },
-    },
-    jupiterApi: {
-      baseApiUrl: environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl,
-      apiPath: environment.jupiterApiPath,
-      defaultApiVersion: environment.jupiterDefaultApiVersion,
-      defaultApiUrl: `${environment.jupiterBaseApiUrl === '/' ? this.baseCurrentUrl : environment.jupiterBaseApiUrl}${environment.jupiterApiPath}/${environment.jupiterDefaultApiVersion}`,
-      methods: {
-        destination: {
-          list: '/destination/destination-list',
-          updateStaticData: '/destination/destination-list-static-data-update',
-        },
-        hotel: {
-          avail: '/hotel/avail',
-          singleHotelAvail: '/hotel/single-hotel-avail',
-          calendarHotelAvail: '/hotel/calendar-avail',
-          extrasHotelAvail: '/hotel/extras-avail',
-          priceVerify: '/hotel/price-verify',
-          hotelDetails: '/hotel/hotel-details',
-          hotelBook: '/hotel/hotel-book',
-          hotelBookModify: '/hotel/hotel-book-modify',
-          hotelBookCancel: '/hotel/hotel-book-cancel',
-          hotelBookSearch: '/hotel/hotel-book-search',
-          hotelBookDetails: '/hotel/hotel-book-detail',
-          hotelChainList: '/hotel/chain-list',
-          HotelChainListUpdateStaticData: '/hotel/hotel-chain-list-static-data-update',
-        },
-        train: {
-          avail: '/train/avail',
-        },
-        flight: {
-          sessionCreate: '/flight/session-create',
-          sessionClose: '/flight/session-close',
-          sessionRefresh: '/flight/session-refresh',
-          sessionTokenCreate: '/flight/session-token-create',
-          ignoreTransaction: '/flight/ignore-transaction',
-          cryptic: '/flight/cryptic',
-          avail: '/flight/avail',
-          details: '/flight/details',
-          pnrPriceVerify: '/flight/pnr-price-verify',
-          book: '/flight/book',
-          pnrRetrieve: '/flight/pnr-retrieve',
-        },
-        utility: {
-          ping: '/utility/ping',
-          settings: '/utility/settings',
-          apiName: '/utility/api-name',
-          generateTypescriptClient: '/utility/typescript-client',
-          generateCSharpClient: '/utility/csharp-client',
-        },
-      },
-    },
-    environment: environment,
-    // lang: 'en',
-  };*/
+  config: any; 
 
   // jupiterRemoteAppSettings: AppSettings = null;
   jupiterRemoteAppSettings: IAppSettings = null;
@@ -129,41 +80,13 @@ export class AppConfigService implements OnInit {
     }
   });
 
-  constructor(private httpClient: HttpClient, private router: Router) {
+  constructor(private httpClient: HttpClient, private router: Router, public jwtHelper: JwtHelperService) {
     this.loadDefaultEndpoint();
-
-    // Set the complete url on APIs
-    /*
-    for (let controller in this.config.dashboardApi.methods) {
-      for (let method in this.config.dashboardApi.methods[controller]) {
-        this.config.dashboardApi.methods[controller][method] = this.config.dashboardApi.defaultApiUrl + this.config.dashboardApi.methods[controller][method];
-      }
-    }
-    for (let controller in this.config.jupiterApi.methods) {
-      for (let method in this.config.jupiterApi.methods[controller]) {
-        this.config.jupiterApi.methods[controller][method] = this.config.jupiterApi.defaultApiUrl + this.config.jupiterApi.methods[controller][method];
-      }
-    }
-    */
-
-    // this.config.dashboardApi.methods
-
-    // this.config.dashboardApi.baseUrl = this.getDefaultJupiterDashboardApiUrl();
-    // this.config.jupiterApi.baseUrl = this.getDefaultJupiterApiUrl();
-
-    // this.getJupiterRemoteAppSettings().subscribe(appSettings => {
-    //     console.log('Ok');
-    //   },
-    //   error => {
-    //     console.log(error);
-    //   });
   }
 
   ngOnInit(): void {
-    // this.getJupiterRemoteAppSettings().subscribe(appSettings => {
-    //
-    // });
   }
+
   loadDefaultEndpoint() {
     let endpoints = this.store.get('Endpoints');
     console.log(endpoints);
@@ -291,6 +214,10 @@ export class AppConfigService implements OnInit {
         this.config.jupiterApi.methods[controller][method] = this.config.jupiterApi.defaultApiUrl + this.config.jupiterApi.methods[controller][method];
       }
     }
+
+    jwtOptions.addToDomainWhitelist(this.config.jupiterApi.baseApiUrl.replace('https://', '').replace('http://', ''));
+    jwtOptions.addToDomainBlacklist(this.config.dashboardApi.methods.user.authenticate);
+    jwtOptions.addToDomainBlacklist(this.config.dashboardApi.methods.user.refreshToken);
   }
 
   getEndpoints(): Endpoint[] {
