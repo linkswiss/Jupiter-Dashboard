@@ -89,9 +89,8 @@ export class AppConfigService implements OnInit {
 
   loadDefaultEndpoint() {
     let endpoints = this.store.get('Endpoints');
-    console.log(endpoints);
+    
     if (!endpoints || endpoints.length === 0) {
-      
       this.router.navigate(['/app/preferencies']);
     }
 
@@ -225,7 +224,6 @@ export class AppConfigService implements OnInit {
   }
 
   setEndpoint(endpoint: Endpoint) {
-    
     let endpoints = this.store.get('Endpoints');
 
     if (endpoints.length === 0){
@@ -233,8 +231,8 @@ export class AppConfigService implements OnInit {
     }
 
     endpoints.push(endpoint);
-
     this.store.set('Endpoints', endpoints);
+
     this.loadDefaultEndpoint();
   }
 

@@ -48,16 +48,10 @@ export class AppPreferenciesComponent implements OnInit {
   }
 
   onSubmit(){
-    console.log(this.endpointForm.value);
-
     let newEndpoint: Endpoint = this.endpointForm.value;
-
     this.appConfigService.setEndpoint(newEndpoint);
-
     this.endpointForm.reset();
-
     this.endpoints = this.appConfigService.getEndpoints();
-
   }
 
   deleteEndpoint(endpoint: Endpoint) {
@@ -68,8 +62,6 @@ export class AppPreferenciesComponent implements OnInit {
   setEndpointAsDefault(endpoint: Endpoint) {
     this.appConfigService.setEndpointAsDefault(endpoint);
     this.endpoints = this.appConfigService.getEndpoints();
-
-    
   }
 
 }
