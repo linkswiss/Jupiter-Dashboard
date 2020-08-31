@@ -1,26 +1,20 @@
+
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/app",
-    "types": [],
-    "paths": {
-      "@angular/*": [
-        "../node_modules/@angular/*"
-      ],
-      "@nebular/*": [
-        "../node_modules/@nebular/*"
-      ]
-    }
+    "types": ["node"]
   },
-  "exclude": [
-    "test.ts",
-    "**/*.spec.ts",
-    "../node_modules/@nebular/**/*.spec.ts"
-  ],
   "include": [
-    "../src/*.ts",
-    "../src/**/*.ts",
-    "../node_modules/@nebular/**/*.ts"
-  ]
+    "**/*.ts",
 
+  ],
+  "exclude": [
+    "**/*.spec.ts"
+  ],
+  "angularCompilerOptions": {
+    "fullTemplateTypeCheck": true,
+    "strictInjectionParameters": true,
+    "preserveWhitespaces": true
+  }
 }

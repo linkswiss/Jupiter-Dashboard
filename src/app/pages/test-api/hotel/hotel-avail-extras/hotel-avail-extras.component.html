@@ -1,250 +1,250 @@
 <nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
-  <nb-accordion-item #accordionItemRq expanded="true">
-    <nb-accordion-item-header class="font-weight-bold">Hotel Availability Extras RQ
-      <jupiter-api-response-status *ngIf="jupiterHotelAvailabilityExtrasRS" [status]="jupiterHotelAvailabilityExtrasRS.Status"></jupiter-api-response-status>
-    </nb-accordion-item-header>
-    <nb-accordion-item-body>
-      <form>
-        <div class="row">
-          <div class="form-group col-sm-4">
-            <div>Dates: <b>{{jupiterHotelAvailabilityExtrasRQ.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelAvailabilityExtrasRQ.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
-            <label for="dates" class="label">From Date - To Date Picker</label>
-            <!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
-            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
-            <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handleRangeChange($event)" [min]="jupiterHotelAvailabilityExtrasRQ.Request['_MinDate']" [(range)]="jupiterHotelAvailabilityExtrasRQ.Request['_DateRange']"></nb-rangepicker>
-          </div>
+    <nb-accordion-item #accordionItemRq expanded="true">
+        <nb-accordion-item-header class="font-weight-bold">Hotel Availability Extras RQ
+            <jupiter-api-response-status *ngIf="jupiterHotelAvailabilityExtrasRS" [status]="jupiterHotelAvailabilityExtrasRS.Status"></jupiter-api-response-status>
+        </nb-accordion-item-header>
+        <nb-accordion-item-body>
+            <form>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <div>Dates: <b>{{jupiterHotelAvailabilityExtrasRQ.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelAvailabilityExtrasRQ.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
+                        <label for="dates" class="label">From Date - To Date Picker</label>
+                        <!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
+                        <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
+                        <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handleRangeChange($event)" [min]="jupiterHotelAvailabilityExtrasRQ.Request['_MinDate']" [(range)]="jupiterHotelAvailabilityExtrasRQ.Request['_DateRange']"></nb-rangepicker>
+                    </div>
 
-          <div class="form-group col-sm-4">
-            <label for="hotelRefId" class="label">Connector Hotel Ref Id</label>
-            <input nbInput fullWidth id="hotelRefId" name="HotelRefId" placeholder="Connector Hotel Ref Id" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.HotelRefId">
+                    <div class="form-group col-sm-4">
+                        <label for="hotelRefId" class="label">Connector Hotel Ref Id</label>
+                        <input nbInput fullWidth id="hotelRefId" name="HotelRefId" placeholder="Connector Hotel Ref Id" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.HotelRefId">
 
-            <label for="connectorsDetail" class="label">Connector</label>
-            <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCode">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelAvailabilityExtrasRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
-          </div>
+                        <label for="connectorsDetail" class="label">Connector</label>
+                        <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCode">
+                            <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                        </nb-select>
+                        <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelAvailabilityExtrasRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+                    </div>
 
-          <div class="form-group col-sm-4">
-            <label for="debugConnectors" class="label">Debug Connectors</label>
-            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorsDebug">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-          </div>
-        </div>
+                    <div class="form-group col-sm-4">
+                        <label for="debugConnectors" class="label">Debug Connectors</label>
+                        <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorsDebug">
+                            <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                        </nb-select>
+                    </div>
+                </div>
 
-        <div class="row">
-          <div class="form-group col-sm-4">
-            <label for="PreferredCurrency" class="label">Preferred Currency</label>
-            <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.PreferredCurrency">
-          </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="PreferredCurrency" class="label">Preferred Currency</label>
+                        <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.PreferredCurrency">
+                    </div>
 
-          <div class="form-group col-sm-4">
-            <label for="PreferredLanguage" class="label">Preferred Language</label>
-            <input nbInput fullWidth id="PreferredLanguage" name="PreferredLanguage" placeholder="Preferred Language" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage">
-          </div>
-          <div class="form-group col-sm-4">
-            <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
-          </div>
-        </div>
+                    <div class="form-group col-sm-4">
+                        <label for="PreferredLanguage" class="label">Preferred Language</label>
+                        <input nbInput fullWidth id="PreferredLanguage" name="PreferredLanguage" placeholder="Preferred Language" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage">
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterHotelAvailabilityExtrasRQ.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
+                    </div>
+                </div>
 
-        <div *ngIf="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData">
-          <h6>Connector Custom Data</h6>
-          <div class="border-box">
-            <div class="float-right">
-              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
-            </div>
+                <div *ngIf="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData">
+                    <h6>Connector Custom Data</h6>
+                    <div class="border-box">
+                        <div class="float-right">
+                            <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-2">
+                                <span class="badge badge-pill badge-primary">{{jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData['_discriminator']}}</span>
+                            </div>
+                            <div class="form-group col-sm-10">
+                                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- ROOMS -->
+                <h6>Rooms
+                    <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button>
+                </h6>
+                <div *ngFor="let room of jupiterHotelAvailabilityExtrasRQ.Request.Rooms; let i = index;" class="border-box">
+                    <div class="float-right">
+                        <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div>Room {{i}} Paxes
+                        <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button>
+                    </div>
+
+                    <div class="row m-1">
+                        <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-4 border-box">
+                            <div class="float-right">
+                                <button *ngIf="paxIndex > 0" nbButton size="tiny" status="danger" (click)="removePax(room, paxIndex)" ngbTooltip="Delete this Pax" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div>
+                                <label for="paxType{{i}}{{paxIndex}}" class="label">Pax Type</label>
+                                <nb-select fullWidth id="paxType{{i}}{{paxIndex}}" placeholder="Pax Type" [multiple]="false" [outline]="true" [(selected)]="pax.Type">
+                                    <nb-option *ngFor="let paxType of EPaxTypeList" [value]="paxType">{{paxType}}</nb-option>
+                                </nb-select>
+                            </div>
+                            <div *ngIf="pax.Type === EPaxType.INFANT || pax.Type === EPaxType.CHILD">
+                                <label for="paxAge{{i}}{{paxIndex}}" class="label">Pax Age</label>
+                                <input nbInput fullWidth id="paxAge{{i}}{{paxIndex}}" name="paxAge{{i}}{{paxIndex}}" placeholder="Pax Age" [(ngModel)]="pax.Age">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ROOM CUSTOM DATA -->
+                    <div>Room Custom Data</div>
+                    <hr>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
+                            <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
+                                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                            </nb-select>
+                        </div>
+                        <div class="col-sm-6">
+                            <div *ngIf="room.ConnectorCustomData">
+                                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelAvailabilityExtrasRQ.Request.Rooms[i].ConnectorCustomData"></jupiter-custom-data-inputs>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TODO LIST OF CUSTOM DATA ON ROOMS -->
+                    <!--          <div *ngIf="room.ConnectorCustomData">-->
+                    <!--            <nb-accordion class="shadow-none border-box">-->
+                    <!--              <nb-accordion-item *ngFor="let connectorSettings of step.ConnectorCustomData; let stepCustomDataIndex = index;">-->
+                    <!--                <nb-accordion-item-header>-->
+                    <!--                  <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>-->
+                    <!--                  <div class="ml-1">-->
+                    <!--                    <button nbButton size="tiny" status="danger" (click)="deleteStepCustomData(stepCustomDataIndex, step)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
+                    <!--                  </div>-->
+                    <!--                </nb-accordion-item-header>-->
+                    <!--                <nb-accordion-item-body>-->
+                    <!--                  <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>-->
+                    <!--                </nb-accordion-item-body>-->
+                    <!--              </nb-accordion-item>-->
+                    <!--            </nb-accordion>-->
+                    <!--          </div>-->
+
+                    <!-- END ROOM CUSTOM DATA -->
+
+                </div>
+                <!-- END ROOMS -->
+
+            </form>
+
             <div class="row">
-              <div class="form-group col-sm-2">
-                <span class="badge badge-pill badge-primary">{{jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData['_discriminator']}}</span>
-              </div>
-              <div class="form-group col-sm-10">
-                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
-              </div>
+                <div class="col-sm-12 text-center">
+                    <hr>
+                    <button nbButton size="small" (click)="doHotelAvailabilityExtras()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+                </div>
             </div>
-          </div>
-        </div>
 
-
-        <!-- ROOMS -->
-        <h6>Rooms
-          <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button>
-        </h6>
-        <div *ngFor="let room of jupiterHotelAvailabilityExtrasRQ.Request.Rooms; let i = index;" class="border-box">
-          <div class="float-right">
-            <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
-          </div>
-          <div>Room {{i}} Paxes
-            <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button>
-          </div>
-
-          <div class="row m-1">
-            <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-4 border-box">
-              <div class="float-right">
-                <button *ngIf="paxIndex > 0" nbButton size="tiny" status="danger" (click)="removePax(room, paxIndex)" ngbTooltip="Delete this Pax" placement="top" container="body"><i class="fas fa-trash"></i></button>
-              </div>
-              <div>
-                <label for="paxType{{i}}{{paxIndex}}" class="label">Pax Type</label>
-                <nb-select fullWidth id="paxType{{i}}{{paxIndex}}" placeholder="Pax Type" [multiple]="false" [outline]="true" [(selected)]="pax.Type">
-                  <nb-option *ngFor="let paxType of EPaxTypeList" [value]="paxType">{{paxType}}</nb-option>
-                </nb-select>
-              </div>
-              <div *ngIf="pax.Type === EPaxType.INFANT || pax.Type === EPaxType.CHILD">
-                <label for="paxAge{{i}}{{paxIndex}}" class="label">Pax Age</label>
-                <input nbInput fullWidth id="paxAge{{i}}{{paxIndex}}" name="paxAge{{i}}{{paxIndex}}" placeholder="Pax Age" [(ngModel)]="pax.Age">
-              </div>
-            </div>
-          </div>
-
-          <!-- ROOM CUSTOM DATA -->
-          <div>Room Custom Data</div>
-          <hr>
-          <div class="row">
-            <div class="form-group col-sm-6">
-              <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
-              <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
-                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-              </nb-select>
-            </div>
-            <div class="col-sm-6">
-              <div *ngIf="room.ConnectorCustomData">
-                <jupiter-custom-data-inputs [(CustomData)]="room.ConnectorCustomData"></jupiter-custom-data-inputs>
-              </div>
-            </div>
-          </div>
-
-          <!-- TODO LIST OF CUSTOM DATA ON ROOMS -->
-          <!--          <div *ngIf="room.ConnectorCustomData">-->
-          <!--            <nb-accordion class="shadow-none border-box">-->
-          <!--              <nb-accordion-item *ngFor="let connectorSettings of step.ConnectorCustomData; let stepCustomDataIndex = index;">-->
-          <!--                <nb-accordion-item-header>-->
-          <!--                  <span class="badge badge-pill badge-primary">{{connectorSettings['_discriminator']}}</span><span class="ml-1">Custom Data</span>-->
-          <!--                  <div class="ml-1">-->
-          <!--                    <button nbButton size="tiny" status="danger" (click)="deleteStepCustomData(stepCustomDataIndex, step)" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>-->
-          <!--                  </div>-->
-          <!--                </nb-accordion-item-header>-->
-          <!--                <nb-accordion-item-body>-->
-          <!--                  <jupiter-custom-data-inputs [(CustomData)]="connectorSettings"></jupiter-custom-data-inputs>-->
-          <!--                </nb-accordion-item-body>-->
-          <!--              </nb-accordion-item>-->
-          <!--            </nb-accordion>-->
-          <!--          </div>-->
-
-          <!-- END ROOM CUSTOM DATA -->
-
-        </div>
-        <!-- END ROOMS -->
-
-      </form>
-
-      <div class="row">
-        <div class="col-sm-12 text-center">
-          <hr>
-          <button nbButton size="small" (click)="doHotelAvailabilityExtras()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
-        </div>
-      </div>
-
-    </nb-accordion-item-body>
-  </nb-accordion-item>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
 </nb-accordion>
 
 <jupiter-api-messages-accordion Title="Hotel Details" [ApiRs]="jupiterHotelAvailabilityExtrasRS"></jupiter-api-messages-accordion>
 <jupiter-api-debug-accordion Title="Hotel Details" [(ApiRq)]="jupiterHotelAvailabilityExtrasRQ" [ApiRs]="jupiterHotelAvailabilityExtrasRS"></jupiter-api-debug-accordion>
 
 <div class="mt-4" *ngIf="jupiterHotelAvailabilityExtrasRS && jupiterHotelAvailabilityExtrasRS.Response && jupiterHotelAvailabilityExtrasRS.Response.Extras">
-  <div class="row">
-    <div class="col-md-12">
-      <div *ngFor="let extra of jupiterHotelAvailabilityExtrasRS.Response.Extras; let extraIndex = index;">
+    <div class="row">
+        <div class="col-md-12">
+            <div *ngFor="let extra of jupiterHotelAvailabilityExtrasRS.Response.Extras; let extraIndex = index;">
 
-        <nb-card>
-          <nb-card-header>
-            {{extra.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="extra['_Debug'] = !extra['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span>
+                <nb-card>
+                    <nb-card-header>
+                        {{extra.Name}} <span class="pt-1 pl-1 cursor-pointer" (click)="extra['_Debug'] = !extra['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span>
 
-            <div *ngIf="extra.Prices && extra.Prices[0]" class="float-right">
-              <span class="mr-1 text-secondary">from</span>
-              <span class="mr-1 font-weight-bold h5">{{extra.Prices[0].Amount | number}}</span>
-              <span>{{extra.Prices[0].Currency}}</span>
+                        <div *ngIf="extra.Prices && extra.Prices[0]" class="float-right">
+                            <span class="mr-1 text-secondary">from</span>
+                            <span class="mr-1 font-weight-bold h5">{{extra.Prices[0].Amount | number}}</span>
+                            <span>{{extra.Prices[0].Currency}}</span>
+                        </div>
+
+                    </nb-card-header>
+                    <nb-card-body>
+
+                        <div class="row mb-1">
+                            <div class="col-sm-3">
+                                <img *ngIf="extra.Image && extra.Image.OriginalUrl" class="hotel-image" [src]="extra.Image.OriginalUrl">
+                                <img *ngIf="!extra.Image || !extra.Image.OriginalUrl" class="hotel-image" src="https://via.placeholder.com/250">
+                            </div>
+                            <div class="col-sm-9">
+                                <!-- MAIN INFOS -->
+                                <div class="font-weight-bold">{{extra.Name}}</div>
+                                <div class="mb-1">Category: <span *ngIf="extra.Category" class="badge badge-pill badge-warning">{{extra.Category}}</span></div>
+                                <div class="mb-1">InventoryCode: <span *ngIf="extra.InventoryCode" class="badge badge-pill badge-warning">{{extra.InventoryCode}}</span></div>
+
+                            </div>
+                        </div>
+                        <nb-accordion class="shadow-none border-box p-0" multi>
+                            <!-- EXTRA DETAILS-->
+                            <nb-accordion-item>
+                                <nb-accordion-item-header>Extra Details</nb-accordion-item-header>
+                                <nb-accordion-item-body>
+                                    <div class="mb-1">Category: <span *ngIf="extra.Category" class="badge badge-pill badge-warning">{{extra.Category}}</span></div>
+                                    <div class="mb-1">InventoryCode: <span *ngIf="extra.InventoryCode" class="badge badge-pill badge-warning">{{extra.InventoryCode}}</span></div>
+
+                                    <hr>
+                                    <div class="mb-1">Inclusive: <span *ngIf="extra.Inclusive" class="badge badge-pill badge-primary">{{extra.Inclusive}}</span></div>
+                                    <div class="mb-1">Quantity: <span *ngIf="extra.Quantity" class="badge badge-pill badge-primary">{{extra.Quantity}}</span></div>
+
+                                    <!-- PRICES -->
+                                    <hr>
+                                    <div>Prices:
+                                        <div *ngIf="extra.Prices">
+                                            <div *ngFor="let price of extra.Prices">
+                                                <span *ngIf="price" class="pl-1 cursor-pointer"> Price: {{price.Amount | number}} {{price.Currency}} (PaxType: {{price.PaxType}} - PaxCount: {{price.PaxCount}}) (EffectiveDate: {{price.EffectiveDate}} - ExpireDate: {{price.ExpireDate}})</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- OTHER INFOS -->
+                                    <hr>
+                                    <div>Extra Other Infos:
+                                        <div *ngIf="extra.OtherInfos">
+                                            <div *ngFor="let otherInfo of extra.OtherInfos">
+                                                <span *ngIf="otherInfo && otherInfo.Text" class="pl-1 cursor-pointer"> Code: {{otherInfo.Code}} - Title: {{otherInfo.Title}} - Text: {{otherInfo.Text}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- DESCRIPTION -->
+                                    <hr>
+                                    <div>Extra Description:</div>
+                                    <p class="text-secondary" [innerHTML]="extra.Description"></p>
+
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+
+                            <!-- HOTEL CUSTOM DATA-->
+                            <nb-accordion-item *ngIf="extra['ConnectorCustomData']">
+                                <nb-accordion-item-header>Extra Custom Data</nb-accordion-item-header>
+                                <nb-accordion-item-body>
+                                    <pre class="border-box bg-light">{{extra['ConnectorCustomData'] | json}}</pre>
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+
+                            <!-- HOTEL DEBUG-->
+                            <nb-accordion-item *ngIf="extra['_Debug']">
+                                <nb-accordion-item-header>Hotel Debug Json</nb-accordion-item-header>
+                                <nb-accordion-item-body>
+                                    <ace [mode]="'json'" [theme]="'monokai'" [value]="extra | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                                </nb-accordion-item-body>
+                            </nb-accordion-item>
+
+                        </nb-accordion>
+
+                    </nb-card-body>
+                </nb-card>
+
             </div>
 
-          </nb-card-header>
-          <nb-card-body>
-
-              <div class="row mb-1">
-                <div class="col-sm-3">
-                  <img *ngIf="extra.Image && extra.Image.OriginalUrl" class="hotel-image" [src]="extra.Image.OriginalUrl">
-                  <img *ngIf="!extra.Image || !extra.Image.OriginalUrl" class="hotel-image" src="https://via.placeholder.com/250">
-                </div>
-                <div class="col-sm-9">
-                  <!-- MAIN INFOS -->
-                  <div class="font-weight-bold">{{extra.Name}}</div>
-                  <div class="mb-1">Category: <span *ngIf="extra.Category" class="badge badge-pill badge-warning">{{extra.Category}}</span></div>
-                  <div class="mb-1">InventoryCode: <span *ngIf="extra.InventoryCode" class="badge badge-pill badge-warning">{{extra.InventoryCode}}</span></div>
-
-                </div>
-              </div>
-              <nb-accordion class="shadow-none border-box p-0" multi>
-                <!-- EXTRA DETAILS-->
-                <nb-accordion-item>
-                  <nb-accordion-item-header>Extra Details</nb-accordion-item-header>
-                  <nb-accordion-item-body>
-                    <div class="mb-1">Category: <span *ngIf="extra.Category" class="badge badge-pill badge-warning">{{extra.Category}}</span></div>
-                    <div class="mb-1">InventoryCode: <span *ngIf="extra.InventoryCode" class="badge badge-pill badge-warning">{{extra.InventoryCode}}</span></div>
-
-                    <hr>
-                    <div class="mb-1">Inclusive: <span *ngIf="extra.Inclusive" class="badge badge-pill badge-primary">{{extra.Inclusive}}</span></div>
-                    <div class="mb-1">Quantity: <span *ngIf="extra.Quantity" class="badge badge-pill badge-primary">{{extra.Quantity}}</span></div>
-
-                    <!-- PRICES -->
-                    <hr>
-                    <div>Prices:
-                      <div *ngIf="extra.Prices">
-                        <div *ngFor="let price of extra.Prices">
-                          <span *ngIf="price" class="pl-1 cursor-pointer"> Price: {{price.Amount | number}} {{price.Currency}} (PaxType: {{price.PaxType}} - PaxCount: {{price.PaxCount}}) (EffectiveDate: {{price.EffectiveDate}} - ExpireDate: {{price.ExpireDate}})</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- OTHER INFOS -->
-                    <hr>
-                    <div>Extra Other Infos:
-                      <div *ngIf="extra.OtherInfos">
-                        <div *ngFor="let otherInfo of extra.OtherInfos">
-                          <span *ngIf="otherInfo && otherInfo.Text" class="pl-1 cursor-pointer"> Code: {{otherInfo.Code}} - Title: {{otherInfo.Title}} - Text: {{otherInfo.Text}}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <!-- DESCRIPTION -->
-                    <hr>
-                    <div>Extra Description:</div>
-                    <p class="text-secondary" [innerHTML]="extra.Description"></p>
-
-                  </nb-accordion-item-body>
-                </nb-accordion-item>
-
-                <!-- HOTEL CUSTOM DATA-->
-                <nb-accordion-item *ngIf="extra['ConnectorCustomData']">
-                  <nb-accordion-item-header>Extra Custom Data</nb-accordion-item-header>
-                  <nb-accordion-item-body>
-                    <pre class="border-box bg-light">{{extra['ConnectorCustomData'] | json}}</pre>
-                  </nb-accordion-item-body>
-                </nb-accordion-item>
-
-                <!-- HOTEL DEBUG-->
-                <nb-accordion-item *ngIf="extra['_Debug']">
-                  <nb-accordion-item-header>Hotel Debug Json</nb-accordion-item-header>
-                  <nb-accordion-item-body>
-                    <ace [mode]="'json'" [theme]="'monokai'" [value]="extra | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
-                  </nb-accordion-item-body>
-                </nb-accordion-item>
-
-              </nb-accordion>
-
-          </nb-card-body>
-        </nb-card>
-
-      </div>
-
+        </div>
     </div>
-  </div>
 </div>

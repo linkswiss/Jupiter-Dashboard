@@ -1,157 +1,157 @@
 <nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
-  <nb-accordion-item #accordionItemRq expanded="true">
-    <nb-accordion-item-header class="font-weight-bold">Hotel Calendar Avail RQ
-      <jupiter-api-response-status *ngIf="jupiterHotelCalendarAvailabilityRs" [status]="jupiterHotelCalendarAvailabilityRs.Status"></jupiter-api-response-status>
-    </nb-accordion-item-header>
-    <nb-accordion-item-body>
-      <form>
-        <div class="row">
-          <div class="form-group col-sm-6">
-            <!-- TODO Capire come risolvere -> problema sul dateRange continua a dare errori ma funziona è sbagliato come gestisce il dateRagen cercando di fare il clone, basta togliere l'ngmodel e tutto funziona-->
-            <div>Dates: <b>{{jupiterHotelCalendarAvailabilityRq.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelCalendarAvailabilityRq.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
-            <label for="dates" class="label">From Date - To Date Picker</label>
-<!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
-            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
-            <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handleRangeChange($event)" [min]="jupiterHotelCalendarAvailabilityRq.Request['_MinDate']" [(range)]="jupiterHotelCalendarAvailabilityRq.Request['_DateRange']"></nb-rangepicker>
-
-<!--            <label for="fromDate" class="label">From Date</label>-->
-<!--            <input nbInput fullWidth id="fromDate" name="fromDate" placeholder="From Date" [nbDatepicker]="fromDate" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._FromDateMoment">-->
-<!--            <nb-datepicker #fromDate format="DD/MM/YYYY" (dateChange)="handleFromDateChange($event)"></nb-datepicker>-->
-          </div>
-<!--          <div class="form-group col-sm-4">-->
-<!--            <label for="toDate" class="label">To Date</label>-->
-<!--            <input nbInput fullWidth id="toDate" name="toDate" placeholder="To Date" [nbDatepicker]="toDate" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._ToDateMoment">-->
-<!--            <nb-datepicker #toDate format="DD/MM/YYYY" (dateChange)="handleToDateChange($event)"></nb-datepicker>-->
-<!--          </div>-->
-
-          <div class="form-group col-sm-6">
-            <label for="duration" class="label">Duration</label>
-            <nb-select fullWidth id="duration" placeholder="Duration" [outline]="true" [selected]="jupiterHotelCalendarAvailabilityRq.Request.Duration.toString()" (selectedChange)="jupiterHotelCalendarAvailabilityRq.Request.Duration = utils.parseInt($event)">
-              <nb-option value="1">1</nb-option>
-              <nb-option value="2">2</nb-option>
-              <nb-option value="3">3</nb-option>
-              <nb-option value="4">4</nb-option>
-              <nb-option value="5">5</nb-option>
-              <nb-option value="6">6</nb-option>
-              <nb-option value="7">7</nb-option>
-            </nb-select>
-          </div>
-        </div>
-        <div class="row">
-          <div class="form-group col-sm-4">
-            <label for="connectors" class="label">Connector</label>
-            <nb-select fullWidth id="connectors" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="searchConnectorsChanged($event)" [(selected)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCode">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelCalendarAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
-          </div>
-
-          <div class="form-group col-sm-4">
-            <label for="hotelRefId" class="label">Connector Hotel Ref Id</label>
-            <input nbInput fullWidth id="hotelRefId" name="HotelRefId" placeholder="Connector Hotel Ref Id" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.HotelRefId">
-          </div>
-
-          <div class="form-group col-sm-4">
-            <label for="debugConnectors" class="label">Debug Connectors</label>
-            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorsDebug">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="form-group col-sm-4">
-            <label for="PreferredCurrency" class="label">Preferred Currency</label>
-            <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.PreferredCurrency">
-          </div>
-
-          <div class="form-group col-sm-4">
-            <label for="PreferredLanguage" class="label">Preferred Language</label>
-            <input nbInput fullWidth id="PreferredLanguage" name="PreferredLanguage" placeholder="Preferred Language" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.PreferredLanguage">
-          </div>
-          <div class="form-group col-sm-4">
-            <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
-          </div>
-
-        </div>
-
-        <div *ngIf="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData">
-          <h6>Connector Custom Data</h6>
-          <div class="border-box">
-            <div class="float-right">
-              <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
-            </div>
-            <div class="row">
-              <div class="form-group col-sm-2">
-                <span class="badge badge-pill badge-primary">{{jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData['_discriminator']}}</span>
-              </div>
-              <div class="form-group col-sm-10">
-                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <h6>Rooms <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
-        <div *ngFor="let room of jupiterHotelCalendarAvailabilityRq.Request.Rooms; let i = index;" class="border-box">
-          <div class="float-right">
-            <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
-          </div>
-          <div>Room {{i}} Paxes <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button></div>
-
-          <div class="row m-1">
-            <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-4 border-box">
-              <div class="float-right">
-                <button *ngIf="paxIndex > 0" nbButton size="tiny" status="danger" (click)="removePax(room, paxIndex)" ngbTooltip="Delete this Pax" placement="top" container="body"><i class="fas fa-trash"></i></button>
-              </div>
-              <div>
-                <label for="paxType{{i}}{{paxIndex}}" class="label">Pax Type</label>
-                <nb-select fullWidth id="paxType{{i}}{{paxIndex}}" placeholder="Pax Type" [multiple]="false" [outline]="true" [(selected)]="pax.Type">
-                  <nb-option *ngFor="let paxType of ePaxTypeList" [value]="paxType">{{paxType}}</nb-option>
-                </nb-select>
-              </div>
-              <div *ngIf="pax.Type === ePaxType.INFANT || pax.Type === ePaxType.CHILD">
-                <label for="paxAge{{i}}{{paxIndex}}" class="label">Pax Age</label>
-                <input nbInput fullWidth id="paxAge{{i}}{{paxIndex}}" name="paxAge{{i}}{{paxIndex}}" placeholder="Pax Age" [(ngModel)]="pax.Age">
-              </div>
-            </div>
-          </div>
-
-          <div>Room Custom Data</div>
-          <hr>
-          <div class="row">
-            <div class="form-group col-sm-6">
-              <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
-              <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
-                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-              </nb-select>
-            </div>
-            <div class="col-sm-6">
-              <div *ngIf="room.ConnectorCustomData">
-                <div [ngSwitch]="room.ConnectorCustomData['_discriminator']">
-                  <div *ngSwitchCase="eH2HConnectorCode.SABRE_SYNXIS" class="row">
+    <nb-accordion-item #accordionItemRq expanded="true">
+        <nb-accordion-item-header class="font-weight-bold">Hotel Calendar Avail RQ
+            <jupiter-api-response-status *ngIf="jupiterHotelCalendarAvailabilityRs" [status]="jupiterHotelCalendarAvailabilityRs.Status"></jupiter-api-response-status>
+        </nb-accordion-item-header>
+        <nb-accordion-item-body>
+            <form>
+                <div class="row">
                     <div class="form-group col-sm-6">
-                      <input fullWidth nbInput id="Room{{i}}TypeCode" name="Room{{i}}TypeCode" placeholder="Room Type Code" class="iata-input" [(ngModel)]="room.ConnectorCustomData['RoomTypeCode']">
+                        <!-- TODO Capire come risolvere -> problema sul dateRange continua a dare errori ma funziona è sbagliato come gestisce il dateRagen cercando di fare il clone, basta togliere l'ngmodel e tutto funziona-->
+                        <div>Dates: <b>{{jupiterHotelCalendarAvailabilityRq.Request.FromDate | amDateFormat:'DD/MM/YYYY'}} - {{jupiterHotelCalendarAvailabilityRq.Request.ToDate | amDateFormat:'DD/MM/YYYY'}}</b></div>
+                        <label for="dates" class="label">From Date - To Date Picker</label>
+                        <!--            <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._DateRange">-->
+                        <input nbInput #rangePickerInput fullWidth id="dates" name="dates" placeholder="From Date - To Date" [nbDatepicker]="rangePicker">
+                        <nb-rangepicker #rangePicker format="DD/MM/YYYY" (rangeChange)="handleRangeChange($event)" [min]="jupiterHotelCalendarAvailabilityRq.Request['_MinDate']" [(range)]="jupiterHotelCalendarAvailabilityRq.Request['_DateRange']"></nb-rangepicker>
+
+                        <!--            <label for="fromDate" class="label">From Date</label>-->
+                        <!--            <input nbInput fullWidth id="fromDate" name="fromDate" placeholder="From Date" [nbDatepicker]="fromDate" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._FromDateMoment">-->
+                        <!--            <nb-datepicker #fromDate format="DD/MM/YYYY" (dateChange)="handleFromDateChange($event)"></nb-datepicker>-->
                     </div>
-                  </div>
+                    <!--          <div class="form-group col-sm-4">-->
+                    <!--            <label for="toDate" class="label">To Date</label>-->
+                    <!--            <input nbInput fullWidth id="toDate" name="toDate" placeholder="To Date" [nbDatepicker]="toDate" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request._ToDateMoment">-->
+                    <!--            <nb-datepicker #toDate format="DD/MM/YYYY" (dateChange)="handleToDateChange($event)"></nb-datepicker>-->
+                    <!--          </div>-->
+
+                    <div class="form-group col-sm-6">
+                        <label for="duration" class="label">Duration</label>
+                        <nb-select fullWidth id="duration" placeholder="Duration" [outline]="true" [selected]="jupiterHotelCalendarAvailabilityRq.Request.Duration.toString()" (selectedChange)="jupiterHotelCalendarAvailabilityRq.Request.Duration = utils.parseInt($event)">
+                            <nb-option value="1">1</nb-option>
+                            <nb-option value="2">2</nb-option>
+                            <nb-option value="3">3</nb-option>
+                            <nb-option value="4">4</nb-option>
+                            <nb-option value="5">5</nb-option>
+                            <nb-option value="6">6</nb-option>
+                            <nb-option value="7">7</nb-option>
+                        </nb-select>
+                    </div>
                 </div>
-              </div>
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="connectors" class="label">Connector</label>
+                        <nb-select fullWidth id="connectors" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="searchConnectorsChanged($event)" [(selected)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCode">
+                            <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                        </nb-select>
+                        <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelCalendarAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="hotelRefId" class="label">Connector Hotel Ref Id</label>
+                        <input nbInput fullWidth id="hotelRefId" name="HotelRefId" placeholder="Connector Hotel Ref Id" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.HotelRefId">
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="debugConnectors" class="label">Debug Connectors</label>
+                        <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorsDebug">
+                            <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                        </nb-select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="form-group col-sm-4">
+                        <label for="PreferredCurrency" class="label">Preferred Currency</label>
+                        <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.PreferredCurrency">
+                    </div>
+
+                    <div class="form-group col-sm-4">
+                        <label for="PreferredLanguage" class="label">Preferred Language</label>
+                        <input nbInput fullWidth id="PreferredLanguage" name="PreferredLanguage" placeholder="Preferred Language" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.Request.PreferredLanguage">
+                    </div>
+                    <div class="form-group col-sm-4">
+                        <nb-checkbox fullWidth name="ForceNotCachedResponse" [(ngModel)]="jupiterHotelCalendarAvailabilityRq.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
+                    </div>
+
+                </div>
+
+                <div *ngIf="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData">
+                    <h6>Connector Custom Data</h6>
+                    <div class="border-box">
+                        <div class="float-right">
+                            <button nbButton size="tiny" status="danger" (click)="deleteCustomData()" ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-2">
+                                <span class="badge badge-pill badge-primary">{{jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData['_discriminator']}}</span>
+                            </div>
+                            <div class="form-group col-sm-10">
+                                <jupiter-custom-data-inputs [(CustomData)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <h6>Rooms <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+                <div *ngFor="let room of jupiterHotelCalendarAvailabilityRq.Request.Rooms; let i = index;" class="border-box">
+                    <div class="float-right">
+                        <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                    </div>
+                    <div>Room {{i}} Paxes <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button></div>
+
+                    <div class="row m-1">
+                        <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-4 border-box">
+                            <div class="float-right">
+                                <button *ngIf="paxIndex > 0" nbButton size="tiny" status="danger" (click)="removePax(room, paxIndex)" ngbTooltip="Delete this Pax" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                            </div>
+                            <div>
+                                <label for="paxType{{i}}{{paxIndex}}" class="label">Pax Type</label>
+                                <nb-select fullWidth id="paxType{{i}}{{paxIndex}}" placeholder="Pax Type" [multiple]="false" [outline]="true" [(selected)]="pax.Type">
+                                    <nb-option *ngFor="let paxType of ePaxTypeList" [value]="paxType">{{paxType}}</nb-option>
+                                </nb-select>
+                            </div>
+                            <div *ngIf="pax.Type === ePaxType.INFANT || pax.Type === ePaxType.CHILD">
+                                <label for="paxAge{{i}}{{paxIndex}}" class="label">Pax Age</label>
+                                <input nbInput fullWidth id="paxAge{{i}}{{paxIndex}}" name="paxAge{{i}}{{paxIndex}}" placeholder="Pax Age" [(ngModel)]="pax.Age">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>Room Custom Data</div>
+                    <hr>
+                    <div class="row">
+                        <div class="form-group col-sm-6">
+                            <label for="room{{i}}ConnectorCode" class="label">Connector Custom Data</label>
+                            <nb-select fullWidth id="room{{i}}ConnectorCode" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="roomConnectorCustomDataConnectorCodeChanged($event, room)" [(selected)]="room['_ConnectorCustomDataConnectorCode']">
+                                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                            </nb-select>
+                        </div>
+                        <div class="col-sm-6">
+                            <div *ngIf="room.ConnectorCustomData">
+                                <div [ngSwitch]="room.ConnectorCustomData['_discriminator']">
+                                    <div *ngSwitchCase="eH2HConnectorCode.SABRE_SYNXIS" class="row">
+                                        <div class="form-group col-sm-6">
+                                            <input fullWidth nbInput id="Room{{i}}TypeCode" name="Room{{i}}TypeCode" placeholder="Room Type Code" class="iata-input" [(ngModel)]="room.ConnectorCustomData['RoomTypeCode']">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </form>
+
+            <div class="row">
+                <div class="col-sm-12 text-center">
+                    <hr>
+                    <button nbButton size="small" (click)="searchHotelsCalendar()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+                </div>
             </div>
 
-          </div>
-
-        </div>
-      </form>
-
-      <div class="row">
-        <div class="col-sm-12 text-center">
-          <hr>
-          <button nbButton size="small" (click)="searchHotelsCalendar()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
-        </div>
-      </div>
-
-    </nb-accordion-item-body>
-  </nb-accordion-item>
+        </nb-accordion-item-body>
+    </nb-accordion-item>
 </nb-accordion>
 
 <jupiter-api-messages-accordion Title="Calendar Avail" [ApiRs]="jupiterHotelCalendarAvailabilityRs"></jupiter-api-messages-accordion>
@@ -159,50 +159,50 @@
 <jupiter-api-debug-accordion Title="Calendar Avail" [(ApiRq)]="jupiterHotelCalendarAvailabilityRq" [ApiRs]="jupiterHotelCalendarAvailabilityRs"></jupiter-api-debug-accordion>
 
 <nb-card *ngIf="jupiterHotelCalendarAvailabilityRs && jupiterHotelCalendarAvailabilityRs.Response">
-  <nb-card-header>Hotel Calendar Avail RS</nb-card-header>
-  <nb-card-body>
-    <div *ngIf="jupiterHotelCalendarAvailabilityRs.Response.DaysAvails">
+    <nb-card-header>Hotel Calendar Avail RS</nb-card-header>
+    <nb-card-body>
+        <div *ngIf="jupiterHotelCalendarAvailabilityRs.Response.DaysAvails">
 
-      <full-calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" [events]="calendarEvents" eventColor="CadetBlue" (eventRender)="renderEventDetails($event)" height="auto"></full-calendar>
+            <full-calendar [options]="calendarOptions" (eventRender)="renderEventDetails($event)" height="auto"></full-calendar>
 
-      <div class="mt-3">
-        <h5>Calendar Avail Table</h5>
-        <table width="100%" class="table table-bordered table-striped">
-          <tr>
-            <th>From Date</th>
-            <th>To Date</th>
-            <th>Price</th>
-            <th>Details</th>
-          </tr>
-          <tr *ngFor="let dayAvail of jupiterHotelCalendarAvailabilityRs.Response.DaysAvails; let i = index;">
-            <td>{{dayAvail.FromDate | amDateFormat:'DD/MM/YYYY'}}</td>
-            <td>{{dayAvail.ToDate | amDateFormat:'DD/MM/YYYY'}}</td>
-            <td>{{dayAvail.Price?.Currency}} {{dayAvail.Price?.Amount}}</td>
-            <td>
-              <div>RatePlanCode: {{dayAvail.RatePlanCode}}</div>
-              <div>Close: {{dayAvail.Close}}</div>
-              <div>CloseOnArrival: {{dayAvail.CloseOnArrival}}</div>
-              <div>MinStay: {{dayAvail.MinStay}}</div>
-              <div>MaxStay: {{dayAvail.MaxStay}}</div>
-            </td>
-          </tr>
-        </table>
-      </div>
+            <div class="mt-3">
+                <h5>Calendar Avail Table</h5>
+                <table width="100%" class="table table-bordered table-striped">
+                    <tr>
+                        <th>From Date</th>
+                        <th>To Date</th>
+                        <th>Price</th>
+                        <th>Details</th>
+                    </tr>
+                    <tr *ngFor="let dayAvail of jupiterHotelCalendarAvailabilityRs.Response.DaysAvails; let i = index;">
+                        <td>{{dayAvail.FromDate | amDateFormat:'DD/MM/YYYY'}}</td>
+                        <td>{{dayAvail.ToDate | amDateFormat:'DD/MM/YYYY'}}</td>
+                        <td>{{dayAvail.Price?.Currency}} {{dayAvail.Price?.Amount}}</td>
+                        <td>
+                            <div>RatePlanCode: {{dayAvail.RatePlanCode}}</div>
+                            <div>Close: {{dayAvail.Close}}</div>
+                            <div>CloseOnArrival: {{dayAvail.CloseOnArrival}}</div>
+                            <div>MinStay: {{dayAvail.MinStay}}</div>
+                            <div>MaxStay: {{dayAvail.MaxStay}}</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
-<!--      <div *ngFor="let dayAvail of jupiterHotelCalendarAvailabilityRs.Response.DaysAvails; let i = index;" class="border-box">-->
-<!--        <div class="row">-->
-<!--          <div class="col">{{dayAvail.FromDate | amDateFormat:'DD/MM/YYYY'}}</div>-->
-<!--          <div class="col">{{dayAvail.ToDate | amDateFormat:'DD/MM/YYYY'}}</div>-->
-<!--          <div class="col">{{dayAvail.Price?.Currency}} {{dayAvail.Price?.Amount}}</div>-->
-<!--          <div class="col">-->
-<!--            <div>Close: {{dayAvail.Close}}</div>-->
-<!--            <div>CloseOnArrival: {{dayAvail.CloseOnArrival}}</div>-->
-<!--            <div>MinStay: {{dayAvail.MinStay}}</div>-->
-<!--            <div>MaxStay: {{dayAvail.MaxStay}}</div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </div>-->
-    </div>
+            <!--      <div *ngFor="let dayAvail of jupiterHotelCalendarAvailabilityRs.Response.DaysAvails; let i = index;" class="border-box">-->
+            <!--        <div class="row">-->
+            <!--          <div class="col">{{dayAvail.FromDate | amDateFormat:'DD/MM/YYYY'}}</div>-->
+            <!--          <div class="col">{{dayAvail.ToDate | amDateFormat:'DD/MM/YYYY'}}</div>-->
+            <!--          <div class="col">{{dayAvail.Price?.Currency}} {{dayAvail.Price?.Amount}}</div>-->
+            <!--          <div class="col">-->
+            <!--            <div>Close: {{dayAvail.Close}}</div>-->
+            <!--            <div>CloseOnArrival: {{dayAvail.CloseOnArrival}}</div>-->
+            <!--            <div>MinStay: {{dayAvail.MinStay}}</div>-->
+            <!--            <div>MaxStay: {{dayAvail.MaxStay}}</div>-->
+            <!--          </div>-->
+            <!--        </div>-->
+            <!--      </div>-->
+        </div>
 
-  </nb-card-body>
+    </nb-card-body>
 </nb-card>

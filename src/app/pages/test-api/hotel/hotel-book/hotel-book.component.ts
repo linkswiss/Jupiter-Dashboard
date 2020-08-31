@@ -433,4 +433,8 @@ export class HotelBookComponent implements OnInit {
       });
     });
   }
+
+  roomConnectorCustomDataConnectorCodeChanged(event: any, roomToBookCustom: RoomToBook){
+    //TODO; Need to be implemented
+  }
 }

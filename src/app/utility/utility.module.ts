@@ -28,7 +28,7 @@ import {TrainCarrierImagePipe} from "./train-carrier-image.pipe";
   providers: [AuthGuard]
 })
 export class UtilityModule {
-  static forRoot(): ModuleWithProviders {
+  static forRoot(): ModuleWithProviders<UtilityModule> {
     return {
       ngModule: UtilityModule,
       providers: [ApiDocUrlResolver, KibanaUrlResolver, RefreshTokenInterceptor]

@@ -49,166 +49,151 @@
 //
 //
 //
-
-
-
 //NEW NEBULAR
 @import 'themes';
 @import '~@nebular/theme/styles/globals';
-
 @include nb-install() {
-  @include nb-theme-global();
-};
+    @include nb-theme-global();
+}
 
-
-.nb-theme-default h3, .nb-theme-default .h3 {
-  font-size: 1.5rem;
-  font-weight: 500;
+;
+.nb-theme-default h3,
+.nb-theme-default .h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
 }
 
 .nb-theme-default nb-accordion nb-accordion-item-header {
-  font-weight: 500;
+    font-weight: 500;
 }
 
-.nb-theme-default nb-select .select-button, .nb-theme-default nb-option {
-  font-weight: 500;
+.nb-theme-default nb-select .select-button,
+.nb-theme-default nb-option {
+    font-weight: 500;
 }
 
 .nb-theme-default [nbInput].size-medium {
-  font-weight: 500;
+    font-weight: 500;
 }
 
-.popover-header{
-  font-size: 1.1rem !important;
+.popover-header {
+    font-size: 1.1rem !important;
 }
+
 
 /* You can add global styles to this file, and also import other style files */
 
 //Import FullCalendar
-@import '~@fullcalendar/core/main.css';
-@import '~@fullcalendar/daygrid/main.css';
-
+//@import '~@fullcalendar/core/main.css';
+//@import '~@fullcalendar/daygrid/main.css';
 //Import ngx-datatable styles
-@import '~@swimlane/ngx-datatable/release/index.css';
-@import '~@swimlane/ngx-datatable/release/themes/bootstrap.css';
-@import '~@swimlane/ngx-datatable/release/themes/material.css';
-@import '~@swimlane/ngx-datatable/release/assets/icons.css';
-
-.datatable-body-cell-label{
-  padding-top: 0.4rem !important;
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/bootstrap.css';
+@import '~@swimlane/ngx-datatable/themes/material.css';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
+.datatable-body-cell-label {
+    padding-top: 0.4rem !important;
 }
 
 // ngx-datatable CUSTOM STYLE
 .ngx-datatable.material {
-  font-family: 'Exo';
-  box-shadow: none;
-  //border: 1px solid #cdd5dc;
-
-  ::ng-deep .datatable-header {
-    min-height: 42px;
-    border-bottom: 3px solid rgb(205, 213, 220);
-
-    ::ng-deep .datatable-header-cell {
-      //border: 1px solid rgb(205, 213, 220);
-
-      color: black;
-      font-size: 1rem;
-      font-weight: 600;
-      line-height: 1.25;
-      padding-bottom: 10px;
-      //padding-top: 0px;
+    font-family: 'Exo';
+    box-shadow: none;
+    //border: 1px solid #cdd5dc;
+     ::ng-deep .datatable-header {
+        min-height: 42px;
+        border-bottom: 3px solid rgb(205, 213, 220);
+         ::ng-deep .datatable-header-cell {
+            //border: 1px solid rgb(205, 213, 220);
+            color: black;
+            font-size: 1rem;
+            font-weight: 600;
+            line-height: 1.25;
+            padding-bottom: 10px;
+            //padding-top: 0px;
+        }
+         ::ng-deep .datatable-header-cell.sort-active {
+            color: #7dcfe3;
+            .sort-btn {
+                color: black;
+                margin-left: 8px;
+            }
+        }
     }
-
-    ::ng-deep .datatable-header-cell.sort-active {
-      color: #7dcfe3;
-
-      .sort-btn {
-        color: black;
-        margin-left: 8px;
-      }
+     ::ng-deep .action-button {
+        margin-top: -0.4rem;
     }
-  }
-
-  ::ng-deep .action-button {
-    margin-top: -0.4rem;
-  }
-
-  ::ng-deep .datatable-body-row .datatable-body-cell {
-    border-bottom: 1px solid rgb(205, 213, 220);
-
-    //::ng-deep .datatable-body-cell {
-    //  padding-top: 0.4rem !important;
+     ::ng-deep .datatable-body-row .datatable-body-cell {
+        border-bottom: 1px solid rgb(205, 213, 220);
+        //::ng-deep .datatable-body-cell {
+        //  padding-top: 0.4rem !important;
+        //}
+        //border-bottom: 1px solid rgb(195, 203, 210);
+    }
+     ::ng-deep .datatable-body-row:hover,
+    .datatable-body-row:hover .datatable-row-group,
+     ::ng-deep .datatable-body-row:hover .datatable-body-cell {
+        background-color: #e6f3ff;
+        transition-property: background;
+        transition-duration: .3s;
+        transition-timing-function: linear;
+        cursor: pointer;
+    }
+    //::ng-deep datatable-body-row{
+    //  :hover{
+    //    cursor: pointer;
+    //    background: #a2d2c8;
+    //  }
     //}
-
-    //border-bottom: 1px solid rgb(195, 203, 210);
-  }
-
-  ::ng-deep .datatable-body-row:hover, .datatable-body-row:hover .datatable-row-group, ::ng-deep .datatable-body-row:hover .datatable-body-cell {
-    background-color: #e6f3ff;
-    transition-property: background;
-    transition-duration: .3s;
-    transition-timing-function: linear;
-    cursor: pointer;
-  }
-
-  //::ng-deep datatable-body-row{
-  //  :hover{
-  //    cursor: pointer;
-  //    background: #a2d2c8;
-  //  }
-  //}
-
-  ::ng-deep .datatable-row-even {
-    min-height: 40px;
-
-    ::ng-deep datatable-body-cell {
-      min-height: 40px;
-      padding: .8rem 1.2rem !important;
-      background: white;
-      //background: #fcfcfc;
+     ::ng-deep .datatable-row-even {
+        min-height: 40px;
+         ::ng-deep datatable-body-cell {
+            min-height: 40px;
+            padding: .8rem 1.2rem !important;
+            background: white;
+            //background: #fcfcfc;
+        }
     }
-  }
-
-  ::ng-deep .datatable-row-odd {
-    min-height: 40px;
-
-    ::ng-deep datatable-body-cell {
-      min-height: 40px;
-      padding: .8rem 1.2rem !important;
-      background: #f5f7fc;
+     ::ng-deep .datatable-row-odd {
+        min-height: 40px;
+         ::ng-deep datatable-body-cell {
+            min-height: 40px;
+            padding: .8rem 1.2rem !important;
+            background: #f5f7fc;
+        }
     }
-  }
 }
 
-.font-size-small{
-  font-size: 0.8rem
+.font-size-small {
+    font-size: 0.8rem
 }
 
-.btn-sm, .btn-group-sm > .btn {
-  font-size: 0.7rem;
+.btn-sm,
+.btn-group-sm>.btn {
+    font-size: 0.7rem;
 }
 
 .cursor-pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
 
-.sabre-color{
-  background-color: #E50000;
+.sabre-color {
+    background-color: #E50000;
 }
 
-.amadeus-color{
-  background-color: #005EB8;
+.amadeus-color {
+    background-color: #005EB8;
 }
 
 .card {
-  box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1)
+    box-shadow: 0 0.5rem 1rem 0 rgba(44, 51, 73, 0.1)
 }
 
-.border-box{
-  //background-color: #ececec;
-  /* background-color: white; */
-  border-radius: 5px;
-  padding: 15px;
-  border: 1px solid #ececec;
-  margin-bottom: 15px;
+.border-box {
+    //background-color: #ececec;
+    /* background-color: white; */
+    border-radius: 5px;
+    padding: 15px;
+    border: 1px solid #ececec;
+    margin-bottom: 15px;
 }

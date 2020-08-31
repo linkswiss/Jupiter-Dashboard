@@ -7,6 +7,9 @@ import { UserAuthRQ } from '../../../api/dashboard/model/userAuthRQ';
 import { AppConfigService } from '../../../services/app-config/app-config.service';
 import { UserService } from '../../../services/user/user.service';
 import { FormGroupTyped } from '../../../utility/form-group-typed';
+import * as Store from 'electron-store';
+
+//import Store = require('electron-store');
 
 @Component({
   selector: 'jupiter-login',
@@ -18,7 +21,18 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   apiName = '';
 
-  constructor(private router: Router, public appConfigService: AppConfigService, private userService: UserService) {
+  constructor(public router: Router, public appConfigService: AppConfigService, private userService: UserService) {
+
+    /*
+    let endpoints = this.appConfigService.getEndpoints();
+
+    if (endpoints.length === 0) {
+      this.router.navigate(['/app/preferencies']);
+    } else {
+      this.appConfigService.loadDefaultEndpoint();
+    }
+    */
+
     this.appConfigService.getApiName().subscribe(apiName => {
       this.apiName = apiName;
     });
