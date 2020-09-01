@@ -29,7 +29,8 @@
         "icon": "dist/assets/icons/icon.png",
         "target": [
             "dmg"
-        ]
+        ],
+        "publish": ["github"]
     },
     "linux": {
         "icon": "dist/assets/icons",
