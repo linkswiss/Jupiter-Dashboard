@@ -32,8 +32,7 @@ jobs:
 
           # If the commit is tagged with a version (e.g. "v1.0.0"),
           # release the app after building
-          #release: ${{ startsWith(github.ref, 'refs/tags/v') }}
-          release: ${{ startsWith(github.ref, 'refs/tags') }}
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }}
           build_script_name: "build:prod"
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
