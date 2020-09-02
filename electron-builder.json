@@ -20,7 +20,7 @@
         "!tslint.json"
     ],
     "win": {
-        "icon": "dist/assets/icons",
+        "icon": "dist/assets/icons/icon.png",
         "target": [
             "portable"
         ]
@@ -33,7 +33,7 @@
         "publish": ["github"]
     },
     "linux": {
-        "icon": "dist/assets/icons",
+        "icon": "dist/assets/icons/icon.png",
         "target": [
             "AppImage"
         ]
