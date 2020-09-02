@@ -22,6 +22,15 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+          tag_name: ${{ github.ref }}
+          release_name: ${{ github.ref }}
+          draft: true
 
       - name: Build/release Electron app
         uses: samuelmeuli/action-electron-builder@v1
