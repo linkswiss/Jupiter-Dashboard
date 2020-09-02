@@ -12,7 +12,8 @@ jobs:
     strategy:
       matrix:
         #os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest]
+        #os: [macos-latest]
+        os: [ubuntu-latest]
 
     steps:
       - name: Check out Git repository
@@ -24,6 +25,7 @@ jobs:
           node-version: 10
       
       - name: Create Release
+        id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -46,3 +48,10 @@ jobs:
           args: "--publish always"
           mac_certs: ${{ secrets.mac_certs }}
           mac_certs_password: ${{ secrets.mac_certs_password }}
+
+      - name: Publish Release
+        uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
