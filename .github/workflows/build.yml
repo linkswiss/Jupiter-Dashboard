@@ -7,7 +7,6 @@ on:
 
 jobs:
   draft_release:
-    id: draft_release
     runs-on: ubuntu-latest
     steps:
       - name: Check out Git repository
