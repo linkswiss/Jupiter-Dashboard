@@ -77,12 +77,18 @@ export class AppConfigService implements OnInit {
   store: ElectronStore<UserSettings>;
   userAgent = navigator.userAgent.toLowerCase();
 
+  // store = new ElectronStore<UserSettings>({
+  //   defaults: {
+  //     Endpoints: []
+  //   }
+  // });
+
   constructor(private httpClient: HttpClient, private router: Router, public jwtHelper: JwtHelperService) {
-    this.store = new ElectronStore<UserSettings>({
-      defaults: {
-        Endpoints: []
-      }
-    });
+    //   this.store = new ElectronStore<UserSettings>({
+    //     defaults: {
+    //       Endpoints: []
+    //     }
+    //   });
     this.loadDefaultEndpoint();
   }
 

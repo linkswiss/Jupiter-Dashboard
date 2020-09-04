@@ -75,7 +75,12 @@
                             "fileReplacements": [{
                                 "replace": "src/environments/environment.ts",
                                 "with": "src/environments/environment.web.ts"
-                            }]
+                            },
+                              {
+                                "replace": "src/app/services/app-config/app-config.service.ts",
+                                "with": "src/app/services/app-config/WEB_app-config.service.ts"
+                              }
+                            ]
                         },
                         "production": {
                             "optimization": true,
