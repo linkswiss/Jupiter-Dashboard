@@ -63,8 +63,8 @@
                 </nb-tab>
                 <nb-tab tabTitle="JSON Request (Load/Modify)" class="m-0 p-0">
                   <div class="btn-group" role="group" aria-label="Basic example">
-                    <button nbButton size="tiny" status="info" (click)="apiRqToJson()" ngbTooltip="Load to ApiRq" placement="top" container="body"><i class="fas fa-download"></i>&nbsp;ApiRq To JSON</button>
-                    <button nbButton size="tiny" status="info" class="ml-1" (click)="jsonToApiRq()" ngbTooltip="Load to ApiRq" placement="top" container="body"><i class="fas fa-upload"></i>&nbsp;Load JSON To ApiRq Form</button>
+                    <button nbButton size="tiny" status="info" (click)="apiRqToJson()" ngbTooltip="ApiRq Object To JSON" placement="top" container="body"><i class="fas fa-download"></i>&nbsp;ApiRq To JSON</button>
+                    <button nbButton size="tiny" status="info" class="ml-1" (click)="jsonToApiRq()" ngbTooltip="Load JSON To ApiRq Object" placement="top" container="body"><i class="fas fa-upload"></i>&nbsp;Load JSON To ApiRq</button>
                   </div>
                   <ace [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
                 </nb-tab>

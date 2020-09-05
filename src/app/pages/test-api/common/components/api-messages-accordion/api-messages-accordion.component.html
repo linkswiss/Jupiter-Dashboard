@@ -1,6 +1,8 @@
 <nb-accordion *ngIf="ApiRs" class="mb-2">
   <nb-accordion-item [expanded]="ApiRs.Status === EOperationStatus.ERROR || ApiRs.Status === EOperationStatus.WARNING">
-    <nb-accordion-item-header>{{Title}} - Api Messages/Connectors Details</nb-accordion-item-header>
+    <nb-accordion-item-header>
+      <jupiter-api-response-status *ngIf="ApiRs" [status]="ApiRs.Status"></jupiter-api-response-status> {{Title}} - Api Messages/Connectors Details
+    </nb-accordion-item-header>
     <nb-accordion-item-body>
       <div *ngIf="ApiRs.Messages && ApiRs.Messages.length > 0">
         <h6>Mesages</h6>

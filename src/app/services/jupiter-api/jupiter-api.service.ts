@@ -35,7 +35,14 @@ import {
   JupiterHotelAvailabilityExtrasRQ,
   JupiterHotelAvailabilityExtrasRS,
   JupiterHotelPriceVerifyRQ,
-  JupiterHotelPriceVerifyRS, JupiterHotelAvailabilityRQ, JupiterHotelAvailabilityRS, JupiterTrainAvailabilityRQ, JupiterTrainAvailabilityRS, TrainClient,
+  JupiterHotelPriceVerifyRS,
+  JupiterHotelAvailabilityRQ,
+  JupiterHotelAvailabilityRS,
+  JupiterFlightBookRQ,
+  JupiterFlightBookRS,
+  JupiterTrainAvailabilityRQ,
+  JupiterTrainAvailabilityRS,
+  TrainClient,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -247,6 +254,19 @@ export class JupiterApiService {
       let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
       flightClient.flightDetails(jupiterFlightDetailRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightBook(jupiterFlightBookRQ: JupiterFlightBookRQ): Observable<JupiterFlightBookRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightBook(jupiterFlightBookRQ).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);

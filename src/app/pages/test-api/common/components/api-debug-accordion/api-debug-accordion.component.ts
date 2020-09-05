@@ -3,7 +3,7 @@ import {
   BaseRQ,
   BaseRS,
   EH2HConnectorCode,
-  EOperationStatus,
+  EOperationStatus, JupiterCrypticRQ,
   JupiterDestinationListRQ,
   JupiterFlightAvailabilityRQ, JupiterFlightBookRQ,
   JupiterFlightDetailRQ, JupiterFlightPnrPriceVerifyRQ, JupiterFlightPnrRetrieveRQ,
@@ -115,6 +115,10 @@ export class ApiDebugAccordionComponent implements OnInit {
     }
     if (this.ApiRq instanceof JupiterFlightPnrRetrieveRQ) {
       this.sampleType = 'flight-pnrRetrieve';
+    }
+
+    if (this.ApiRq instanceof JupiterCrypticRQ) {
+      this.sampleType = 'sessionAndCryptic-cryptic';
     }
   }
 

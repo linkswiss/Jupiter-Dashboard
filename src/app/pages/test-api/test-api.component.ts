@@ -24,6 +24,7 @@ export class TestApiComponent implements OnInit {
   destinationApiMethods = [];
   hotelApiMethods = [];
   flightApiMethods = [];
+  sessionAndCrypticApiMethods = [];
   trainApiMethods = [];
   utilityApiMethods = [];
 
@@ -71,6 +72,16 @@ export class TestApiComponent implements OnInit {
           endpoint: value,
         },
         name: 'flight - ' + key,
+      });
+    });
+
+    _.forIn(this.appConfigService.config.jupiterApi.methods.sessionAndCryptic, function (value, key) {
+      self.sessionAndCrypticApiMethods.push({
+        value: {
+          name: 'sessionAndCryptic-' + key,
+          endpoint: value,
+        },
+        name: 'sessionAndCryptic - ' + key,
       });
     });
 

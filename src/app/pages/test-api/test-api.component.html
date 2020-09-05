@@ -47,6 +47,9 @@
                   <nb-option-group title="Flight Methods">
                     <nb-option *ngFor="let method of flightApiMethods" [value]="method.value">{{method.name}}</nb-option>
                   </nb-option-group>
+                  <nb-option-group title="Session and Cryptic">
+                    <nb-option *ngFor="let method of sessionAndCrypticApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                  </nb-option-group>
                   <nb-option-group title="Train Methods">
                     <nb-option *ngFor="let method of trainApiMethods" [value]="method.value">{{method.name}}</nb-option>
                   </nb-option-group>
