@@ -5,7 +5,7 @@ export class FormGroupTyped<T> extends FormGroup {
   readonly value: T;
   readonly valueChanges: Observable<T>;
 
-  constructor(controls: { [key in keyof T]: AbstractControl; },
+  constructor(controls: { [key in keyof T]?: AbstractControl; },
               validatorOrOpts?: ValidatorFn | Array<ValidatorFn> | AbstractControlOptions | null,
               asyncValidator?: AsyncValidatorFn | Array<AsyncValidatorFn> | null) {
     super(controls, validatorOrOpts, asyncValidator);
@@ -22,14 +22,16 @@ export class FormGroupTyped<T> extends FormGroup {
     return super.get(path);
   }
 }
+//
+// // EXAMPLE USAGE:
+// //
+// // export class SearchModel {
+// //   criteria: string;
+// // }
+// //
+// // const searchForm = new FormGroupTyped<SearchModel >({
+// //   criteria: new FormControl('', Validators.required) // OK
+// //   badBoy: new FormControl('', Validators.required)  // TS2345: Object literal may only specify known properties, and 'badBoy' does not exist in type '{ criteria: AbstractControl; }'.
+// // });
 
-// EXAMPLE USAGE:
-//
-// export class SearchModel {
-//   criteria: string;
-// }
-//
-// const searchForm = new FormGroupTyped<SearchModel >({
-//   criteria: new FormControl('', Validators.required) // OK
-//   badBoy: new FormControl('', Validators.required)  // TS2345: Object literal may only specify known properties, and 'badBoy' does not exist in type '{ criteria: AbstractControl; }'.
-// });
+

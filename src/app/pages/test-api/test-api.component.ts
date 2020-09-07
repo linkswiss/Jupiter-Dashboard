@@ -1,11 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { SampleRequest } from '../../api/dashboard/model/sampleRequest';
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { DashboardApiService } from '../../services/dashboard-api/dashboard-api.service';
 import { JupiterApiService } from '../../services/jupiter-api/jupiter-api.service';
 import { UserService } from '../../services/user/user.service';
 import * as _ from 'lodash';
+import {SampleRequest} from "../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-test-api',
@@ -110,10 +110,17 @@ export class TestApiComponent implements OnInit {
   }
 
   newSampleRequest(sampleType: string) {
-    this.sampleRequest = {
-      SampleType: sampleType,
-      // Name: sampleType,
-    };
+    this.sampleRequest = new SampleRequest({
+      RequestJson: "",
+      SampleType: sampleType
+    });
+
+    // this.sampleRequest.SampleType = sampleType;
+    //
+    // this.sampleRequest = {
+    //   SampleType: sampleType,
+    //   // Name: sampleType,
+    // };
   }
 
   private loadSamplesFromApi(sampleType: string) {

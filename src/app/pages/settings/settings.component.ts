@@ -1,14 +1,10 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
 import { $e } from 'codelyzer/angular/styles/chars';
-import { AppSettings } from '../../api/dashboard/model/appSettings';
-import { CacheEntry } from '../../api/dashboard/model/cacheEntry';
-import { EEnvironment } from '../../api/dashboard/model/eEnvironment';
-import { PublishedRoute } from '../../api/dashboard/model/publishedRoute';
-import { User } from '../../api/dashboard/model/user';
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { DashboardApiService } from '../../services/dashboard-api/dashboard-api.service';
 import { UserService } from '../../services/user/user.service';
+import {CacheEntry, PublishedRoute} from "../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-settings',
@@ -24,7 +20,6 @@ export class SettingsComponent implements OnInit {
   appSettingsJsonString = '';
   jupiterApiSettingsJsonString = '';
   // jupiterAppSettings: AppSettings = null;
-  EEnvironment = EEnvironment;
 
   routesColumns = [];
   routesData: Array<PublishedRoute> = [];

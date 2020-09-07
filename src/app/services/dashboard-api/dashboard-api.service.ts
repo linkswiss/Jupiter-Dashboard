@@ -1,11 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CacheEntry } from '../../api/dashboard/model/cacheEntry';
-import { PublishedRoute } from '../../api/dashboard/model/publishedRoute';
-import { SampleRequest } from '../../api/dashboard/model/sampleRequest';
-import { User } from '../../api/dashboard/model/user';
 import { AppConfigService } from '../app-config/app-config.service';
+import {UtilityClient} from "../jupiter-api/jupiter-api-client";
+import {CacheEntry, PublishedRoute, SampleRequest, User} from "./dashboard-api-client";
 
 @Injectable({
   providedIn: 'root',
@@ -201,6 +199,54 @@ export class DashboardApiService {
               obs.error(error);
             });
     });
+  }
+
+  /**
+   * Method is use to download file.
+   * @param data - Array Buffer data
+   * @param type - type of the document.
+   */
+  downLoadFile(data: any, type: string, fileName: string) {
+    let blob = new Blob([data], {type: type});
+    let url = window.URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    document.body.appendChild(a);
+    // a.style = "display: none";
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+
+    // let pwa = window.open(url);
+    // if (!pwa || pwa.closed || typeof pwa.closed === 'undefined') {
+    //   alert('Please disable your Pop-up blocker and try again.');
+    // }
+  }
+
+  downloadJupiterApiTypescriptClient() {
+    // return new Observable(obs => {
+    //   this.httpClient.post<any>(this.appConfigService.config.dashboardApi.methods.sampleRequest.saveSamplesRequests, sampleRequest)
+    //     .subscribe(result => {
+    //         obs.next(result);
+    //       },
+    //       error => {
+    //         console.log(error);
+    //         obs.error(error);
+    //       });
+    // });
+
+    // return new Observable(obs => {
+    //   let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+    //
+    //   utilityClient.generateJupiterTypescriptClient().then(result => {
+    //     this.downLoadFile(result.data, 'application/octet-stream', 'JupiterApiClient.ts');
+    //     obs.next(result);
+    //   }).catch(error => {
+    //     console.log(error);
+    //     obs.error(error);
+    //   });
+    // });
   }
 
   getErrorLogs(): Observable<any> {

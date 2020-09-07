@@ -1,8 +1,8 @@
 import { Component, ContentChild, ContentChildren, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { User } from '../../../api/dashboard/model/user';
 import { DashboardApiService } from '../../../services/dashboard-api/dashboard-api.service';
 import { UserService } from '../../../services/user/user.service';
+import {User} from "../../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-user-list',

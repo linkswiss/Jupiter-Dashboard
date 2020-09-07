@@ -18,7 +18,6 @@ import {
   JupiterSingleHotelAvailabilityRQ
 } from '../../../../../services/jupiter-api/jupiter-api-client';
 import Utils from '../../../../../utility/utils';
-import {SampleRequest} from '../../../../../api/dashboard/model/sampleRequest';
 import {AppConfigService} from '../../../../../services/app-config/app-config.service';
 import {UserService} from '../../../../../services/user/user.service';
 import {JupiterApiService} from '../../../../../services/jupiter-api/jupiter-api.service';
@@ -26,6 +25,7 @@ import {DashboardApiService} from '../../../../../services/dashboard-api/dashboa
 import * as moment from 'moment';
 import {DialogApiErrorComponent} from '../dialog-api-error/dialog-api-error.component';
 import {NbDialogService} from '@nebular/theme';
+import {SampleRequest} from "../../../../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-api-debug-accordion',
@@ -272,10 +272,17 @@ export class ApiDebugAccordionComponent implements OnInit {
   }
 
   newSampleRequest() {
-    this.sampleRequest = {
-      SampleType: this.sampleType,
-      // Name: sampleType,
-    };
+    this.sampleRequest = new SampleRequest({
+      RequestJson: "",
+      SampleType: this.sampleType
+    });
+
+    // this.sampleRequest.SampleType = this.sampleType;
+    //
+    // this.sampleRequest = {
+    //   SampleType: this.sampleType,
+    //   // Name: sampleType,
+    // };
   }
 
   private loadSamplesFromApi() {

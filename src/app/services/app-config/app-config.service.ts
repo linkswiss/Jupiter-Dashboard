@@ -3,12 +3,9 @@ import {Injectable, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
-import {AppSettings} from '../../api/dashboard/model/appSettings';
-// import {EH2HConnectorCode} from '../../api/dashboard/model/eH2HConnectorCode';
-import {User} from '../../api/dashboard/model/user';
 import {UserService} from '../user/user.service';
 import * as _ from 'lodash';
-import {EH2HConnectorCode, EH2HOperation, IAppSettings} from '../jupiter-api/jupiter-api-client';
+import {EH2HConnectorCode, EH2HOperation} from '../jupiter-api/jupiter-api-client';
 import {Title} from '@angular/platform-browser';
 
 const {version: appVersion} = require('../../../../package.json');
@@ -16,6 +13,7 @@ const {version: appVersion} = require('../../../../package.json');
 import * as ElectronStore from 'electron-store';
 import {UserSettings, Endpoint} from './user-settings.model';
 import {JwtHelperService} from '@auth0/angular-jwt';
+import {AppSettings, IAppSettings} from "../dashboard-api/dashboard-api-client";
 
 
 export function tokenGetter() {
@@ -139,6 +137,7 @@ export class AppConfigService implements OnInit {
             clearCache: '/utility/clear-cache',
             clearSingleCacheItem: '/utility/clear-cache-item/{cacheKey}',
             getErrorLogs: '/utility/get-error-logs',
+            generateTypescriptClient: '/utility/dashboard-typescript-client',
           },
           sabre: {
             getAllSessions: '/sabre/get-all-sessions',

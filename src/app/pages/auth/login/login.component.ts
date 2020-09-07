@@ -1,13 +1,14 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../../../api/dashboard/model/user';
-import { UserAuthRQ } from '../../../api/dashboard/model/userAuthRQ';
+// import { User } from '../../../api/dashboard/model/user';
+// import { UserAuthRQ } from '../../../api/dashboard/model/userAuthRQ';
 import { AppConfigService } from '../../../services/app-config/app-config.service';
 import { UserService } from '../../../services/user/user.service';
-import { FormGroupTyped } from '../../../utility/form-group-typed';
 import * as Store from 'electron-store';
+import {UserAuthRQ} from "../../../services/dashboard-api/dashboard-api-client";
+import {FormGroupTyped} from "../../../utility/form-group-typed";
 
 //import Store = require('electron-store');
 
@@ -21,7 +22,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   apiName = '';
 
-  constructor(public router: Router, public appConfigService: AppConfigService, private userService: UserService) {
+  constructor(public router: Router, public appConfigService: AppConfigService, private userService: UserService, private formBuilder: FormBuilder) {
 
     /*
     let endpoints = this.appConfigService.getEndpoints();
