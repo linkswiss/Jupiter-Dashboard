@@ -1,4 +1,17 @@
 <nb-card>
+  <nb-card-header>Generate Clients</nb-card-header>
+  <nb-card-body>
+    <button nbButton size="tiny" status="basic" class="ml-2" [nbSpinner]="loadingTypescript" (click)="downloadTypescriptClient()"><i class="fas fa-download mr-1"></i> Jupiter Typescript Client</button>
+    <button nbButton size="tiny" status="basic" class="ml-2" [nbSpinner]="loadingCSharp" (click)="downloadCSharpClient()"><i class="fas fa-download mr-1"></i> Jupiter CSharp Client</button>
+
+    <span class="ml-5"></span>
+    <button nbButton size="tiny" status="basic" class="ml-2" [nbSpinner]="loadingDashboardTypescript" (click)="downloadDashboardTypescriptClient()"><i class="fas fa-download mr-1"></i> Dashboard Typescript Client</button>
+<!--    <button nbButton size="tiny" status="basic" [nbSpinner]="loadingCSharp" (click)="downloadCSharpClient()"><i class="fas fa-download"></i> CSharp Client</button>-->
+
+  </nb-card-body>
+</nb-card>
+
+<nb-card>
   <nb-card-body>
     <nb-tabset (changeTab)="changeTab($event)">
       <nb-tab tabTitle="Connectors" class="pb-4">

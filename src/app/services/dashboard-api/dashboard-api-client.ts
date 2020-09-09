@@ -286,10 +286,47 @@ export class SampleRequestClient extends ApiClientBase {
     return Promise.resolve<SampleRequest[]>(<any>null);
   }
 
-  getAllSampleRequests(requestType: string | null | undefined): Promise<SampleRequest[]> {
-    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/SampleRequest/get-all-sample-requests?";
-    if (requestType !== undefined)
-      url_ += "requestType=" + encodeURIComponent("" + requestType) + "&";
+  generateSampleRequest(requestType: string | null): Promise<SampleRequest> {
+    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/SampleRequest/generate-sample-request/{requestType}";
+    if (requestType === undefined || requestType === null)
+      throw new Error("The parameter 'requestType' must be defined.");
+    url_ = url_.replace("{requestType}", encodeURIComponent("" + requestType));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGenerateSampleRequest(_response);
+    });
+  }
+
+  protected processGenerateSampleRequest(response: Response): Promise<SampleRequest> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SampleRequest.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SampleRequest>(<any>null);
+  }
+
+  getAllSampleRequests(): Promise<SampleRequest[]> {
+    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/SampleRequest/get-all-sample-requests";
     url_ = url_.replace(/[?&]$/, "");
 
     let options_ = <RequestInit>{
@@ -706,6 +743,49 @@ export class UtilityClient extends ApiClientBase {
   }
 
   /**
+   * Get all the JUPITER API published routes and the authorization related
+   */
+  getJupiterRoutes(): Promise<PublishedRoute[]> {
+    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/Utility/jupiter-api-routes";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGetJupiterRoutes(_response);
+    });
+  }
+
+  protected processGetJupiterRoutes(response: Response): Promise<PublishedRoute[]> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        if (Array.isArray(resultData200)) {
+          result200 = [] as any;
+          for (let item of resultData200)
+            result200!.push(PublishedRoute.fromJS(item));
+        }
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<PublishedRoute[]>(<any>null);
+  }
+
+  /**
    * Get all the Cache Service Entries
    */
   getCacheEntries(): Promise<CacheEntry[]> {
@@ -835,6 +915,40 @@ export class UtilityClient extends ApiClientBase {
       });
     }
     return Promise.resolve<CacheEntry[]>(<any>null);
+  }
+
+  generateDashboardTypescriptClient(): Promise<FileResponse> {
+    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/Utility/dashboard-typescript-client";
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      headers: {
+        "Accept": "application/octet-stream"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGenerateDashboardTypescriptClient(_response);
+    });
+  }
+
+  protected processGenerateDashboardTypescriptClient(response: Response): Promise<FileResponse> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200 || status === 206) {
+      const contentDisposition = response.headers ? response.headers.get("content-disposition") : undefined;
+      const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+      const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+      return response.blob().then(blob => { return { fileName: fileName, data: blob, status: status, headers: _headers }; });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<FileResponse>(<any>null);
   }
 
   getErrorLogs(): Promise<AppSettings> {
@@ -1707,6 +1821,10 @@ export class LogSettings implements ILogSettings {
    By Default all Service Call Logs with Methods name as H2HOperationStorageLog will be logged
    Add any other Method Name you want to log to the CloudStorageDisk */
   AdditionalServiceCallStorageLog?: string[] | undefined;
+  /** Disabled CallLogs Filters
+   Used in DefaultJupiterCallLogger to check if the Call should be logged or not
+   By Default ERROR status will always be logged */
+  DisabledCallLogFilters?: DisabledCallLogFilter[] | undefined;
   /** ApplicationLog Name
    Used for local and for Elasticsearch index */
   ApplicationLogName?: string | undefined;
@@ -1768,6 +1886,11 @@ export class LogSettings implements ILogSettings {
         for (let item of _data["AdditionalServiceCallStorageLog"])
           this.AdditionalServiceCallStorageLog!.push(item);
       }
+      if (Array.isArray(_data["DisabledCallLogFilters"])) {
+        this.DisabledCallLogFilters = [] as any;
+        for (let item of _data["DisabledCallLogFilters"])
+          this.DisabledCallLogFilters!.push(DisabledCallLogFilter.fromJS(item));
+      }
       this.ApplicationLogName = _data["ApplicationLogName"];
       this.ServiceCallLogName = _data["ServiceCallLogName"];
       this.ConnectorCallLogName = _data["ConnectorCallLogName"];
@@ -1807,6 +1930,11 @@ export class LogSettings implements ILogSettings {
       for (let item of this.AdditionalServiceCallStorageLog)
         data["AdditionalServiceCallStorageLog"].push(item);
     }
+    if (Array.isArray(this.DisabledCallLogFilters)) {
+      data["DisabledCallLogFilters"] = [];
+      for (let item of this.DisabledCallLogFilters)
+        data["DisabledCallLogFilters"].push(item.toJSON());
+    }
     data["ApplicationLogName"] = this.ApplicationLogName;
     data["ServiceCallLogName"] = this.ServiceCallLogName;
     data["ConnectorCallLogName"] = this.ConnectorCallLogName;
@@ -1835,6 +1963,10 @@ export interface ILogSettings {
    By Default all Service Call Logs with Methods name as H2HOperationStorageLog will be logged
    Add any other Method Name you want to log to the CloudStorageDisk */
   AdditionalServiceCallStorageLog?: string[] | undefined;
+  /** Disabled CallLogs Filters
+   Used in DefaultJupiterCallLogger to check if the Call should be logged or not
+   By Default ERROR status will always be logged */
+  DisabledCallLogFilters?: DisabledCallLogFilter[] | undefined;
   /** ApplicationLog Name
    Used for local and for Elasticsearch index */
   ApplicationLogName?: string | undefined;
@@ -1922,6 +2054,104 @@ export enum EH2HOperation {
   TRAIN_BOOK = "TRAIN_BOOK",
   DESTINATION_LIST = "DESTINATION_LIST",
   CONNECTOR_CUSTOM = "CONNECTOR_CUSTOM",
+}
+
+/** Disabled CallLog Filter */
+export class DisabledCallLogFilter implements IDisabledCallLogFilter {
+  /** Call Log Type */
+  LogTypes?: EJupiterLogType[] | undefined;
+  /** Call Pid StartWith */
+  PidStartWith?: string | undefined;
+  /** Operation Status
+   ERROR Status will always be logged */
+  Status?: EOperationStatus | undefined;
+  /** ConnectorCode */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** ConnectorOperation */
+  ConnectorOperation?: EH2HOperation | undefined;
+
+  constructor(data?: IDisabledCallLogFilter) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["LogTypes"])) {
+        this.LogTypes = [] as any;
+        for (let item of _data["LogTypes"])
+          this.LogTypes!.push(item);
+      }
+      this.PidStartWith = _data["PidStartWith"];
+      this.Status = _data["Status"];
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.ConnectorOperation = _data["ConnectorOperation"];
+    }
+  }
+
+  static fromJS(data: any): DisabledCallLogFilter {
+    data = typeof data === 'object' ? data : {};
+    let result = new DisabledCallLogFilter();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.LogTypes)) {
+      data["LogTypes"] = [];
+      for (let item of this.LogTypes)
+        data["LogTypes"].push(item);
+    }
+    data["PidStartWith"] = this.PidStartWith;
+    data["Status"] = this.Status;
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["ConnectorOperation"] = this.ConnectorOperation;
+    return data;
+  }
+}
+
+/** Disabled CallLog Filter */
+export interface IDisabledCallLogFilter {
+  /** Call Log Type */
+  LogTypes?: EJupiterLogType[] | undefined;
+  /** Call Pid StartWith */
+  PidStartWith?: string | undefined;
+  /** Operation Status
+   ERROR Status will always be logged */
+  Status?: EOperationStatus | undefined;
+  /** ConnectorCode */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** ConnectorOperation */
+  ConnectorOperation?: EH2HOperation | undefined;
+}
+
+export enum EOperationStatus {
+  SUCCESS = "SUCCESS",
+  WARNING = "WARNING",
+  ERROR = "ERROR",
+}
+
+export enum EH2HConnectorCode {
+  UNKNOWN = "UNKNOWN",
+  BOOKING_DOT_COM = "BOOKING_DOT_COM",
+  SABRE_SYNXIS = "SABRE_SYNXIS",
+  AMADEUS = "AMADEUS",
+  SABRE = "SABRE",
+  SABRE_CSL = "SABRE_CSL",
+  CREOLE = "CREOLE",
+  SANDALS = "SANDALS",
+  TRAVELFUSION = "TRAVELFUSION",
+  IHG_GRS = "IHG_GRS",
+  OKKAMI = "OKKAMI",
+  HOTELBEDS = "HOTELBEDS",
+  EMINDS = "EMINDS",
+  EXPEDIA = "EXPEDIA",
+  A_SAMPLE = "A_SAMPLE",
 }
 
 /** ElasticSearch Settings Class */
@@ -2088,24 +2318,6 @@ export interface IAllConnectorsSettings {
   ConnectorSettings?: BaseConnectorSettings[] | undefined;
 }
 
-export enum EH2HConnectorCode {
-  UNKNOWN = "UNKNOWN",
-  BOOKING_DOT_COM = "BOOKING_DOT_COM",
-  SABRE_SYNXIS = "SABRE_SYNXIS",
-  AMADEUS = "AMADEUS",
-  SABRE = "SABRE",
-  SABRE_CSL = "SABRE_CSL",
-  CREOLE = "CREOLE",
-  SANDALS = "SANDALS",
-  TRAVELFUSION = "TRAVELFUSION",
-  IHG_GRS = "IHG_GRS",
-  OKKAMI = "OKKAMI",
-  HOTELBEDS = "HOTELBEDS",
-  EMINDS = "EMINDS",
-  EXPEDIA = "EXPEDIA",
-  A_SAMPLE = "A_SAMPLE",
-}
-
 export class ConnectorEnvironment implements IConnectorEnvironment {
   /** Connector Code */
   ConnectorCode?: EH2HConnectorCode;
@@ -2162,8 +2374,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
   DisabledConnectorTypes?: EH2HConnectorType[] | undefined;
   /** Disabled Operations */
   DisabledOperations?: EH2HOperation[] | undefined;
-  /** Disabled CallLogs Operations */
-  JupiterCallLogsDisabledOperations?: EH2HOperation[] | undefined;
   /** Not set this in AppSettings will be rewrite form BaseConnector constructor */
   Version?: string | undefined;
   /** Return if the current Environment is the default for the Connector
@@ -2197,11 +2407,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
         this.DisabledOperations = [] as any;
         for (let item of _data["DisabledOperations"])
           this.DisabledOperations!.push(item);
-      }
-      if (Array.isArray(_data["JupiterCallLogsDisabledOperations"])) {
-        this.JupiterCallLogsDisabledOperations = [] as any;
-        for (let item of _data["JupiterCallLogsDisabledOperations"])
-          this.JupiterCallLogsDisabledOperations!.push(item);
       }
       this.Version = _data["Version"];
       this.IsDefaultEnvironment = _data["IsDefaultEnvironment"];
@@ -2240,11 +2445,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
       for (let item of this.DisabledOperations)
         data["DisabledOperations"].push(item);
     }
-    if (Array.isArray(this.JupiterCallLogsDisabledOperations)) {
-      data["JupiterCallLogsDisabledOperations"] = [];
-      for (let item of this.JupiterCallLogsDisabledOperations)
-        data["JupiterCallLogsDisabledOperations"].push(item);
-    }
     data["Version"] = this.Version;
     data["IsDefaultEnvironment"] = this.IsDefaultEnvironment;
     if (Array.isArray(this.EnabledConnectorTypes)) {
@@ -2273,8 +2473,6 @@ export interface IBaseConnectorSettings {
   DisabledConnectorTypes?: EH2HConnectorType[] | undefined;
   /** Disabled Operations */
   DisabledOperations?: EH2HOperation[] | undefined;
-  /** Disabled CallLogs Operations */
-  JupiterCallLogsDisabledOperations?: EH2HOperation[] | undefined;
   /** Not set this in AppSettings will be rewrite form BaseConnector constructor */
   Version?: string | undefined;
   /** Return if the current Environment is the default for the Connector
@@ -2652,9 +2850,13 @@ export class PublishedRoute implements IPublishedRoute {
   Invocation?: string | undefined;
   /** Controller of the method */
   Controller?: string | undefined;
-  /** Request Type if any */
+  /** Request Type Full Name if any */
+  RequestTypeFullName?: string | undefined;
+  /** Response Type Full Name if any */
+  ResponseTypeFullName?: string | undefined;
+  /** Request Type Name if any */
   RequestType?: string | undefined;
-  /** Response Type if any */
+  /** Response Type Name if any */
   ResponseType?: string | undefined;
   /** Secured string -&gt; [ADMIN, API_USER] */
   Authorization?: string[] | undefined;
@@ -2676,6 +2878,8 @@ export class PublishedRoute implements IPublishedRoute {
       this.PathTemplate = _data["PathTemplate"];
       this.Invocation = _data["Invocation"];
       this.Controller = _data["Controller"];
+      this.RequestTypeFullName = _data["RequestTypeFullName"];
+      this.ResponseTypeFullName = _data["ResponseTypeFullName"];
       this.RequestType = _data["RequestType"];
       this.ResponseType = _data["ResponseType"];
       if (Array.isArray(_data["Authorization"])) {
@@ -2701,6 +2905,8 @@ export class PublishedRoute implements IPublishedRoute {
     data["PathTemplate"] = this.PathTemplate;
     data["Invocation"] = this.Invocation;
     data["Controller"] = this.Controller;
+    data["RequestTypeFullName"] = this.RequestTypeFullName;
+    data["ResponseTypeFullName"] = this.ResponseTypeFullName;
     data["RequestType"] = this.RequestType;
     data["ResponseType"] = this.ResponseType;
     if (Array.isArray(this.Authorization)) {
@@ -2725,9 +2931,13 @@ export interface IPublishedRoute {
   Invocation?: string | undefined;
   /** Controller of the method */
   Controller?: string | undefined;
-  /** Request Type if any */
+  /** Request Type Full Name if any */
+  RequestTypeFullName?: string | undefined;
+  /** Response Type Full Name if any */
+  ResponseTypeFullName?: string | undefined;
+  /** Request Type Name if any */
   RequestType?: string | undefined;
-  /** Response Type if any */
+  /** Response Type Name if any */
   ResponseType?: string | undefined;
   /** Secured string -&gt; [ADMIN, API_USER] */
   Authorization?: string[] | undefined;

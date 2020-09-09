@@ -33,6 +33,7 @@ import {HotelPriceVerifyComponent} from './pages/test-api/hotel/hotel-price-veri
 import {TrainAvailComponent} from "./pages/test-api/train/train-avail/train-avail.component";
 import { AppPreferenciesComponent } from './pages/app-preferencies/app-preferencies.component';
 import { LayoutEmptyComponent } from './layout/layout-empty/layout-empty.component';
+import {RefreshTokenComponent} from "./pages/auth/refresh-token/refresh-token.component";
 
 const routes: Routes = [
   // { path: 'pages', component: LayoutComponent},
@@ -200,6 +201,7 @@ const routes: Routes = [
     children: [
       {path: 'login', component: LoginComponent},
       {path: 'logout', component: LogoutComponent},
+      {path: 'refresh-token', component: RefreshTokenComponent},
     ],
   },
   {

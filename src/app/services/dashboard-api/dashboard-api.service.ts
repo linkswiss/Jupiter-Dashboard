@@ -2,203 +2,24 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AppConfigService } from '../app-config/app-config.service';
-import {UtilityClient} from "../jupiter-api/jupiter-api-client";
-import {CacheEntry, PublishedRoute, SampleRequest, User} from "./dashboard-api-client";
+import {
+  CacheEntry,
+  PublishedRoute,
+  SabreClient, SabreGdsSessionCustomData,
+  SampleRequest, SampleRequestClient,
+  User,
+  UsersClient,
+  UtilityClient
+} from "./dashboard-api-client";
+import {UserService} from "../user/user.service";
+import {FlightClient, JupiterFlightBookRQ, JupiterFlightBookRS} from "../jupiter-api/jupiter-api-client";
 
 @Injectable({
   providedIn: 'root',
 })
 export class DashboardApiService {
 
-  constructor(private appConfigService: AppConfigService, private httpClient: HttpClient) {
-  }
-
-  getAllUsers(): Observable<Array<User>> {
-    return new Observable(obs => {
-
-      this.httpClient.get<Array<User>>(this.appConfigService.config.dashboardApi.methods.user.getAllUsers)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  createJupiterApiToken(user: User): Observable<User> {
-    return new Observable(obs => {
-      let request = this.appConfigService.config.dashboardApi.methods.user.createJupiterApiToken.replace('{userId}', `${user.Id}`);
-
-      this.httpClient.get<User>(request)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  deleteJupiterApiToken(user: User): Observable<User> {
-    return new Observable(obs => {
-      let request = this.appConfigService.config.dashboardApi.methods.user.deleteJupiterApiToken.replace('{userId}', `${user.Id}`);
-
-      this.httpClient.get<User>(request)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  getPublishedRoutes(): Observable<Array<PublishedRoute>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<PublishedRoute>>(this.appConfigService.config.dashboardApi.methods.utility.getPublishedRoutes)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  sabreGetAllSessions(): Observable<Array<any>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<any>>(this.appConfigService.config.dashboardApi.methods.sabre.getAllSessions)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  sabreDeleteSession(id: string): Observable<Array<any>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<any>>(this.appConfigService.config.dashboardApi.methods.sabre.deleteSession.replace('{id}', id))
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  sabreRefreshSessionsPool(): Observable<Array<any>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<any>>(this.appConfigService.config.dashboardApi.methods.sabre.refreshSessionsPool)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  getCacheEntries(): Observable<Array<CacheEntry>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<CacheEntry>>(this.appConfigService.config.dashboardApi.methods.utility.getCacheEntries)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  clearCache(): Observable<Array<CacheEntry>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<CacheEntry>>(this.appConfigService.config.dashboardApi.methods.utility.clearCache)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  clearSingleCacheItem(cacheKey: string): Observable<Array<CacheEntry>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<CacheEntry>>(this.appConfigService.config.dashboardApi.methods.utility.clearSingleCacheItem.replace('{cacheKey}', cacheKey))
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  saveSampleRequest(sampleRequest: SampleRequest): Observable<SampleRequest> {
-    return new Observable(obs => {
-      this.httpClient.post<any>(this.appConfigService.config.dashboardApi.methods.sampleRequest.saveSamplesRequests, sampleRequest)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  deleteSampleRequest(sampleRequest: SampleRequest): Observable<SampleRequest> {
-    return new Observable(obs => {
-      this.httpClient.post<any>(this.appConfigService.config.dashboardApi.methods.sampleRequest.deleteSamplesRequests, sampleRequest)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-  getSampleRequests(sampleType: string): Observable<Array<SampleRequest>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<any>>(this.appConfigService.config.dashboardApi.methods.sampleRequest.getSampleRequests.replace('{sampleType}', sampleType))
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
-  }
-
-
-  getAllSampleRequests(): Observable<Array<SampleRequest>> {
-    return new Observable(obs => {
-      this.httpClient.get<Array<any>>(this.appConfigService.config.dashboardApi.methods.sampleRequest.getAllSampleRequests)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
-    });
+  constructor(private appConfigService: AppConfigService, private httpClient: HttpClient, private userService: UserService) {
   }
 
   /**
@@ -224,43 +45,238 @@ export class DashboardApiService {
     // }
   }
 
-  downloadJupiterApiTypescriptClient() {
-    // return new Observable(obs => {
-    //   this.httpClient.post<any>(this.appConfigService.config.dashboardApi.methods.sampleRequest.saveSamplesRequests, sampleRequest)
-    //     .subscribe(result => {
-    //         obs.next(result);
-    //       },
-    //       error => {
-    //         console.log(error);
-    //         obs.error(error);
-    //       });
-    // });
+  getAllUsers(): Observable<Array<User>> {
+    return new Observable(obs => {
+      let usersClient = new UsersClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
-    // return new Observable(obs => {
-    //   let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
-    //
-    //   utilityClient.generateJupiterTypescriptClient().then(result => {
-    //     this.downLoadFile(result.data, 'application/octet-stream', 'JupiterApiClient.ts');
-    //     obs.next(result);
-    //   }).catch(error => {
-    //     console.log(error);
-    //     obs.error(error);
-    //   });
-    // });
+      usersClient.getAllUsers().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  createJupiterApiToken(user: User): Observable<User> {
+    return new Observable(obs => {
+      let usersClient = new UsersClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      usersClient.getUser(user.Id).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  deleteJupiterApiToken(user: User): Observable<User> {
+    return new Observable(obs => {
+      let usersClient = new UsersClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      usersClient.deleteJupiterApiToken(user.Id).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getPublishedRoutes(): Observable<Array<PublishedRoute>> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.getRoutes().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getJupiterApiRoutes(): Observable<Array<PublishedRoute>> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.getJupiterRoutes().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  sabreGetAllSessions(): Observable<Array<SabreGdsSessionCustomData>> {
+    return new Observable(obs => {
+      let sabreClient = new SabreClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sabreClient.getAllSessions().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  sabreDeleteSession(id: string): Observable<Array<SabreGdsSessionCustomData>> {
+    return new Observable(obs => {
+      let sabreClient = new SabreClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sabreClient.deleteSession(id).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  sabreRefreshSessionsPool(): Observable<Array<SabreGdsSessionCustomData>> {
+    return new Observable(obs => {
+      let sabreClient = new SabreClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sabreClient.refreshSessionPool().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getCacheEntries(): Observable<Array<CacheEntry>> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.getCacheEntries().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  clearCache(): Observable<Array<CacheEntry>> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.clearCache().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  clearSingleCacheItem(cacheKey: string): Observable<Array<CacheEntry>> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.clearSingleCacheItem(cacheKey).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  saveSampleRequest(sampleRequest: SampleRequest): Observable<SampleRequest> {
+    return new Observable(obs => {
+      let sampleRequestClient = new SampleRequestClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sampleRequestClient.saveSampleRequest(sampleRequest).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  deleteSampleRequest(sampleRequest: SampleRequest): Observable<SampleRequest> {
+    return new Observable(obs => {
+      let sampleRequestClient = new SampleRequestClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sampleRequestClient.deleteSampleRequest(sampleRequest).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getSampleRequests(sampleType: string): Observable<Array<SampleRequest>> {
+    return new Observable(obs => {
+      let sampleRequestClient = new SampleRequestClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sampleRequestClient.getSampleRequests(sampleType).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  generateSampleRequests(sampleType: string): Observable<SampleRequest> {
+    return new Observable(obs => {
+      let sampleRequestClient = new SampleRequestClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sampleRequestClient.generateSampleRequest(sampleType).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getAllSampleRequests(): Observable<Array<SampleRequest>> {
+    return new Observable(obs => {
+      let sampleRequestClient = new SampleRequestClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      sampleRequestClient.getAllSampleRequests().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  downloadJupiterApiTypescriptClient() {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.generateDashboardTypescriptClient().then(result => {
+        this.downLoadFile(result.data, 'application/octet-stream', 'JupiterApiClient.ts');
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
   }
 
   getErrorLogs(): Observable<any> {
     return new Observable(obs => {
-      // let request = this.appConfigService.config.dashboardApi.methods.utility.getErrorLogs.replace('{userId}', `${user.Id}`);
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
-      this.httpClient.get<any>(this.appConfigService.config.dashboardApi.methods.utility.getErrorLogs)
-          .subscribe(result => {
-              obs.next(result);
-            },
-            error => {
-              console.log(error);
-              obs.error(error);
-            });
+      utilityClient.getErrorLogs().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
     });
   }
 }

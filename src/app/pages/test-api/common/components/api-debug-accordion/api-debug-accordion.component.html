@@ -19,7 +19,10 @@
             </div>
             <div class="col-md-4">
               <button nbButton size="tiny" status="info" (click)="loadAllSamples()" ngbTooltip="Load All Samples" placement="top" container="body"><i class="fas fa-cloud-download-alt"></i>&nbsp;Load All</button>
-              <button nbButton size="tiny" status="info" class="ml-1" (click)="newSampleRequest()" ngbTooltip="New Sample" placement="top" container="body"><i class="fas fa-plus"></i>&nbsp;New Sample</button>
+              <button nbButton size="tiny" status="info" class="ml-1" (click)="newSampleRequest()" ngbTooltip="Save Sample" placement="top" container="body"><i class="fas fa-save"></i>&nbsp;Save Sample</button>
+              <div>
+                <button nbButton size="tiny" class="btn-outline-primary mt-1" (click)="generateSampleRequest()" ngbTooltip="Generate Sample" placement="top" container="body"><i class="fas fa-plus"></i>&nbsp;Generate Sample</button>
+              </div>
             </div>
           </div>
 

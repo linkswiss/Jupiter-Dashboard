@@ -1,10 +1,13 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { JwtHelperService } from '@auth0/angular-jwt';
-import { $e } from 'codelyzer/angular/styles/chars';
-import { AppConfigService } from '../../services/app-config/app-config.service';
-import { DashboardApiService } from '../../services/dashboard-api/dashboard-api.service';
-import { UserService } from '../../services/user/user.service';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
+import {JwtHelperService} from '@auth0/angular-jwt';
+import {$e} from 'codelyzer/angular/styles/chars';
+import {AppConfigService} from '../../services/app-config/app-config.service';
+import {DashboardApiService} from '../../services/dashboard-api/dashboard-api.service';
+import {UserService} from '../../services/user/user.service';
 import {CacheEntry, PublishedRoute} from "../../services/dashboard-api/dashboard-api-client";
+import {DialogApiErrorComponent} from "../test-api/common/components/dialog-api-error/dialog-api-error.component";
+import {JupiterApiService} from "../../services/jupiter-api/jupiter-api.service";
+import {NbDialogService} from "@nebular/theme";
 
 @Component({
   selector: 'jupiter-settings',
@@ -28,7 +31,17 @@ export class SettingsComponent implements OnInit {
   cacheEntriesData: Array<CacheEntry> = [];
   cacheEntriesDefaultSort = [];
 
-  constructor(public appConfigService: AppConfigService, public userService: UserService, public jwtHelperService: JwtHelperService, private dashboardApiService: DashboardApiService) {
+  loadingTypescript = false;
+  loadingCSharp = false;
+  loadingDashboardTypescript = false;
+
+  constructor(public appConfigService: AppConfigService,
+              public userService: UserService,
+              public jwtHelperService: JwtHelperService,
+              private dashboardApiService: DashboardApiService,
+              private jupiterApiService: JupiterApiService,
+              private dialogService: NbDialogService
+  ) {
     this.setAppSettingsJson();
   }
 
@@ -132,22 +145,54 @@ export class SettingsComponent implements OnInit {
     return JSON.stringify(object, null, 2);
   }
 
-  // syntaxHighlight(json): string {
-  //   json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  //   return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
-  //     let cls = 'number';
-  //     if (/^"/.test(match)) {
-  //       if (/:$/.test(match)) {
-  //         cls = 'key';
-  //       } else {
-  //         cls = 'string';
-  //       }
-  //     } else if (/true|false/.test(match)) {
-  //       cls = 'boolean';
-  //     } else if (/null/.test(match)) {
-  //       cls = 'null';
-  //     }
-  //     return '<span class="' + cls + '">' + match + '</span>';
-  //   });
-  // }
+  downloadTypescriptClient() {
+    this.loadingTypescript = true;
+    this.jupiterApiService.downloadJupiterApiTypescriptClient().subscribe(response => {
+      this.loadingTypescript = false;
+      console.log('download completed');
+    }, error => {
+      this.loadingTypescript = false;
+      console.error(error);
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'Download JupiterApi TypescriptClient Error',
+          error: error
+        },
+      });
+    });
+  }
+
+  downloadCSharpClient() {
+    this.loadingCSharp = true;
+    this.jupiterApiService.downloadJupiterApiCSharpClient().subscribe(response => {
+      this.loadingCSharp = false;
+      console.log('download completed');
+    }, error => {
+      this.loadingCSharp = false;
+      console.error(error);
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'Download JupiterApi CSharpClient Error',
+          error: error
+        },
+      });
+    });
+  }
+
+  downloadDashboardTypescriptClient() {
+    this.loadingDashboardTypescript = true;
+    this.dashboardApiService.downloadJupiterApiTypescriptClient().subscribe(response => {
+      this.loadingDashboardTypescript = false;
+      console.log('download completed');
+    }, error => {
+      this.loadingDashboardTypescript = false;
+      console.error(error);
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'Download JupiterApi Dashboard TypescriptClient Error',
+          error: error
+        },
+      });
+    });
+  }
 }

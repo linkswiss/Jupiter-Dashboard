@@ -2,31 +2,6 @@
 
 <div class="card">
   <div class="card-body">
-    <!--<nb-accordion>-->
-    <!--<nb-accordion-item>-->
-    <!--<nb-accordion-item-header>Configuration</nb-accordion-item-header>-->
-    <!--<nb-accordion-item-body>-->
-    <!--<nb-checkbox [(ngModel)]="showSplitted">Show Spitted RQ/RS</nb-checkbox>-->
-    <!--<div>-->
-    <!--<nb-select placeholder="Select Method" [(selected)]="selectedMethod">-->
-    <!--<nb-option-group title="Hotel Methods">-->
-    <!--<nb-option *ngFor="let method of hotelApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
-    <!--</nb-option-group>-->
-    <!--<nb-option-group title="Flight Methods">-->
-    <!--<nb-option *ngFor="let method of flightApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
-    <!--</nb-option-group>-->
-    <!--<nb-option-group title="Utility Methods">-->
-    <!--<nb-option *ngFor="let method of utilityApiMethods" [value]="method.value">{{method.name}}</nb-option>-->
-    <!--</nb-option-group>-->
-    <!--</nb-select>-->
-    <!--</div>-->
-    <!--</nb-accordion-item-body>-->
-    <!--</nb-accordion-item>-->
-    <!--</nb-accordion>-->
-
-    <!--<div>-->
-    <!--<h6>{{selectedMethod}}</h6>-->
-    <!--</div>-->
 
     <nb-flip-card *ngIf="!showSplitted" [flipped]="flipped" [showToggleButton]="false">
       <nb-card-front>
@@ -37,29 +12,15 @@
                 <h3>Request</h3>
               </div>
               <div class="col-sm-4">
-                <nb-select placeholder="Select Method" (selectedChange)="loadSamples($event)" [(selected)]="selectedMethod" [fullWidth]="true" [size]="'small'" [outline]="true">
-                  <nb-option-group title="Destination Methods">
-                    <nb-option *ngFor="let method of destinationApiMethods" [value]="method.value">{{method.name}}</nb-option>
-                  </nb-option-group>
-                  <nb-option-group title="Hotel Methods">
-                    <nb-option *ngFor="let method of hotelApiMethods" [value]="method.value">{{method.name}}</nb-option>
-                  </nb-option-group>
-                  <nb-option-group title="Flight Methods">
-                    <nb-option *ngFor="let method of flightApiMethods" [value]="method.value">{{method.name}}</nb-option>
-                  </nb-option-group>
-                  <nb-option-group title="Session and Cryptic">
-                    <nb-option *ngFor="let method of sessionAndCrypticApiMethods" [value]="method.value">{{method.name}}</nb-option>
-                  </nb-option-group>
-                  <nb-option-group title="Train Methods">
-                    <nb-option *ngFor="let method of trainApiMethods" [value]="method.value">{{method.name}}</nb-option>
-                  </nb-option-group>
-                  <nb-option-group title="Utility Methods">
-                    <nb-option *ngFor="let method of utilityApiMethods" [value]="method.value">{{method.name}}</nb-option>
+                <nb-select placeholder="Select Method" (selectedChange)="selectRoute($event)" [(selected)]="selectedRoute" [fullWidth]="true" [size]="'small'" [outline]="true">
+                  <nb-option-group *ngFor="let groupKey of jupiterApiRoutesGroupKeys" title="{{groupKey}}">
+                    <nb-option *ngFor="let route of getGroupRoutes(groupKey)" [value]="route">{{getRouteName(route)}}</nb-option>
                   </nb-option-group>
                 </nb-select>
+
               </div>
               <div class="col-sm-2">
-                <button [disabled]="!selectedMethod" class="btn btn-sm btn-primary ml-2" style="margin-top: 3px" (click)="send()"><i class="fas fa-exchange-alt"></i>&nbsp;Send</button>
+                <button [disabled]="!selectedRoute" class="btn btn-sm btn-primary ml-2" style="margin-top: 3px" (click)="send()"><i class="fas fa-exchange-alt"></i>&nbsp;Send</button>
               </div>
               <div class="col-sm-4">
                 <span class="float-right">
@@ -68,9 +29,25 @@
               </div>
             </div>
           </nb-card-header>
-          <nb-card-body *ngIf="selectedMethod">
+          <nb-card-body *ngIf="selectedRoute">
             <nb-card>
               <nb-card-body>
+                <div class="row mb-2">
+                  <div class="col-md-6">
+                    <div>
+                      <span class="font-weight-bold">RQ:</span><span class="ml-1">{{selectedRoute.RequestType}}</span>
+                    </div>
+                    <div>
+                      <span class="font-weight-bold">RS:</span><span class="ml-1">{{selectedRoute.ResponseType}}</span>
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorEnvironment" (ConnectorsEnvironmentChange)="processConnectorsEnvironment()"></jupiter-connectors-environment>
+                  </div>
+                </div>
+
+                <hr>
+
                 <div class="row mb-2">
                   <div class="col-md-8">
                     <div *ngIf="sampleRequestList && sampleRequestList.length > 0">
@@ -79,12 +56,16 @@
                       </nb-select>
                     </div>
                     <div *ngIf="!sampleRequestList || sampleRequestList.length === 0">
-                      <h5>No samples for {{selectedMethod.name}}</h5>
+                      <h5>No samples for {{getRouteName(selectedRoute)}}</h5>
                     </div>
+
                   </div>
                   <div class="col-md-4">
                     <button class="btn btn-sm btn-primary" (click)="loadAllSamples()" ngbTooltip="Load All Samples" placement="top" container="body"><i class="fas fa-cloud-download-alt"></i>&nbsp;Load All</button>
-                    <button class="btn btn-sm btn-primary ml-1" (click)="newSampleRequest(selectedMethod.name)" ngbTooltip="New Sample" placement="top" container="body"><i class="fas fa-plus"></i>&nbsp;New Sample</button>
+                    <button class="btn btn-sm btn-primary ml-1" (click)="newSampleRequest()" ngbTooltip="Save Sample" placement="top" container="body"><i class="fas fa-save"></i>&nbsp;Save Sample</button>
+                    <div>
+                      <button class="btn btn-sm btn-outline-primary mt-1" (click)="generateSampleRequest()" ngbTooltip="Generate Sample" placement="top" container="body"><i class="fas fa-plus"></i>&nbsp;Generate Sample</button>
+                    </div>
                   </div>
                 </div>
 
@@ -116,7 +97,7 @@
 
               </nb-card-body>
             </nb-card>
-            <ace [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
+            <ace *ngIf="selectedRoute.Method !== 'GET'" [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
           </nb-card-body>
         </nb-card>
       </nb-card-front>

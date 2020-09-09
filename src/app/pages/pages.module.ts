@@ -66,6 +66,7 @@ import { TrainAvailComponent } from './test-api/train/train-avail/train-avail.co
 import {AppPreferenciesComponent} from './app-preferencies/app-preferencies.component';
 import { SegmentDisplayComponent } from './test-api/flight/components/segment-display/segment-display.component';
 import dayGridPlugin from '@fullcalendar/daygrid';
+import { RefreshTokenComponent } from './auth/refresh-token/refresh-token.component';
 
 // import 'brace/ext/searchbox';
 
@@ -139,6 +140,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     TrainAvailComponent,
     AppPreferenciesComponent,
     SegmentDisplayComponent,
+    RefreshTokenComponent,
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [

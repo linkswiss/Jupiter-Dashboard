@@ -66,15 +66,13 @@ export class JupiterApiService {
     let isFileDownload = false;
     let filename = 'File.txt';
 
-    switch (method) {
-      case this.appConfigService.config.jupiterApi.methods.utility.generateTypescriptClient:
-        isFileDownload = true;
-        filename = 'ApiClient.ts';
-        break;
-      case this.appConfigService.config.jupiterApi.methods.utility.generateCSharpClient:
-        isFileDownload = true;
-        filename = 'ApiClient.cs';
-        break;
+    if(method.indexOf('typescript-client') > -1){
+      isFileDownload = true;
+      filename = 'ApiClient.ts';
+    }
+    if(method.indexOf('csharp-client') > -1){
+      isFileDownload = true;
+      filename = 'ApiClient.cs';
     }
 
     let httpOptions = {
@@ -102,8 +100,33 @@ export class JupiterApiService {
   }
 
   testApiGet(method: string): Observable<any> {
+    let isFileDownload = false;
+    let filename = 'File.txt';
+
+    if(method.indexOf('typescript-client') > -1){
+      isFileDownload = true;
+      filename = 'ApiClient.ts';
+    }
+    if(method.indexOf('csharp-client') > -1){
+      isFileDownload = true;
+      filename = 'ApiClient.cs';
+    }
+
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    };
+
+    if (isFileDownload) {
+      httpOptions['responseType'] = 'arraybuffer';
+    }
+
     return new Observable(obs => {
       this.httpClient.get<any>(method).subscribe(result => {
+          if (isFileDownload) {
+            this.downLoadFile(result, 'application/octet-stream', filename);
+          }
           obs.next(result);
         },
         error => {
@@ -111,47 +134,6 @@ export class JupiterApiService {
           obs.error(error);
         });
     });
-  }
-
-  private getClientMethods(object): Array<string> {
-    let props = [];
-    do {
-      const l = Object.getOwnPropertyNames(object)
-        .concat(Object.getOwnPropertySymbols(object).map(s => s.toString()))
-        .sort()
-        .filter((p, i, arr) =>
-          typeof object[p] === 'function' &&  // only the methods
-          p !== 'constructor' &&           // not the constructor
-          (i === 0 || p !== arr[i - 1]) &&  // not overriding in this prototype
-          props.indexOf(p) === -1          // not overridden in a child
-        );
-      props = props.concat(l);
-    }
-    while (
-      (object = Object.getPrototypeOf(object)) &&   // walk-up the prototype chain
-      Object.getPrototypeOf(object)              // not the the Object prototype methods (hasOwnProperty, etc...)
-      );
-
-    // filter out normal client added operations
-    props = _.filter(props, function (p) {
-      return p !== 'transformOptions' && !p.startsWith('process');
-    });
-
-    return props;
-  }
-
-  getTestMethods() {
-    let destinationClient = new DestinationClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
-    let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
-    let hotelClient = new HotelClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
-    let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
-
-    return {
-      'Destination': this.getClientMethods(destinationClient),
-      'Flight': this.getClientMethods(flightClient),
-      'Hotel': this.getClientMethods(hotelClient),
-      'Utility': this.getClientMethods(utilityClient),
-    };
   }
 
   /**

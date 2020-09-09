@@ -16,7 +16,7 @@ export class HotelClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**
@@ -544,7 +544,7 @@ export class TrainClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**
@@ -642,7 +642,7 @@ export class DestinationClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**
@@ -697,7 +697,7 @@ export class FlightClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**
@@ -924,7 +924,7 @@ export class SessionAndCrypticClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**
@@ -1194,7 +1194,7 @@ export class SabreClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   encodeDecode(request: JupiterConnectorCustomRQOfEncodeDecodeInput): Promise<JupiterConnectorCustomRSOfEncodeDecodeOutput> {
@@ -1332,7 +1332,7 @@ export class TravelFusionClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   test(): Promise<JupiterFlightPnrRetrieveRS> {
@@ -1380,7 +1380,7 @@ export class UtilityClient extends ApiClientBase {
   constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
     super(configuration);
     this.http = http ? http : <any>window;
-    this.baseUrl = baseUrl ? baseUrl : "http://localhost:5000";
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
   /**

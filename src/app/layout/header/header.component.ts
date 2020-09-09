@@ -14,7 +14,10 @@ import {HotelPagesService} from '../../pages/test-api/common/services/hotel-page
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
-  userMenu: NbMenuItem[] = [{title: 'Log out', link: '/auth/logout'}];
+  userMenu: NbMenuItem[] = [
+    {title: 'Log out', link: '/auth/logout'},
+    {title: 'Refresh Token', link: '/auth/refresh-token'}
+  ];
   loadingTypescript = false;
   loadingCSharp = false;
 
