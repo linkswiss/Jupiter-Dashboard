@@ -1,10 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserAuthRQ } from '../api/dashboard/model/userAuthRQ';
 import { AppConfigService } from '../services/app-config/app-config.service';
 import { UserService } from '../services/user/user.service';
-import { FormGroupTyped } from '../utility/form-group-typed';
 
 // import { MENU_ITEMS } from './pages-menu';
 

@@ -3,7 +3,7 @@ import {
   BaseRQ,
   BaseRS,
   EH2HConnectorCode,
-  EOperationStatus,
+  EOperationStatus, JupiterCrypticRQ,
   JupiterDestinationListRQ,
   JupiterFlightAvailabilityRQ, JupiterFlightBookRQ,
   JupiterFlightDetailRQ, JupiterFlightPnrPriceVerifyRQ, JupiterFlightPnrRetrieveRQ,
@@ -17,8 +17,10 @@ import {
   JupiterHotelChainListRQ, JupiterHotelDetailRQ,
   JupiterSingleHotelAvailabilityRQ
 } from '../../../../../services/jupiter-api/jupiter-api-client';
+
+// import * as JupiterApi from '../../../../../services/jupiter-api/jupiter-api-client';
+
 import Utils from '../../../../../utility/utils';
-import {SampleRequest} from '../../../../../api/dashboard/model/sampleRequest';
 import {AppConfigService} from '../../../../../services/app-config/app-config.service';
 import {UserService} from '../../../../../services/user/user.service';
 import {JupiterApiService} from '../../../../../services/jupiter-api/jupiter-api.service';
@@ -26,6 +28,7 @@ import {DashboardApiService} from '../../../../../services/dashboard-api/dashboa
 import * as moment from 'moment';
 import {DialogApiErrorComponent} from '../dialog-api-error/dialog-api-error.component';
 import {NbDialogService} from '@nebular/theme';
+import {SampleRequest} from "../../../../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-api-debug-accordion',
@@ -65,57 +68,7 @@ export class ApiDebugAccordionComponent implements OnInit {
   }
 
   setSampleType() {
-    if (this.ApiRq instanceof JupiterDestinationListRQ) {
-      this.sampleType = 'destination-list';
-    }
-
-    if (this.ApiRq instanceof JupiterHotelDetailRQ) {
-      this.sampleType = 'hotel-hotelDetails';
-    }
-    if (this.ApiRq instanceof JupiterHotelCalendarAvailabilityRQ) {
-      this.sampleType = 'hotel-calendarHotelAvail';
-    }
-    if (this.ApiRq instanceof JupiterHotelAvailabilityRQ) {
-      this.sampleType = 'hotel-avail';
-    }
-    if (this.ApiRq instanceof JupiterSingleHotelAvailabilityRQ) {
-      this.sampleType = 'hotel-singleHotelAvail';
-    }
-    if (this.ApiRq instanceof JupiterHotelAvailabilityExtrasRQ) {
-      this.sampleType = 'hotel-extrasHotelAvail';
-    }
-    if (this.ApiRq instanceof JupiterHotelBookDetailRQ) {
-      this.sampleType = 'hotel-hotelBookDetails';
-    }
-    if (this.ApiRq instanceof JupiterHotelBookRQ) {
-      this.sampleType = 'hotel-hotelBook';
-    }
-    if (this.ApiRq instanceof JupiterHotelBookSearchRQ) {
-      this.sampleType = 'hotel-hotelBookSearch';
-    }
-    if (this.ApiRq instanceof JupiterHotelBookCancelRQ) {
-      this.sampleType = 'hotel-hotelBookCancel';
-    }
-    if (this.ApiRq instanceof JupiterHotelChainListRQ) {
-      this.sampleType = 'hotel-hotelChainList';
-    }
-
-
-    if (this.ApiRq instanceof JupiterFlightAvailabilityRQ) {
-      this.sampleType = 'flight-avail';
-    }
-    if (this.ApiRq instanceof JupiterFlightDetailRQ) {
-      this.sampleType = 'flight-details';
-    }
-    if (this.ApiRq instanceof JupiterFlightBookRQ) {
-      this.sampleType = 'flight-book';
-    }
-    if (this.ApiRq instanceof JupiterFlightPnrPriceVerifyRQ) {
-      this.sampleType = 'flight-pnrPriceVerify';
-    }
-    if (this.ApiRq instanceof JupiterFlightPnrRetrieveRQ) {
-      this.sampleType = 'flight-pnrRetrieve';
-    }
+    this.sampleType = this.ApiRq.constructor.name;
   }
 
   getConnectorMode(connectorCode: EH2HConnectorCode) {
@@ -142,19 +95,10 @@ export class ApiDebugAccordionComponent implements OnInit {
   jsonToApiRq() {
     try {
       let data = JSON.parse(this.requestJson);
-
-      let parsedRq = null;
+      let parsedRq = this.ApiRq.constructor().fromJS(data);
 
       switch (this.sampleType) {
-        case 'destination-list':
-          parsedRq = JupiterDestinationListRQ.fromJS(data);
-          break;
-        case 'hotel-hotelDetails':
-          parsedRq = JupiterHotelDetailRQ.fromJS(data);
-          break;
-        case 'hotel-calendarHotelAvail':
-          parsedRq = JupiterHotelCalendarAvailabilityRQ.fromJS(data);
-
+        case 'JupiterHotelCalendarAvailabilityRQ':
           let fromDate = moment(parsedRq.Request.FromDate);
           let toDate = moment(parsedRq.Request.ToDate);
 
@@ -163,11 +107,8 @@ export class ApiDebugAccordionComponent implements OnInit {
             start: fromDate,
             end: toDate
           };
-
           break;
-        case 'hotel-avail':
-          parsedRq = JupiterHotelAvailabilityRQ.fromJS(data);
-
+        case 'JupiterHotelAvailabilityRQ':
           let fromDate2 = moment(parsedRq.Request.FromDate);
           let toDate2 = moment(parsedRq.Request.ToDate);
 
@@ -180,11 +121,8 @@ export class ApiDebugAccordionComponent implements OnInit {
             start: fromDate2,
             end: toDate2
           };
-
           break;
-        case 'hotel-singleHotelAvail':
-          parsedRq = JupiterSingleHotelAvailabilityRQ.fromJS(data);
-
+        case 'JupiterSingleHotelAvailabilityRQ':
           let fromDate3 = moment(parsedRq.Request.FromDate);
           let toDate3 = moment(parsedRq.Request.ToDate);
 
@@ -197,11 +135,8 @@ export class ApiDebugAccordionComponent implements OnInit {
             start: fromDate3,
             end: toDate3
           };
-
           break;
-        case 'hotel-extrasHotelAvail':
-          parsedRq = JupiterHotelAvailabilityExtrasRQ.fromJS(data);
-
+        case 'JupiterHotelAvailabilityExtrasRQ':
           let fromDate4 = moment(parsedRq.Request.FromDate);
           let toDate4 = moment(parsedRq.Request.ToDate);
 
@@ -214,39 +149,6 @@ export class ApiDebugAccordionComponent implements OnInit {
             start: fromDate4,
             end: toDate4
           };
-
-          break;
-        case 'hotel-hotelBook':
-          parsedRq = JupiterHotelBookRQ.fromJS(data);
-          break;
-        case 'hotel-hotelBookDetails':
-          parsedRq = JupiterHotelBookDetailRQ.fromJS(data);
-          break;
-        case 'hotel-hotelBookSearch':
-          parsedRq = JupiterHotelBookSearchRQ.fromJS(data);
-          break;
-        case 'hotel-hotelBookCancel':
-          parsedRq = JupiterHotelBookCancelRQ.fromJS(data);
-          break;
-        case 'hotel-hotelChainList':
-          parsedRq = JupiterHotelChainListRQ.fromJS(data);
-          break;
-
-
-        case 'flight-avail':
-          parsedRq = JupiterFlightAvailabilityRQ.fromJS(data);
-          break;
-        case 'flight-details':
-          parsedRq = JupiterFlightDetailRQ.fromJS(data);
-          break;
-        case 'flight-book':
-          parsedRq = JupiterFlightBookRQ.fromJS(data);
-          break;
-        case 'flight-pnrPriceVerify':
-          parsedRq = JupiterFlightPnrPriceVerifyRQ.fromJS(data);
-          break;
-        case 'flight-pnrRetrieve':
-          parsedRq = JupiterFlightPnrRetrieveRQ.fromJS(data);
           break;
       }
 
@@ -267,11 +169,20 @@ export class ApiDebugAccordionComponent implements OnInit {
     }
   }
 
+  generateSampleRequest() {
+    this.dashboardApiService.generateSampleRequests(this.sampleType).subscribe(response => {
+      this.sampleRequest = response;
+      this.loadSingleSampleRequest(this.sampleRequest);
+    }, error => {
+      console.error(error);
+    });
+  }
+
   newSampleRequest() {
-    this.sampleRequest = {
-      SampleType: this.sampleType,
-      // Name: sampleType,
-    };
+    this.sampleRequest = new SampleRequest({
+      RequestJson: "",
+      SampleType: this.sampleType
+    });
   }
 
   private loadSamplesFromApi() {

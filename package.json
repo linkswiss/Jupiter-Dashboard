@@ -1,6 +1,6 @@
 {
     "name": "jupiter-admin-dashboard",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "main": "main.js",
     "scripts": {
         "postinstall": "electron-builder install-app-deps",
@@ -10,7 +10,7 @@
         "build:dev": "npm run build -- -c dev",
         "build:prod": "npm run build -- -c production",
         "ng:serve": "ng serve",
-        "ng:serve:web": "ng serve -c web -o",
+        "ng:serve:web": "ng serve -c web",
         "electron:serve-tsc": "tsc -p tsconfig-serve.json",
         "electron:serve": "wait-on tcp:4200 && npm run electron:serve-tsc && npx electron . --serve",
         "electron:local": "npm run build:prod && npx electron .",

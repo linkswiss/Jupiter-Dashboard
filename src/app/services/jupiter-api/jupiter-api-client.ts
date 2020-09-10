@@ -547,6 +547,9 @@ export class TrainClient extends ApiClientBase {
     this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
   }
 
+  /**
+   * Train Availability
+   */
   avail(request: JupiterTrainAvailabilityRQ): Promise<JupiterTrainAvailabilityRS> {
     let url_ = this.baseUrl + "/jupiter-api/1/Train/avail";
     url_ = url_.replace(/[?&]$/, "");
@@ -585,6 +588,49 @@ export class TrainClient extends ApiClientBase {
       });
     }
     return Promise.resolve<JupiterTrainAvailabilityRS>(<any>null);
+  }
+
+  /**
+   * Train Book
+   */
+  book(request: JupiterTrainBookRQ): Promise<JupiterTrainBookRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Train/book";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processBook(_response);
+    });
+  }
+
+  protected processBook(response: Response): Promise<JupiterTrainBookRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterTrainBookRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterTrainBookRS>(<any>null);
   }
 }
 
@@ -1975,6 +2021,7 @@ export enum EH2HConnectorCode {
   OKKAMI = "OKKAMI",
   HOTELBEDS = "HOTELBEDS",
   EMINDS = "EMINDS",
+  EXPEDIA = "EXPEDIA",
   A_SAMPLE = "A_SAMPLE",
 }
 
@@ -2155,6 +2202,7 @@ export enum EMessageCode {
   BOOK_NOT_FOUND = "BOOK_NOT_FOUND",
   WRONG_INPUTS = "WRONG_INPUTS",
   PRICE_CHANGED = "PRICE_CHANGED",
+  NO_RESULTS = "NO_RESULTS",
 }
 
 export class ConnectorResponseDetails implements IConnectorResponseDetails {
@@ -3729,6 +3777,7 @@ export class SabreCSLRoomRatePlanCustomData extends RoomRatePlanCustomData imple
   PriceDifference?: number;
   CurrencyCode?: string | undefined;
   RatePlanCode?: string | undefined;
+  GuaranteeType?: string | undefined;
 
   constructor(data?: ISabreCSLRoomRatePlanCustomData) {
     super(data);
@@ -3744,6 +3793,7 @@ export class SabreCSLRoomRatePlanCustomData extends RoomRatePlanCustomData imple
       this.PriceDifference = _data["PriceDifference"];
       this.CurrencyCode = _data["CurrencyCode"];
       this.RatePlanCode = _data["RatePlanCode"];
+      this.GuaranteeType = _data["GuaranteeType"];
     }
   }
 
@@ -3762,6 +3812,7 @@ export class SabreCSLRoomRatePlanCustomData extends RoomRatePlanCustomData imple
     data["PriceDifference"] = this.PriceDifference;
     data["CurrencyCode"] = this.CurrencyCode;
     data["RatePlanCode"] = this.RatePlanCode;
+    data["GuaranteeType"] = this.GuaranteeType;
     super.toJSON(data);
     return data;
   }
@@ -3774,6 +3825,7 @@ export interface ISabreCSLRoomRatePlanCustomData extends IRoomRatePlanCustomData
   PriceDifference?: number;
   CurrencyCode?: string | undefined;
   RatePlanCode?: string | undefined;
+  GuaranteeType?: string | undefined;
 }
 
 export enum EInfoSource {
@@ -4873,6 +4925,8 @@ export class SabreSynXisSingleRoomResultCustomData extends SingleRoomResultCusto
   RoomTypeCode?: string | undefined;
   /** The Hotel Code */
   HotelCode?: string | undefined;
+  /** Number of Units returned in the RoomType from Sabre SynXis */
+  NumberOfUnits?: number;
 
   constructor(data?: ISabreSynXisSingleRoomResultCustomData) {
     super(data);
@@ -4884,6 +4938,7 @@ export class SabreSynXisSingleRoomResultCustomData extends SingleRoomResultCusto
     if (_data) {
       this.RoomTypeCode = _data["RoomTypeCode"];
       this.HotelCode = _data["HotelCode"];
+      this.NumberOfUnits = _data["NumberOfUnits"];
     }
   }
 
@@ -4898,6 +4953,7 @@ export class SabreSynXisSingleRoomResultCustomData extends SingleRoomResultCusto
     data = typeof data === 'object' ? data : {};
     data["RoomTypeCode"] = this.RoomTypeCode;
     data["HotelCode"] = this.HotelCode;
+    data["NumberOfUnits"] = this.NumberOfUnits;
     super.toJSON(data);
     return data;
   }
@@ -4908,6 +4964,8 @@ export interface ISabreSynXisSingleRoomResultCustomData extends ISingleRoomResul
   RoomTypeCode?: string | undefined;
   /** The Hotel Code */
   HotelCode?: string | undefined;
+  /** Number of Units returned in the RoomType from Sabre SynXis */
+  NumberOfUnits?: number;
 }
 
 export class CreoleSingleRoomResultCustomData extends SingleRoomResultCustomData implements ICreoleSingleRoomResultCustomData {
@@ -6835,7 +6893,10 @@ export interface ICreoleHotelAvailabilityInputCustomData extends IAvailabilityIn
 export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustomData implements ISabreCSLAvailabilityInputCustomData {
   /** maxItems: 200 - Lists hotels by code. */
   HotelRefs?: HotelRef[] | undefined;
-  CityCode?: string | undefined;
+  /** USE: HotelRefs List of HotelRef (HotelCode,CodeContext) */
+  HotelRefIds?: string[] | undefined;
+  /** maxItems: 1 - Lists hotels by code. */
+  DestinationRefIds?: string[] | undefined;
   Position?: LatLng | undefined;
   /** The radius is km/mi to search around the specified latitude and longitude. */
   Radius?: number | undefined;
@@ -6873,6 +6934,8 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
   RatePlanCodes?: string[] | undefined;
   /** Lists chain codes associated with the property.max items 20. */
   ChainCodes?: string[] | undefined;
+  /** Specifies the hotel name (minimum 3 characters) to be searched or used for filtering results. */
+  HotelName?: string | undefined;
   /** Used on Price Verify */
   RateKey?: string | undefined;
 
@@ -6889,7 +6952,16 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
         for (let item of _data["HotelRefs"])
           this.HotelRefs!.push(HotelRef.fromJS(item));
       }
-      this.CityCode = _data["CityCode"];
+      if (Array.isArray(_data["HotelRefIds"])) {
+        this.HotelRefIds = [] as any;
+        for (let item of _data["HotelRefIds"])
+          this.HotelRefIds!.push(item);
+      }
+      if (Array.isArray(_data["DestinationRefIds"])) {
+        this.DestinationRefIds = [] as any;
+        for (let item of _data["DestinationRefIds"])
+          this.DestinationRefIds!.push(item);
+      }
       this.Position = _data["Position"] ? LatLng.fromJS(_data["Position"]) : <any>undefined;
       this.Radius = _data["Radius"];
       this.Uom = _data["Uom"];
@@ -6925,6 +6997,7 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
         for (let item of _data["ChainCodes"])
           this.ChainCodes!.push(item);
       }
+      this.HotelName = _data["HotelName"];
       this.RateKey = _data["RateKey"];
     }
   }
@@ -6943,7 +7016,16 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
       for (let item of this.HotelRefs)
         data["HotelRefs"].push(item.toJSON());
     }
-    data["CityCode"] = this.CityCode;
+    if (Array.isArray(this.HotelRefIds)) {
+      data["HotelRefIds"] = [];
+      for (let item of this.HotelRefIds)
+        data["HotelRefIds"].push(item);
+    }
+    if (Array.isArray(this.DestinationRefIds)) {
+      data["DestinationRefIds"] = [];
+      for (let item of this.DestinationRefIds)
+        data["DestinationRefIds"].push(item);
+    }
     data["Position"] = this.Position ? this.Position.toJSON() : <any>undefined;
     data["Radius"] = this.Radius;
     data["Uom"] = this.Uom;
@@ -6979,6 +7061,7 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
       for (let item of this.ChainCodes)
         data["ChainCodes"].push(item);
     }
+    data["HotelName"] = this.HotelName;
     data["RateKey"] = this.RateKey;
     super.toJSON(data);
     return data;
@@ -6988,7 +7071,10 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
 export interface ISabreCSLAvailabilityInputCustomData extends IAvailabilityInputCustomData {
   /** maxItems: 200 - Lists hotels by code. */
   HotelRefs?: HotelRef[] | undefined;
-  CityCode?: string | undefined;
+  /** USE: HotelRefs List of HotelRef (HotelCode,CodeContext) */
+  HotelRefIds?: string[] | undefined;
+  /** maxItems: 1 - Lists hotels by code. */
+  DestinationRefIds?: string[] | undefined;
   Position?: LatLng | undefined;
   /** The radius is km/mi to search around the specified latitude and longitude. */
   Radius?: number | undefined;
@@ -7026,6 +7112,8 @@ export interface ISabreCSLAvailabilityInputCustomData extends IAvailabilityInput
   RatePlanCodes?: string[] | undefined;
   /** Lists chain codes associated with the property.max items 20. */
   ChainCodes?: string[] | undefined;
+  /** Specifies the hotel name (minimum 3 characters) to be searched or used for filtering results. */
+  HotelName?: string | undefined;
   /** Used on Price Verify */
   RateKey?: string | undefined;
 }
@@ -9553,6 +9641,11 @@ export abstract class AvailabilityExtrasInputCustomData implements IAvailability
       result.init(data);
       return result;
     }
+    if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
+      let result = new HotelbedsAvailabilityExtrasInputCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'AvailabilityExtrasInputCustomData' cannot be instantiated.");
   }
 
@@ -9608,6 +9701,54 @@ export interface ISabreSynXisAvailabilityExtrasInputCustomData extends IAvailabi
   ChannelSubSourceCode?: string | undefined;
   /** The specific RatePlan Code */
   RatePlanCode?: string | undefined;
+}
+
+export class HotelbedsAvailabilityExtrasInputCustomData extends AvailabilityExtrasInputCustomData implements IHotelbedsAvailabilityExtrasInputCustomData {
+  /** The number of items for each page */
+  ItemsPerPage?: number;
+  /** The number of pages */
+  Page?: number;
+  /** The order to show the results, DEFAULT as standard */
+  Order?: string | undefined;
+
+  constructor(data?: IHotelbedsAvailabilityExtrasInputCustomData) {
+    super(data);
+    this._discriminator = "HOTELBEDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ItemsPerPage = _data["ItemsPerPage"];
+      this.Page = _data["Page"];
+      this.Order = _data["Order"];
+    }
+  }
+
+  static fromJS(data: any): HotelbedsAvailabilityExtrasInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new HotelbedsAvailabilityExtrasInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ItemsPerPage"] = this.ItemsPerPage;
+    data["Page"] = this.Page;
+    data["Order"] = this.Order;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IHotelbedsAvailabilityExtrasInputCustomData extends IAvailabilityExtrasInputCustomData {
+  /** The number of items for each page */
+  ItemsPerPage?: number;
+  /** The number of pages */
+  Page?: number;
+  /** The order to show the results, DEFAULT as standard */
+  Order?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelAvailabilityExtrasInput implements ICustomerCustomDataOfJupiterHotelAvailabilityExtrasInput {
@@ -10629,6 +10770,11 @@ export abstract class HotelDetailInputCustomData implements IHotelDetailInputCus
       result.init(data);
       return result;
     }
+    if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
+      let result = new HotelbedsHotelDetailInputCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'HotelDetailInputCustomData' cannot be instantiated.");
   }
 
@@ -10760,6 +10906,40 @@ export class SabreCSLHotelDetailInputCustomData extends HotelDetailInputCustomDa
 export interface ISabreCSLHotelDetailInputCustomData extends IHotelDetailInputCustomData {
   /** maxItems: 50 - Lists hotels by code. */
   HotelRef?: HotelRef | undefined;
+}
+
+export class HotelbedsHotelDetailInputCustomData extends HotelDetailInputCustomData implements IHotelbedsHotelDetailInputCustomData {
+  UseSecondaryLanguage?: boolean;
+
+  constructor(data?: IHotelbedsHotelDetailInputCustomData) {
+    super(data);
+    this._discriminator = "HOTELBEDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.UseSecondaryLanguage = _data["UseSecondaryLanguage"];
+    }
+  }
+
+  static fromJS(data: any): HotelbedsHotelDetailInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new HotelbedsHotelDetailInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["UseSecondaryLanguage"] = this.UseSecondaryLanguage;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IHotelbedsHotelDetailInputCustomData extends IHotelDetailInputCustomData {
+  UseSecondaryLanguage?: boolean;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelDetailInput implements ICustomerCustomDataOfJupiterHotelDetailInput {
@@ -10931,6 +11111,11 @@ export abstract class HotelBookOutputCustomData implements IHotelBookOutputCusto
     }
     if (data["CustomDataConnectorCode"] === "CREOLE") {
       let result = new CreoleHotelBookOutputCustomData();
+      result.init(data);
+      return result;
+    }
+    if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
+      let result = new HotelbedsHotelBookOutputCustomData();
       result.init(data);
       return result;
     }
@@ -11158,6 +11343,8 @@ export interface ISabreHotelBookOutputCustomData extends IHotelBookOutputCustomD
 export class IHGHotelBookOutputCustomData extends HotelBookOutputCustomData implements IIHGHotelBookOutputCustomData {
   /** IHG Booking Reference list */
   IhgBookingReferences?: IHGBookingReference[] | undefined;
+  /** IHG Cancellation Number */
+  IhgCancellationNumber?: string | undefined;
 
   constructor(data?: IIHGHotelBookOutputCustomData) {
     super(data);
@@ -11172,6 +11359,7 @@ export class IHGHotelBookOutputCustomData extends HotelBookOutputCustomData impl
         for (let item of _data["IhgBookingReferences"])
           this.IhgBookingReferences!.push(IHGBookingReference.fromJS(item));
       }
+      this.IhgCancellationNumber = _data["IhgCancellationNumber"];
     }
   }
 
@@ -11189,6 +11377,7 @@ export class IHGHotelBookOutputCustomData extends HotelBookOutputCustomData impl
       for (let item of this.IhgBookingReferences)
         data["IhgBookingReferences"].push(item.toJSON());
     }
+    data["IhgCancellationNumber"] = this.IhgCancellationNumber;
     super.toJSON(data);
     return data;
   }
@@ -11197,6 +11386,8 @@ export class IHGHotelBookOutputCustomData extends HotelBookOutputCustomData impl
 export interface IIHGHotelBookOutputCustomData extends IHotelBookOutputCustomData {
   /** IHG Booking Reference list */
   IhgBookingReferences?: IHGBookingReference[] | undefined;
+  /** IHG Cancellation Number */
+  IhgCancellationNumber?: string | undefined;
 }
 
 export class IHGBookingReference implements IIHGBookingReference {
@@ -11269,6 +11460,42 @@ export class CreoleHotelBookOutputCustomData extends HotelBookOutputCustomData i
 }
 
 export interface ICreoleHotelBookOutputCustomData extends IHotelBookOutputCustomData {
+}
+
+export class HotelbedsHotelBookOutputCustomData extends HotelBookOutputCustomData implements IHotelbedsHotelBookOutputCustomData {
+  /** Da modellare una volta ottenuta la response con tutte le info sugli extra */
+  ActivitiesInfo?: string | undefined;
+
+  constructor(data?: IHotelbedsHotelBookOutputCustomData) {
+    super(data);
+    this._discriminator = "HOTELBEDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ActivitiesInfo = _data["ActivitiesInfo"];
+    }
+  }
+
+  static fromJS(data: any): HotelbedsHotelBookOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new HotelbedsHotelBookOutputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ActivitiesInfo"] = this.ActivitiesInfo;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IHotelbedsHotelBookOutputCustomData extends IHotelBookOutputCustomData {
+  /** Da modellare una volta ottenuta la response con tutte le info sugli extra */
+  ActivitiesInfo?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelBookOutput implements ICustomerCustomDataOfJupiterHotelBookOutput {
@@ -11633,6 +11860,11 @@ export abstract class ExtraToBookCustomData implements IExtraToBookCustomData {
       result.init(data);
       return result;
     }
+    if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
+      let result = new HotelbedsExtraToBookCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'ExtraToBookCustomData' cannot be instantiated.");
   }
 
@@ -11690,6 +11922,42 @@ export interface IOkkamiExtraToBookCustomData extends IExtraToBookCustomData {
   Total?: number | undefined;
 }
 
+export class HotelbedsExtraToBookCustomData extends ExtraToBookCustomData implements IHotelbedsExtraToBookCustomData {
+  /** The Rate Key - From Avail */
+  RateKey?: string | undefined;
+
+  constructor(data?: IHotelbedsExtraToBookCustomData) {
+    super(data);
+    this._discriminator = "HOTELBEDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.RateKey = _data["RateKey"];
+    }
+  }
+
+  static fromJS(data: any): HotelbedsExtraToBookCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new HotelbedsExtraToBookCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["RateKey"] = this.RateKey;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IHotelbedsExtraToBookCustomData extends IExtraToBookCustomData {
+  /** The Rate Key - From Avail */
+  RateKey?: string | undefined;
+}
+
 export abstract class CustomerCustomDataOfExtraToBook implements ICustomerCustomDataOfExtraToBook {
 
   protected _discriminator: string;
@@ -11728,11 +11996,11 @@ export class PaxDetails implements IPaxDetails {
   /** Pax Gender */
   Gender?: EPaxGender;
   /** Pax First Name */
-  FirstName!: string;
+  FirstName?: string | undefined;
   /** Pax Middle Name - if any */
   MiddleName?: string | undefined;
   /** Pax Last Name */
-  LastName!: string;
+  LastName?: string | undefined;
   /** Pax Emails */
   Emails?: Email[] | undefined;
   /** Pax Phone Numbers */
@@ -11837,11 +12105,11 @@ export interface IPaxDetails {
   /** Pax Gender */
   Gender?: EPaxGender;
   /** Pax First Name */
-  FirstName: string;
+  FirstName?: string | undefined;
   /** Pax Middle Name - if any */
   MiddleName?: string | undefined;
   /** Pax Last Name */
-  LastName: string;
+  LastName?: string | undefined;
   /** Pax Emails */
   Emails?: Email[] | undefined;
   /** Pax Phone Numbers */
@@ -12338,7 +12606,8 @@ export class SabreSynXisRoomToBookCustomData extends RoomToBookCustomData implem
   RoomTypeCode?: string | undefined;
   /** The RatePlan Code - From Avail */
   RatePlanCode?: string | undefined;
-  /** The RatePlan Id - From Avail */
+  /** The RatePlan Id - From Avail
+   Pass this value for Send a Reservation with a Corporate/Promo Access Code */
   RatePlanId?: string | undefined;
   /** The Hotel Code - From Avail */
   HotelCode?: string | undefined;
@@ -12405,7 +12674,8 @@ export interface ISabreSynXisRoomToBookCustomData extends IRoomToBookCustomData 
   RoomTypeCode?: string | undefined;
   /** The RatePlan Code - From Avail */
   RatePlanCode?: string | undefined;
-  /** The RatePlan Id - From Avail */
+  /** The RatePlan Id - From Avail
+   Pass this value for Send a Reservation with a Corporate/Promo Access Code */
   RatePlanId?: string | undefined;
   /** The Hotel Code - From Avail */
   HotelCode?: string | undefined;
@@ -13167,6 +13437,8 @@ export class SabreSynXisHotelBookInputCustomData extends HotelBookInputCustomDat
   /** Send the Confirmation Email to the customer from SynXis with the TemplateName specified
    if it's not set up we'll not set the node on the Sabre SynXis message so no mail will be sent */
   SendConfirmationEmailTemplate?: string | undefined;
+  /** Send a New or Modified Reservation with Travel Agency ID Numbers */
+  AgencyIata?: string | undefined;
 
   constructor(data?: ISabreSynXisHotelBookInputCustomData) {
     super(data);
@@ -13185,6 +13457,7 @@ export class SabreSynXisHotelBookInputCustomData extends HotelBookInputCustomDat
       this.ArrivalBy = _data["ArrivalBy"] ? TransportInfo.fromJS(_data["ArrivalBy"]) : <any>undefined;
       this.DepartureBy = _data["DepartureBy"] ? TransportInfo.fromJS(_data["DepartureBy"]) : <any>undefined;
       this.SendConfirmationEmailTemplate = _data["SendConfirmationEmailTemplate"];
+      this.AgencyIata = _data["AgencyIata"];
     }
   }
 
@@ -13203,6 +13476,7 @@ export class SabreSynXisHotelBookInputCustomData extends HotelBookInputCustomDat
     data["ArrivalBy"] = this.ArrivalBy ? this.ArrivalBy.toJSON() : <any>undefined;
     data["DepartureBy"] = this.DepartureBy ? this.DepartureBy.toJSON() : <any>undefined;
     data["SendConfirmationEmailTemplate"] = this.SendConfirmationEmailTemplate;
+    data["AgencyIata"] = this.AgencyIata;
     super.toJSON(data);
     return data;
   }
@@ -13227,6 +13501,8 @@ export interface ISabreSynXisHotelBookInputCustomData extends IHotelBookInputCus
   /** Send the Confirmation Email to the customer from SynXis with the TemplateName specified
    if it's not set up we'll not set the node on the Sabre SynXis message so no mail will be sent */
   SendConfirmationEmailTemplate?: string | undefined;
+  /** Send a New or Modified Reservation with Travel Agency ID Numbers */
+  AgencyIata?: string | undefined;
 }
 
 export enum ESabreBookStatus {
@@ -13364,6 +13640,7 @@ export class SabreCSLHotelBookInputCustomData extends HotelBookInputCustomData i
   CustomerNumber?: string | undefined;
   PreBookCrypticCommands?: string[] | undefined;
   PostBookCrypticCommands?: string[] | undefined;
+  GuaranteeType?: string | undefined;
 
   constructor(data?: ISabreCSLHotelBookInputCustomData) {
     super(data);
@@ -13389,6 +13666,7 @@ export class SabreCSLHotelBookInputCustomData extends HotelBookInputCustomData i
         for (let item of _data["PostBookCrypticCommands"])
           this.PostBookCrypticCommands!.push(item);
       }
+      this.GuaranteeType = _data["GuaranteeType"];
     }
   }
 
@@ -13417,6 +13695,7 @@ export class SabreCSLHotelBookInputCustomData extends HotelBookInputCustomData i
       for (let item of this.PostBookCrypticCommands)
         data["PostBookCrypticCommands"].push(item);
     }
+    data["GuaranteeType"] = this.GuaranteeType;
     super.toJSON(data);
     return data;
   }
@@ -13438,6 +13717,7 @@ export interface ISabreCSLHotelBookInputCustomData extends IHotelBookInputCustom
   CustomerNumber?: string | undefined;
   PreBookCrypticCommands?: string[] | undefined;
   PostBookCrypticCommands?: string[] | undefined;
+  GuaranteeType?: string | undefined;
 }
 
 export class SabreHotelBookInputCustomData extends HotelBookInputCustomData implements ISabreHotelBookInputCustomData {
@@ -13457,6 +13737,7 @@ export class SabreHotelBookInputCustomData extends HotelBookInputCustomData impl
   MiscellaneousSegment?: MiscellaneousSegment | undefined;
   PreBookCrypticCommands?: string[] | undefined;
   PostBookCrypticCommands?: string[] | undefined;
+  GuaranteeType?: string | undefined;
 
   constructor(data?: ISabreHotelBookInputCustomData) {
     super(data);
@@ -13483,6 +13764,7 @@ export class SabreHotelBookInputCustomData extends HotelBookInputCustomData impl
         for (let item of _data["PostBookCrypticCommands"])
           this.PostBookCrypticCommands!.push(item);
       }
+      this.GuaranteeType = _data["GuaranteeType"];
     }
   }
 
@@ -13512,6 +13794,7 @@ export class SabreHotelBookInputCustomData extends HotelBookInputCustomData impl
       for (let item of this.PostBookCrypticCommands)
         data["PostBookCrypticCommands"].push(item);
     }
+    data["GuaranteeType"] = this.GuaranteeType;
     super.toJSON(data);
     return data;
   }
@@ -13534,6 +13817,7 @@ export interface ISabreHotelBookInputCustomData extends IHotelBookInputCustomDat
   MiscellaneousSegment?: MiscellaneousSegment | undefined;
   PreBookCrypticCommands?: string[] | undefined;
   PostBookCrypticCommands?: string[] | undefined;
+  GuaranteeType?: string | undefined;
 }
 
 /** Equivalent Sabre host command: 0OTHXXGK1FSG21DEC-TEST */
@@ -13664,6 +13948,11 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
   DepartureTransport?: Transportation | undefined;
   /** Travel Agency Number Used on IHG as IATA */
   TravelAgencyNumber?: string | undefined;
+  /** corporate account for the book
+   Passed in the corporateNumber
+   corporateDiscountNumber string
+   Corporate discount Number entered for reservation */
+  CorporateAccount?: string | undefined;
   /** The Okkami Property UID
    Used for NRI Extras over Okkami API */
   OkkamiPropertyUid?: string | undefined;
@@ -13707,6 +13996,7 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
       this.ArrivalTransport = _data["ArrivalTransport"] ? Transportation.fromJS(_data["ArrivalTransport"]) : <any>undefined;
       this.DepartureTransport = _data["DepartureTransport"] ? Transportation.fromJS(_data["DepartureTransport"]) : <any>undefined;
       this.TravelAgencyNumber = _data["TravelAgencyNumber"];
+      this.CorporateAccount = _data["CorporateAccount"];
       this.OkkamiPropertyUid = _data["OkkamiPropertyUid"];
       this.OkkamiRoomTypeName = _data["OkkamiRoomTypeName"];
       this.OkkamiRateName = _data["OkkamiRateName"];
@@ -13748,6 +14038,7 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
     data["ArrivalTransport"] = this.ArrivalTransport ? this.ArrivalTransport.toJSON() : <any>undefined;
     data["DepartureTransport"] = this.DepartureTransport ? this.DepartureTransport.toJSON() : <any>undefined;
     data["TravelAgencyNumber"] = this.TravelAgencyNumber;
+    data["CorporateAccount"] = this.CorporateAccount;
     data["OkkamiPropertyUid"] = this.OkkamiPropertyUid;
     data["OkkamiRoomTypeName"] = this.OkkamiRoomTypeName;
     data["OkkamiRateName"] = this.OkkamiRateName;
@@ -13800,6 +14091,11 @@ export interface IIHGHotelBookInputCustomData extends IHotelBookInputCustomData 
   DepartureTransport?: Transportation | undefined;
   /** Travel Agency Number Used on IHG as IATA */
   TravelAgencyNumber?: string | undefined;
+  /** corporate account for the book
+   Passed in the corporateNumber
+   corporateDiscountNumber string
+   Corporate discount Number entered for reservation */
+  CorporateAccount?: string | undefined;
   /** The Okkami Property UID
    Used for NRI Extras over Okkami API */
   OkkamiPropertyUid?: string | undefined;
@@ -13944,7 +14240,6 @@ export interface IOkkamiHotelBookInputCustomData extends IHotelBookInputCustomDa
 }
 
 export class HotelbedsHotelBookInputCustomData extends HotelBookInputCustomData implements IHotelbedsHotelBookInputCustomData {
-  BookingCode?: string | undefined;
 
   constructor(data?: IHotelbedsHotelBookInputCustomData) {
     super(data);
@@ -13953,9 +14248,6 @@ export class HotelbedsHotelBookInputCustomData extends HotelBookInputCustomData 
 
   init(_data?: any) {
     super.init(_data);
-    if (_data) {
-      this.BookingCode = _data["BookingCode"];
-    }
   }
 
   static fromJS(data: any): HotelbedsHotelBookInputCustomData {
@@ -13967,14 +14259,12 @@ export class HotelbedsHotelBookInputCustomData extends HotelBookInputCustomData 
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["BookingCode"] = this.BookingCode;
     super.toJSON(data);
     return data;
   }
 }
 
 export interface IHotelbedsHotelBookInputCustomData extends IHotelBookInputCustomData {
-  BookingCode?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelBookInput implements ICustomerCustomDataOfJupiterHotelBookInput {
@@ -15870,6 +16160,8 @@ export class SabreSynXisSingleRoomBookResultCustomData extends SingleRoomBookRes
   HotelCode?: string | undefined;
   /** The Chain Code Booked */
   ChainCode?: string | undefined;
+  /** Number of Units returned in the RoomType from Sabre SynXis */
+  NumberOfUnits?: number;
   /** The SpecialRequest Code */
   SpecialRequestCode?: string | undefined;
   /** The SpecialRequest Description */
@@ -15894,6 +16186,7 @@ export class SabreSynXisSingleRoomBookResultCustomData extends SingleRoomBookRes
       this.RatePlanId = _data["RatePlanId"];
       this.HotelCode = _data["HotelCode"];
       this.ChainCode = _data["ChainCode"];
+      this.NumberOfUnits = _data["NumberOfUnits"];
       this.SpecialRequestCode = _data["SpecialRequestCode"];
       this.SpecialRequestDescription = _data["SpecialRequestDescription"];
       this.CouponCode = _data["CouponCode"];
@@ -15920,6 +16213,7 @@ export class SabreSynXisSingleRoomBookResultCustomData extends SingleRoomBookRes
     data["RatePlanId"] = this.RatePlanId;
     data["HotelCode"] = this.HotelCode;
     data["ChainCode"] = this.ChainCode;
+    data["NumberOfUnits"] = this.NumberOfUnits;
     data["SpecialRequestCode"] = this.SpecialRequestCode;
     data["SpecialRequestDescription"] = this.SpecialRequestDescription;
     data["CouponCode"] = this.CouponCode;
@@ -15945,6 +16239,8 @@ export interface ISabreSynXisSingleRoomBookResultCustomData extends ISingleRoomB
   HotelCode?: string | undefined;
   /** The Chain Code Booked */
   ChainCode?: string | undefined;
+  /** Number of Units returned in the RoomType from Sabre SynXis */
+  NumberOfUnits?: number;
   /** The SpecialRequest Code */
   SpecialRequestCode?: string | undefined;
   /** The SpecialRequest Description */
@@ -16457,6 +16753,8 @@ export interface ISabreSynXisSingleBookDetailCustomData extends ISingleBookDetai
 export class IHGSingleBookDetailCustomData extends SingleBookDetailCustomData implements IIHGSingleBookDetailCustomData {
   /** IHG Booking Reference list */
   IhgBookingReferences?: IHGBookingReference[] | undefined;
+  /** IHG Cancellation Number */
+  IhgCancellationNumber?: string | undefined;
   /** Transportation Infos - Arrival Transport */
   ArrivalTransport?: Transportation | undefined;
   /** Transportation Infos - Departure Transport */
@@ -16465,6 +16763,10 @@ export class IHGSingleBookDetailCustomData extends SingleBookDetailCustomData im
   PaymentByPoints?: BookPaymentByPoints | undefined;
   /** Travel Agency Number Used on IHG as IATA */
   TravelAgencyNumber?: string | undefined;
+  /** Corporate account for the book
+   Corporate discount Number entered for reservation
+   sent in the corporateNumber and returned in the node corporateAccountInfo */
+  CorporateAccount?: string | undefined;
 
   constructor(data?: IIHGSingleBookDetailCustomData) {
     super(data);
@@ -16479,10 +16781,12 @@ export class IHGSingleBookDetailCustomData extends SingleBookDetailCustomData im
         for (let item of _data["IhgBookingReferences"])
           this.IhgBookingReferences!.push(IHGBookingReference.fromJS(item));
       }
+      this.IhgCancellationNumber = _data["IhgCancellationNumber"];
       this.ArrivalTransport = _data["ArrivalTransport"] ? Transportation.fromJS(_data["ArrivalTransport"]) : <any>undefined;
       this.DepartureTransport = _data["DepartureTransport"] ? Transportation.fromJS(_data["DepartureTransport"]) : <any>undefined;
       this.PaymentByPoints = _data["PaymentByPoints"] ? BookPaymentByPoints.fromJS(_data["PaymentByPoints"]) : <any>undefined;
       this.TravelAgencyNumber = _data["TravelAgencyNumber"];
+      this.CorporateAccount = _data["CorporateAccount"];
     }
   }
 
@@ -16500,10 +16804,12 @@ export class IHGSingleBookDetailCustomData extends SingleBookDetailCustomData im
       for (let item of this.IhgBookingReferences)
         data["IhgBookingReferences"].push(item.toJSON());
     }
+    data["IhgCancellationNumber"] = this.IhgCancellationNumber;
     data["ArrivalTransport"] = this.ArrivalTransport ? this.ArrivalTransport.toJSON() : <any>undefined;
     data["DepartureTransport"] = this.DepartureTransport ? this.DepartureTransport.toJSON() : <any>undefined;
     data["PaymentByPoints"] = this.PaymentByPoints ? this.PaymentByPoints.toJSON() : <any>undefined;
     data["TravelAgencyNumber"] = this.TravelAgencyNumber;
+    data["CorporateAccount"] = this.CorporateAccount;
     super.toJSON(data);
     return data;
   }
@@ -16512,6 +16818,8 @@ export class IHGSingleBookDetailCustomData extends SingleBookDetailCustomData im
 export interface IIHGSingleBookDetailCustomData extends ISingleBookDetailCustomData {
   /** IHG Booking Reference list */
   IhgBookingReferences?: IHGBookingReference[] | undefined;
+  /** IHG Cancellation Number */
+  IhgCancellationNumber?: string | undefined;
   /** Transportation Infos - Arrival Transport */
   ArrivalTransport?: Transportation | undefined;
   /** Transportation Infos - Departure Transport */
@@ -16520,6 +16828,10 @@ export interface IIHGSingleBookDetailCustomData extends ISingleBookDetailCustomD
   PaymentByPoints?: BookPaymentByPoints | undefined;
   /** Travel Agency Number Used on IHG as IATA */
   TravelAgencyNumber?: string | undefined;
+  /** Corporate account for the book
+   Corporate discount Number entered for reservation
+   sent in the corporateNumber and returned in the node corporateAccountInfo */
+  CorporateAccount?: string | undefined;
 }
 
 export class BookPaymentByPoints implements IBookPaymentByPoints {
@@ -18713,6 +19025,564 @@ export abstract class CustomerCustomDataOfJupiterTrainAvailabilityInput implemen
 export interface ICustomerCustomDataOfJupiterTrainAvailabilityInput {
 }
 
+export class JupiterTrainBookRS extends BaseRS implements IJupiterTrainBookRS {
+  /** JupiterTrainBookOutput Response */
+  Response?: JupiterTrainBookOutput | undefined;
+
+  constructor(data?: IJupiterTrainBookRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? JupiterTrainBookOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterTrainBookRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterTrainBookRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterTrainBookRS extends IBaseRS {
+  /** JupiterTrainBookOutput Response */
+  Response?: JupiterTrainBookOutput | undefined;
+}
+
+export class JupiterTrainBookOutput extends BaseOutput implements IJupiterTrainBookOutput {
+  /** The Booking Status */
+  BookingStatus?: EBookingStatus;
+  /** Connector Custom Data */
+  ConnectorCustomData?: TrainBookOutputCustomData | undefined;
+
+  constructor(data?: IJupiterTrainBookOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.BookingStatus = _data["BookingStatus"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? TrainBookOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterTrainBookOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterTrainBookOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["BookingStatus"] = this.BookingStatus;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterTrainBookOutput extends IBaseOutput {
+  /** The Booking Status */
+  BookingStatus?: EBookingStatus;
+  /** Connector Custom Data */
+  ConnectorCustomData?: TrainBookOutputCustomData | undefined;
+}
+
+export abstract class TrainBookOutputCustomData implements ITrainBookOutputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: ITrainBookOutputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "TrainBookOutputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): TrainBookOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'TrainBookOutputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ITrainBookOutputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterTrainBookOutput implements ICustomerCustomDataOfJupiterTrainBookOutput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterTrainBookOutput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterTrainBookOutput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterTrainBookOutput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterTrainBookOutput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterTrainBookOutput {
+}
+
+export class JupiterTrainBookRQ extends BaseRQ implements IJupiterTrainBookRQ {
+  /** JupiterTrainBookInput Request */
+  Request?: JupiterTrainBookInput | undefined;
+
+  constructor(data?: IJupiterTrainBookRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? JupiterTrainBookInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterTrainBookRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterTrainBookRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterTrainBookRQ extends IBaseRQ {
+  /** JupiterTrainBookInput Request */
+  Request?: JupiterTrainBookInput | undefined;
+}
+
+export class JupiterTrainBookInput extends BaseInput implements IJupiterTrainBookInput {
+  SolutionToBook?: TrainBookSolution | undefined;
+  ConnectorCustomData?: TrainBookInputCustomData | undefined;
+
+  constructor(data?: IJupiterTrainBookInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.SolutionToBook = _data["SolutionToBook"] ? TrainBookSolution.fromJS(_data["SolutionToBook"]) : <any>undefined;
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? TrainBookInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterTrainBookInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterTrainBookInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["SolutionToBook"] = this.SolutionToBook ? this.SolutionToBook.toJSON() : <any>undefined;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterTrainBookInput extends IBaseInput {
+  SolutionToBook?: TrainBookSolution | undefined;
+  ConnectorCustomData?: TrainBookInputCustomData | undefined;
+}
+
+export class TrainBookSolution implements ITrainBookSolution {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  ResultId?: string | undefined;
+  ResultKey?: string | undefined;
+  TrainSegments?: TrainSegment[] | undefined;
+  SolutionFareList?: TrainFareGroupResult[] | undefined;
+  Paxes?: TrainBookPaxDetail[] | undefined;
+
+  constructor(data?: ITrainBookSolution) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.ResultId = _data["ResultId"];
+      this.ResultKey = _data["ResultKey"];
+      if (Array.isArray(_data["TrainSegments"])) {
+        this.TrainSegments = [] as any;
+        for (let item of _data["TrainSegments"])
+          this.TrainSegments!.push(TrainSegment.fromJS(item));
+      }
+      if (Array.isArray(_data["SolutionFareList"])) {
+        this.SolutionFareList = [] as any;
+        for (let item of _data["SolutionFareList"])
+          this.SolutionFareList!.push(TrainFareGroupResult.fromJS(item));
+      }
+      if (Array.isArray(_data["Paxes"])) {
+        this.Paxes = [] as any;
+        for (let item of _data["Paxes"])
+          this.Paxes!.push(TrainBookPaxDetail.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): TrainBookSolution {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainBookSolution();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["ResultId"] = this.ResultId;
+    data["ResultKey"] = this.ResultKey;
+    if (Array.isArray(this.TrainSegments)) {
+      data["TrainSegments"] = [];
+      for (let item of this.TrainSegments)
+        data["TrainSegments"].push(item.toJSON());
+    }
+    if (Array.isArray(this.SolutionFareList)) {
+      data["SolutionFareList"] = [];
+      for (let item of this.SolutionFareList)
+        data["SolutionFareList"].push(item.toJSON());
+    }
+    if (Array.isArray(this.Paxes)) {
+      data["Paxes"] = [];
+      for (let item of this.Paxes)
+        data["Paxes"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface ITrainBookSolution {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  ResultId?: string | undefined;
+  ResultKey?: string | undefined;
+  TrainSegments?: TrainSegment[] | undefined;
+  SolutionFareList?: TrainFareGroupResult[] | undefined;
+  Paxes?: TrainBookPaxDetail[] | undefined;
+}
+
+export class TrainBookPaxDetail extends PaxDetails implements ITrainBookPaxDetail {
+  TrainSeats?: TrainSeatLocation[] | undefined;
+
+  constructor(data?: ITrainBookPaxDetail) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["TrainSeats"])) {
+        this.TrainSeats = [] as any;
+        for (let item of _data["TrainSeats"])
+          this.TrainSeats!.push(TrainSeatLocation.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): TrainBookPaxDetail {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainBookPaxDetail();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.TrainSeats)) {
+      data["TrainSeats"] = [];
+      for (let item of this.TrainSeats)
+        data["TrainSeats"].push(item.toJSON());
+    }
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ITrainBookPaxDetail extends IPaxDetails {
+  TrainSeats?: TrainSeatLocation[] | undefined;
+}
+
+export class TrainSeatLocation implements ITrainSeatLocation {
+  Number?: string | undefined;
+  Type?: ETrainSeatType;
+  Wagon?: string | undefined;
+  TrainNumber?: string | undefined;
+
+  constructor(data?: ITrainSeatLocation) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.Number = _data["Number"];
+      this.Type = _data["Type"];
+      this.Wagon = _data["Wagon"];
+      this.TrainNumber = _data["TrainNumber"];
+    }
+  }
+
+  static fromJS(data: any): TrainSeatLocation {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainSeatLocation();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Number"] = this.Number;
+    data["Type"] = this.Type;
+    data["Wagon"] = this.Wagon;
+    data["TrainNumber"] = this.TrainNumber;
+    return data;
+  }
+}
+
+export interface ITrainSeatLocation {
+  Number?: string | undefined;
+  Type?: ETrainSeatType;
+  Wagon?: string | undefined;
+  TrainNumber?: string | undefined;
+}
+
+export enum ETrainSeatType {
+  PLACE = "PLACE",
+  AISLE = "AISLE",
+  WINDOW = "WINDOW",
+  MIDDLE = "MIDDLE",
+  WINALONE = "WINALONE",
+}
+
+export abstract class CustomerCustomDataOfTrainBookPaxDetail implements ICustomerCustomDataOfTrainBookPaxDetail {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfTrainBookPaxDetail) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfTrainBookPaxDetail";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfTrainBookPaxDetail {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookPaxDetail' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfTrainBookPaxDetail {
+}
+
+export abstract class CustomerCustomDataOfTrainBookSolution implements ICustomerCustomDataOfTrainBookSolution {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfTrainBookSolution) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfTrainBookSolution";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfTrainBookSolution {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookSolution' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfTrainBookSolution {
+}
+
+export abstract class TrainBookInputCustomData implements ITrainBookInputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: ITrainBookInputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "TrainBookInputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): TrainBookInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "EMINDS") {
+      let result = new EmindsTrainBookInputCustomData();
+      result.init(data);
+      return result;
+    }
+    throw new Error("The abstract class 'TrainBookInputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ITrainBookInputCustomData {
+}
+
+export class EmindsTrainBookInputCustomData extends TrainBookInputCustomData implements IEmindsTrainBookInputCustomData {
+  CommunityId?: string | undefined;
+
+  constructor(data?: IEmindsTrainBookInputCustomData) {
+    super(data);
+    this._discriminator = "EMINDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.CommunityId = _data["CommunityId"];
+    }
+  }
+
+  static fromJS(data: any): EmindsTrainBookInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new EmindsTrainBookInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CommunityId"] = this.CommunityId;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IEmindsTrainBookInputCustomData extends ITrainBookInputCustomData {
+  CommunityId?: string | undefined;
+}
+
+export abstract class CustomerCustomDataOfJupiterTrainBookInput implements ICustomerCustomDataOfJupiterTrainBookInput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterTrainBookInput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterTrainBookInput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterTrainBookInput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterTrainBookInput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterTrainBookInput {
+}
+
 export class JupiterDestinationListRS extends BaseCacheableRS implements IJupiterDestinationListRS {
   /** JupiterDestinationListOutput Response */
   Response?: JupiterDestinationListOutput | undefined;
@@ -18959,6 +19829,11 @@ export class DestinationListInputCustomData implements IDestinationListInputCust
       result.init(data);
       return result;
     }
+    if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
+      let result = new HotelbedsDestinationListInputCustomData();
+      result.init(data);
+      return result;
+    }
     let result = new DestinationListInputCustomData();
     result.init(data);
     return result;
@@ -19068,6 +19943,88 @@ export class CreoleDestinationListInputCustomData extends DestinationListInputCu
 
 export interface ICreoleDestinationListInputCustomData extends IDestinationListInputCustomData {
   ShowHotels?: boolean;
+}
+
+export class HotelbedsDestinationListInputCustomData extends DestinationListInputCustomData implements IHotelbedsDestinationListInputCustomData {
+  Fields?: string[] | undefined;
+  Codes?: string[] | undefined;
+  CountryCodes?: string[] | undefined;
+  LastUpdateTime?: string | undefined;
+  From?: number;
+  To?: number;
+  UseSecondaryLanguage?: boolean;
+
+  constructor(data?: IHotelbedsDestinationListInputCustomData) {
+    super(data);
+    this._discriminator = "HOTELBEDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["Fields"])) {
+        this.Fields = [] as any;
+        for (let item of _data["Fields"])
+          this.Fields!.push(item);
+      }
+      if (Array.isArray(_data["Codes"])) {
+        this.Codes = [] as any;
+        for (let item of _data["Codes"])
+          this.Codes!.push(item);
+      }
+      if (Array.isArray(_data["CountryCodes"])) {
+        this.CountryCodes = [] as any;
+        for (let item of _data["CountryCodes"])
+          this.CountryCodes!.push(item);
+      }
+      this.LastUpdateTime = _data["LastUpdateTime"];
+      this.From = _data["From"];
+      this.To = _data["To"];
+      this.UseSecondaryLanguage = _data["UseSecondaryLanguage"];
+    }
+  }
+
+  static fromJS(data: any): HotelbedsDestinationListInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new HotelbedsDestinationListInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.Fields)) {
+      data["Fields"] = [];
+      for (let item of this.Fields)
+        data["Fields"].push(item);
+    }
+    if (Array.isArray(this.Codes)) {
+      data["Codes"] = [];
+      for (let item of this.Codes)
+        data["Codes"].push(item);
+    }
+    if (Array.isArray(this.CountryCodes)) {
+      data["CountryCodes"] = [];
+      for (let item of this.CountryCodes)
+        data["CountryCodes"].push(item);
+    }
+    data["LastUpdateTime"] = this.LastUpdateTime;
+    data["From"] = this.From;
+    data["To"] = this.To;
+    data["UseSecondaryLanguage"] = this.UseSecondaryLanguage;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IHotelbedsDestinationListInputCustomData extends IDestinationListInputCustomData {
+  Fields?: string[] | undefined;
+  Codes?: string[] | undefined;
+  CountryCodes?: string[] | undefined;
+  LastUpdateTime?: string | undefined;
+  From?: number;
+  To?: number;
+  UseSecondaryLanguage?: boolean;
 }
 
 export abstract class CustomerCustomDataOfJupiterDestinationListInput implements ICustomerCustomDataOfJupiterDestinationListInput {
@@ -21670,9 +22627,6 @@ export interface ISabreFlightStepRequestCustomData extends IFlightStepRequestCus
 }
 
 export class TravelFusionFlightStepRequestCustomData extends FlightStepRequestCustomData implements ITravelFusionFlightStepRequestCustomData {
-  /** Define a specific Time for the current Step */
-  TimeRequest?: string;
-  TimeWindow?: number | undefined;
   /** The maximum number of changes acceptable in a single leg (i.e. this limit will be applied to the outward leg and return leg separately).
    This value will be submitted to the supplier if they offer this functionality.
    Otherwise an appropriate request will be made to the supplier.
@@ -21696,8 +22650,6 @@ export class TravelFusionFlightStepRequestCustomData extends FlightStepRequestCu
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.TimeRequest = _data["TimeRequest"];
-      this.TimeWindow = _data["TimeWindow"];
       this.MaxChange = _data["MaxChange"];
       this.MaxHop = _data["MaxHop"];
       this.TimeOut = _data["TimeOut"];
@@ -21716,8 +22668,6 @@ export class TravelFusionFlightStepRequestCustomData extends FlightStepRequestCu
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["TimeRequest"] = this.TimeRequest;
-    data["TimeWindow"] = this.TimeWindow;
     data["MaxChange"] = this.MaxChange;
     data["MaxHop"] = this.MaxHop;
     data["TimeOut"] = this.TimeOut;
@@ -21730,9 +22680,6 @@ export class TravelFusionFlightStepRequestCustomData extends FlightStepRequestCu
 }
 
 export interface ITravelFusionFlightStepRequestCustomData extends IFlightStepRequestCustomData {
-  /** Define a specific Time for the current Step */
-  TimeRequest?: string;
-  TimeWindow?: number | undefined;
   /** The maximum number of changes acceptable in a single leg (i.e. this limit will be applied to the outward leg and return leg separately).
    This value will be submitted to the supplier if they offer this functionality.
    Otherwise an appropriate request will be made to the supplier.
@@ -21851,6 +22798,7 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
   AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
   /** Define if is an expert search or a normal search */
   IsExpertSearch?: boolean;
+  EnableFareFamilies?: boolean;
 
   constructor(data?: IAmadeusFlightAvailabilityInputCustomData) {
     super(data);
@@ -21861,7 +22809,8 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
     super.init(_data);
     if (_data) {
       this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
-      this.IsExpertSearch = _data["isExpertSearch"];
+      this.IsExpertSearch = _data["IsExpertSearch"];
+      this.EnableFareFamilies = _data["EnableFareFamilies"];
     }
   }
 
@@ -21875,7 +22824,8 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
     data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
-    data["isExpertSearch"] = this.IsExpertSearch;
+    data["IsExpertSearch"] = this.IsExpertSearch;
+    data["EnableFareFamilies"] = this.EnableFareFamilies;
     super.toJSON(data);
     return data;
   }
@@ -21888,6 +22838,7 @@ export interface IAmadeusFlightAvailabilityInputCustomData extends IFlightAvaila
   AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
   /** Define if is an expert search or a normal search */
   IsExpertSearch?: boolean;
+  EnableFareFamilies?: boolean;
 }
 
 export class SabreFlightAvailabilityInputCustomData extends FlightAvailabilityInputCustomData implements ISabreFlightAvailabilityInputCustomData {
@@ -22224,7 +23175,7 @@ export abstract class BaseOperationPnr implements IBaseOperationPnr {
   /** Close Pnr is used in GDS requests
    if true do EndTransaction to save
    if false it will not skip the EndTransaction */
-  ClosePnr?: boolean;
+  ClosePnr?: boolean | undefined;
   /** PNR Number */
   PnrNumber?: string | undefined;
   /** PCC of the PNR */
@@ -22381,7 +23332,7 @@ export interface IBaseOperationPnr {
   /** Close Pnr is used in GDS requests
    if true do EndTransaction to save
    if false it will not skip the EndTransaction */
-  ClosePnr?: boolean;
+  ClosePnr?: boolean | undefined;
   /** PNR Number */
   PnrNumber?: string | undefined;
   /** PCC of the PNR */
@@ -22472,6 +23423,11 @@ export abstract class FlightDetailPnrCustomData implements IFlightDetailPnrCusto
 
   static fromJS(data: any): FlightDetailPnrCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightDetailPnrCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightDetailPnrCustomData();
       result.init(data);
@@ -22493,6 +23449,102 @@ export abstract class FlightDetailPnrCustomData implements IFlightDetailPnrCusto
 }
 
 export interface IFlightDetailPnrCustomData {
+}
+
+export class AmadeusFlightDetailPnrCustomData extends FlightDetailPnrCustomData implements IAmadeusFlightDetailPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightDetailPnrCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.PnrCustomData = _data["PnrCustomData"] ? AmadeusFlightPnrCustomData.fromJS(_data["PnrCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightDetailPnrCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightDetailPnrCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["PnrCustomData"] = this.PnrCustomData ? this.PnrCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightDetailPnrCustomData extends IFlightDetailPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
+}
+
+export class AmadeusFlightPnrCustomData implements IAmadeusFlightPnrCustomData {
+  /** ReceivedFrom firm passed to the EndTransaction */
+  ReceivedFrom?: string | undefined;
+  /** Autodelete TK Timelimit
+   If not enabled automatic TK on OID and no "TK" segment passed it return Error
+   ERROR AT END OF TRANSACTION TIME
+   ERROR AT EOT TIME
+   NEED TICKETING ARRANGEMENT
+   In this case the pnrCustomData?.TkXlAutoDeleteDate is mandatory */
+  TkXlAutoDeleteDate?: string | undefined;
+  /** Return the Amadeus PNR_Retrieve if any PNR_Retrieve is present in the call flow */
+  AmadeusPnrRetrieveXmlRs?: string | undefined;
+
+  constructor(data?: IAmadeusFlightPnrCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.ReceivedFrom = _data["ReceivedFrom"];
+      this.TkXlAutoDeleteDate = _data["TkXlAutoDeleteDate"];
+      this.AmadeusPnrRetrieveXmlRs = _data["AmadeusPnrRetrieveXmlRs"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightPnrCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightPnrCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ReceivedFrom"] = this.ReceivedFrom;
+    data["TkXlAutoDeleteDate"] = this.TkXlAutoDeleteDate;
+    data["AmadeusPnrRetrieveXmlRs"] = this.AmadeusPnrRetrieveXmlRs;
+    return data;
+  }
+}
+
+export interface IAmadeusFlightPnrCustomData {
+  /** ReceivedFrom firm passed to the EndTransaction */
+  ReceivedFrom?: string | undefined;
+  /** Autodelete TK Timelimit
+   If not enabled automatic TK on OID and no "TK" segment passed it return Error
+   ERROR AT END OF TRANSACTION TIME
+   ERROR AT EOT TIME
+   NEED TICKETING ARRANGEMENT
+   In this case the pnrCustomData?.TkXlAutoDeleteDate is mandatory */
+  TkXlAutoDeleteDate?: string | undefined;
+  /** Return the Amadeus PNR_Retrieve if any PNR_Retrieve is present in the call flow */
+  AmadeusPnrRetrieveXmlRs?: string | undefined;
 }
 
 export class SabreFlightDetailPnrCustomData extends FlightDetailPnrCustomData implements ISabreFlightDetailPnrCustomData {
@@ -22987,6 +24039,7 @@ export interface IRequiredParameter {
 
 export class RequiredParameterOption implements IRequiredParameterOption {
   Key?: string | undefined;
+  Value?: string | undefined;
   PiecesDescription?: string | undefined;
   Pieces?: string | undefined;
   WeightDescription?: string | undefined;
@@ -23010,6 +24063,7 @@ export class RequiredParameterOption implements IRequiredParameterOption {
   init(_data?: any) {
     if (_data) {
       this.Key = _data["Key"];
+      this.Value = _data["Value"];
       this.PiecesDescription = _data["PiecesDescription"];
       this.Pieces = _data["Pieces"];
       this.WeightDescription = _data["WeightDescription"];
@@ -23035,6 +24089,7 @@ export class RequiredParameterOption implements IRequiredParameterOption {
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
     data["Key"] = this.Key;
+    data["Value"] = this.Value;
     data["PiecesDescription"] = this.PiecesDescription;
     data["Pieces"] = this.Pieces;
     data["WeightDescription"] = this.WeightDescription;
@@ -23053,6 +24108,7 @@ export class RequiredParameterOption implements IRequiredParameterOption {
 
 export interface IRequiredParameterOption {
   Key?: string | undefined;
+  Value?: string | undefined;
   PiecesDescription?: string | undefined;
   Pieces?: string | undefined;
   WeightDescription?: string | undefined;
@@ -23711,6 +24767,11 @@ export abstract class PnrFlightSegmentCustomData implements IPnrFlightSegmentCus
 
   static fromJS(data: any): PnrFlightSegmentCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusPnrFlightSegmentCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabrePnrFlightSegmentCustomData();
       result.init(data);
@@ -23727,6 +24788,90 @@ export abstract class PnrFlightSegmentCustomData implements IPnrFlightSegmentCus
 }
 
 export interface IPnrFlightSegmentCustomData {
+}
+
+export class AmadeusPnrFlightSegmentCustomData extends PnrFlightSegmentCustomData implements IAmadeusPnrFlightSegmentCustomData {
+  /** Pnr Reference Number */
+  ReferenceNumber?: string | undefined;
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
+  /** Class Code of the Segment */
+  ClassCode?: string | undefined;
+  /** Amadeus Status */
+  Status?: string | undefined;
+  /** Is E-ticket Enabled or not */
+  ETicket?: boolean;
+  /** Return the Pax Quantity on the current Segment */
+  Quantity?: number;
+  /** Num of Stops if presents */
+  NumOfStops?: string | undefined;
+  /** Free Text with OperatedBy in the segment */
+  OperatedByText?: string | undefined;
+  /** Code of cabin classDesignator */
+  CabinDetails?: string | undefined;
+
+  constructor(data?: IAmadeusPnrFlightSegmentCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ReferenceNumber = _data["ReferenceNumber"];
+      this.LineNumber = _data["LineNumber"];
+      this.ClassCode = _data["ClassCode"];
+      this.Status = _data["Status"];
+      this.ETicket = _data["ETicket"];
+      this.Quantity = _data["Quantity"];
+      this.NumOfStops = _data["NumOfStops"];
+      this.OperatedByText = _data["OperatedByText"];
+      this.CabinDetails = _data["CabinDetails"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusPnrFlightSegmentCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusPnrFlightSegmentCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ReferenceNumber"] = this.ReferenceNumber;
+    data["LineNumber"] = this.LineNumber;
+    data["ClassCode"] = this.ClassCode;
+    data["Status"] = this.Status;
+    data["ETicket"] = this.ETicket;
+    data["Quantity"] = this.Quantity;
+    data["NumOfStops"] = this.NumOfStops;
+    data["OperatedByText"] = this.OperatedByText;
+    data["CabinDetails"] = this.CabinDetails;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusPnrFlightSegmentCustomData extends IPnrFlightSegmentCustomData {
+  /** Pnr Reference Number */
+  ReferenceNumber?: string | undefined;
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
+  /** Class Code of the Segment */
+  ClassCode?: string | undefined;
+  /** Amadeus Status */
+  Status?: string | undefined;
+  /** Is E-ticket Enabled or not */
+  ETicket?: boolean;
+  /** Return the Pax Quantity on the current Segment */
+  Quantity?: number;
+  /** Num of Stops if presents */
+  NumOfStops?: string | undefined;
+  /** Free Text with OperatedBy in the segment */
+  OperatedByText?: string | undefined;
+  /** Code of cabin classDesignator */
+  CabinDetails?: string | undefined;
 }
 
 export class SabrePnrFlightSegmentCustomData extends PnrFlightSegmentCustomData implements ISabrePnrFlightSegmentCustomData {
@@ -23965,6 +25110,11 @@ export abstract class PnrFlightPaxFareCustomData implements IPnrFlightPaxFareCus
 
   static fromJS(data: any): PnrFlightPaxFareCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusPnrFlightPaxFareCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'PnrFlightPaxFareCustomData' cannot be instantiated.");
   }
 
@@ -23976,6 +25126,52 @@ export abstract class PnrFlightPaxFareCustomData implements IPnrFlightPaxFareCus
 }
 
 export interface IPnrFlightPaxFareCustomData {
+}
+
+export class AmadeusPnrFlightPaxFareCustomData extends PnrFlightPaxFareCustomData implements IAmadeusPnrFlightPaxFareCustomData {
+  /** TST Creation Date */
+  CreationDate?: string | undefined;
+  /** TST Last Modification Date */
+  LastModificationDate?: string | undefined;
+  TstIndicator?: string | undefined;
+
+  constructor(data?: IAmadeusPnrFlightPaxFareCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.CreationDate = _data["CreationDate"];
+      this.LastModificationDate = _data["LastModificationDate"];
+      this.TstIndicator = _data["TstIndicator"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusPnrFlightPaxFareCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusPnrFlightPaxFareCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CreationDate"] = this.CreationDate;
+    data["LastModificationDate"] = this.LastModificationDate;
+    data["TstIndicator"] = this.TstIndicator;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusPnrFlightPaxFareCustomData extends IPnrFlightPaxFareCustomData {
+  /** TST Creation Date */
+  CreationDate?: string | undefined;
+  /** TST Last Modification Date */
+  LastModificationDate?: string | undefined;
+  TstIndicator?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfPnrFlightPaxFare implements ICustomerCustomDataOfPnrFlightPaxFare {
@@ -24699,6 +25895,11 @@ export abstract class PnrPaxDetailsCustomData implements IPnrPaxDetailsCustomDat
 
   static fromJS(data: any): PnrPaxDetailsCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusPnrPaxDetailsCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabrePnrPaxDetailsCustomData();
       result.init(data);
@@ -24715,6 +25916,60 @@ export abstract class PnrPaxDetailsCustomData implements IPnrPaxDetailsCustomDat
 }
 
 export interface IPnrPaxDetailsCustomData {
+}
+
+export class AmadeusPnrPaxDetailsCustomData extends PnrPaxDetailsCustomData implements IAmadeusPnrPaxDetailsCustomData {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
+  /** Amadeus PaxType */
+  PaxType?: string | undefined;
+  /** Amadeus pax Quantity -&gt; should be always 1 */
+  Quantity?: string | undefined;
+  /** Amadeus Infant Indicator -&gt; if there is an infant on the same seat */
+  InfantIndicator?: string | undefined;
+
+  constructor(data?: IAmadeusPnrPaxDetailsCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.LineNumber = _data["LineNumber"];
+      this.PaxType = _data["PaxType"];
+      this.Quantity = _data["Quantity"];
+      this.InfantIndicator = _data["InfantIndicator"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusPnrPaxDetailsCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusPnrPaxDetailsCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["LineNumber"] = this.LineNumber;
+    data["PaxType"] = this.PaxType;
+    data["Quantity"] = this.Quantity;
+    data["InfantIndicator"] = this.InfantIndicator;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusPnrPaxDetailsCustomData extends IPnrPaxDetailsCustomData {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
+  /** Amadeus PaxType */
+  PaxType?: string | undefined;
+  /** Amadeus pax Quantity -&gt; should be always 1 */
+  Quantity?: string | undefined;
+  /** Amadeus Infant Indicator -&gt; if there is an infant on the same seat */
+  InfantIndicator?: string | undefined;
 }
 
 export class SabrePnrPaxDetailsCustomData extends PnrPaxDetailsCustomData implements ISabrePnrPaxDetailsCustomData {
@@ -25070,6 +26325,8 @@ export interface ICustomerCustomDataOfPnrTravelCompany {
 }
 
 export class PnrRemarks implements IPnrRemarks {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
   /** GDS remark Id
 
    SABRE the Id-rph string */
@@ -25094,6 +26351,7 @@ export class PnrRemarks implements IPnrRemarks {
 
   init(_data?: any) {
     if (_data) {
+      this.LineNumber = _data["LineNumber"];
       this.Id = _data["Id"];
       this.Code = _data["Code"];
       this.Type = _data["Type"];
@@ -25111,6 +26369,7 @@ export class PnrRemarks implements IPnrRemarks {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data["LineNumber"] = this.LineNumber;
     data["Id"] = this.Id;
     data["Code"] = this.Code;
     data["Type"] = this.Type;
@@ -25121,6 +26380,8 @@ export class PnrRemarks implements IPnrRemarks {
 }
 
 export interface IPnrRemarks {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
   /** GDS remark Id
 
    SABRE the Id-rph string */
@@ -25136,6 +26397,8 @@ export interface IPnrRemarks {
 }
 
 export class PnrOsiSsr implements IPnrOsiSsr {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
   /** GDS OSI/SSR Id
 
    SABRE the Id-rph string */
@@ -25164,6 +26427,7 @@ export class PnrOsiSsr implements IPnrOsiSsr {
 
   init(_data?: any) {
     if (_data) {
+      this.LineNumber = _data["LineNumber"];
       this.Id = _data["Id"];
       this.Code = _data["Code"];
       this.Type = _data["Type"];
@@ -25183,6 +26447,7 @@ export class PnrOsiSsr implements IPnrOsiSsr {
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data["LineNumber"] = this.LineNumber;
     data["Id"] = this.Id;
     data["Code"] = this.Code;
     data["Type"] = this.Type;
@@ -25195,6 +26460,8 @@ export class PnrOsiSsr implements IPnrOsiSsr {
 }
 
 export interface IPnrOsiSsr {
+  /** Pnr Line Number */
+  LineNumber?: string | undefined;
   /** GDS OSI/SSR Id
 
    SABRE the Id-rph string */
@@ -25380,6 +26647,11 @@ export abstract class FlightDetailInputCustomData implements IFlightDetailInputC
 
   static fromJS(data: any): FlightDetailInputCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightDetailInputCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'FlightDetailInputCustomData' cannot be instantiated.");
   }
 
@@ -25391,6 +26663,46 @@ export abstract class FlightDetailInputCustomData implements IFlightDetailInputC
 }
 
 export interface IFlightDetailInputCustomData {
+}
+
+export class AmadeusFlightDetailInputCustomData extends FlightDetailInputCustomData implements IAmadeusFlightDetailInputCustomData {
+  /** Amadeus Session if you want to use a Context-full (State) call
+
+   If not specified the FlightAvailability will use a Context-less (Stateless) */
+  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightDetailInputCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightDetailInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightDetailInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightDetailInputCustomData extends IFlightDetailInputCustomData {
+  /** Amadeus Session if you want to use a Context-full (State) call
+
+   If not specified the FlightAvailability will use a Context-less (Stateless) */
+  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterFlightDetailInput implements ICustomerCustomDataOfJupiterFlightDetailInput {
@@ -25561,6 +26873,11 @@ export abstract class FlightPriceVerifyPnrCustomData implements IFlightPriceVeri
 
   static fromJS(data: any): FlightPriceVerifyPnrCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightPriceVerifyPnrCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightPriceVerifyPnrCustomData();
       result.init(data);
@@ -25582,6 +26899,42 @@ export abstract class FlightPriceVerifyPnrCustomData implements IFlightPriceVeri
 }
 
 export interface IFlightPriceVerifyPnrCustomData {
+}
+
+export class AmadeusFlightPriceVerifyPnrCustomData extends FlightPriceVerifyPnrCustomData implements IAmadeusFlightPriceVerifyPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightPriceVerifyPnrCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.PnrCustomData = _data["PnrCustomData"] ? AmadeusFlightPnrCustomData.fromJS(_data["PnrCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightPriceVerifyPnrCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightPriceVerifyPnrCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["PnrCustomData"] = this.PnrCustomData ? this.PnrCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightPriceVerifyPnrCustomData extends IFlightPriceVerifyPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
 }
 
 export class SabreFlightPriceVerifyPnrCustomData extends FlightPriceVerifyPnrCustomData implements ISabreFlightPriceVerifyPnrCustomData {
@@ -26041,6 +27394,11 @@ export abstract class FlightBookPnrCustomData implements IFlightBookPnrCustomDat
 
   static fromJS(data: any): FlightBookPnrCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightBookPnrCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightBookPnrCustomData();
       result.init(data);
@@ -26062,6 +27420,42 @@ export abstract class FlightBookPnrCustomData implements IFlightBookPnrCustomDat
 }
 
 export interface IFlightBookPnrCustomData {
+}
+
+export class AmadeusFlightBookPnrCustomData extends FlightBookPnrCustomData implements IAmadeusFlightBookPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightBookPnrCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.PnrCustomData = _data["PnrCustomData"] ? AmadeusFlightPnrCustomData.fromJS(_data["PnrCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightBookPnrCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightBookPnrCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["PnrCustomData"] = this.PnrCustomData ? this.PnrCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightBookPnrCustomData extends IFlightBookPnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
 }
 
 export class SabreFlightBookPnrCustomData extends FlightBookPnrCustomData implements ISabreFlightBookPnrCustomData {
@@ -26342,6 +27736,11 @@ export abstract class FlightBookInputCustomData implements IFlightBookInputCusto
 
   static fromJS(data: any): FlightBookInputCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightBookInputCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightBookInputCustomData();
       result.init(data);
@@ -26358,6 +27757,46 @@ export abstract class FlightBookInputCustomData implements IFlightBookInputCusto
 }
 
 export interface IFlightBookInputCustomData {
+}
+
+export class AmadeusFlightBookInputCustomData extends FlightBookInputCustomData implements IAmadeusFlightBookInputCustomData {
+  /** Amadeus Session if you want to use a Context-full (State) call
+
+   If not specified the FlightAvailability will use a Context-less (Stateless) */
+  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightBookInputCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightBookInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightBookInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightBookInputCustomData extends IFlightBookInputCustomData {
+  /** Amadeus Session if you want to use a Context-full (State) call
+
+   If not specified the FlightAvailability will use a Context-less (Stateless) */
+  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
 }
 
 /** Sabre Custom Data */
@@ -26588,6 +28027,11 @@ export abstract class FlightRetrievePnrCustomData implements IFlightRetrievePnrC
 
   static fromJS(data: any): FlightRetrievePnrCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightRetrievePnrCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightRetrievePnrCustomData();
       result.init(data);
@@ -26604,6 +28048,42 @@ export abstract class FlightRetrievePnrCustomData implements IFlightRetrievePnrC
 }
 
 export interface IFlightRetrievePnrCustomData {
+}
+
+export class AmadeusFlightRetrievePnrCustomData extends FlightRetrievePnrCustomData implements IAmadeusFlightRetrievePnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
+
+  constructor(data?: IAmadeusFlightRetrievePnrCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.PnrCustomData = _data["PnrCustomData"] ? AmadeusFlightPnrCustomData.fromJS(_data["PnrCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightRetrievePnrCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightRetrievePnrCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["PnrCustomData"] = this.PnrCustomData ? this.PnrCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightRetrievePnrCustomData extends IFlightRetrievePnrCustomData {
+  /** Sabre Generic PNR Custom Data */
+  PnrCustomData?: AmadeusFlightPnrCustomData | undefined;
 }
 
 export class SabreFlightRetrievePnrCustomData extends FlightRetrievePnrCustomData implements ISabreFlightRetrievePnrCustomData {
@@ -29192,6 +30672,10 @@ export class LogSettings implements ILogSettings {
    By Default all Service Call Logs with Methods name as H2HOperationStorageLog will be logged
    Add any other Method Name you want to log to the CloudStorageDisk */
   AdditionalServiceCallStorageLog?: string[] | undefined;
+  /** Disabled CallLogs Filters
+   Used in DefaultJupiterCallLogger to check if the Call should be logged or not
+   By Default ERROR status will always be logged */
+  DisabledCallLogFilters?: DisabledCallLogFilter[] | undefined;
   /** ApplicationLog Name
    Used for local and for Elasticsearch index */
   ApplicationLogName?: string | undefined;
@@ -29253,6 +30737,11 @@ export class LogSettings implements ILogSettings {
         for (let item of _data["AdditionalServiceCallStorageLog"])
           this.AdditionalServiceCallStorageLog!.push(item);
       }
+      if (Array.isArray(_data["DisabledCallLogFilters"])) {
+        this.DisabledCallLogFilters = [] as any;
+        for (let item of _data["DisabledCallLogFilters"])
+          this.DisabledCallLogFilters!.push(DisabledCallLogFilter.fromJS(item));
+      }
       this.ApplicationLogName = _data["ApplicationLogName"];
       this.ServiceCallLogName = _data["ServiceCallLogName"];
       this.ConnectorCallLogName = _data["ConnectorCallLogName"];
@@ -29292,6 +30781,11 @@ export class LogSettings implements ILogSettings {
       for (let item of this.AdditionalServiceCallStorageLog)
         data["AdditionalServiceCallStorageLog"].push(item);
     }
+    if (Array.isArray(this.DisabledCallLogFilters)) {
+      data["DisabledCallLogFilters"] = [];
+      for (let item of this.DisabledCallLogFilters)
+        data["DisabledCallLogFilters"].push(item.toJSON());
+    }
     data["ApplicationLogName"] = this.ApplicationLogName;
     data["ServiceCallLogName"] = this.ServiceCallLogName;
     data["ConnectorCallLogName"] = this.ConnectorCallLogName;
@@ -29320,6 +30814,10 @@ export interface ILogSettings {
    By Default all Service Call Logs with Methods name as H2HOperationStorageLog will be logged
    Add any other Method Name you want to log to the CloudStorageDisk */
   AdditionalServiceCallStorageLog?: string[] | undefined;
+  /** Disabled CallLogs Filters
+   Used in DefaultJupiterCallLogger to check if the Call should be logged or not
+   By Default ERROR status will always be logged */
+  DisabledCallLogFilters?: DisabledCallLogFilter[] | undefined;
   /** ApplicationLog Name
    Used for local and for Elasticsearch index */
   ApplicationLogName?: string | undefined;
@@ -29407,6 +30905,80 @@ export enum EH2HOperation {
   TRAIN_BOOK = "TRAIN_BOOK",
   DESTINATION_LIST = "DESTINATION_LIST",
   CONNECTOR_CUSTOM = "CONNECTOR_CUSTOM",
+}
+
+/** Disabled CallLog Filter */
+export class DisabledCallLogFilter implements IDisabledCallLogFilter {
+  /** Call Log Type */
+  LogTypes?: EJupiterLogType[] | undefined;
+  /** Call Pid StartWith */
+  PidStartWith?: string | undefined;
+  /** Operation Status
+   ERROR Status will always be logged */
+  Status?: EOperationStatus | undefined;
+  /** ConnectorCode */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** ConnectorOperation */
+  ConnectorOperation?: EH2HOperation | undefined;
+
+  constructor(data?: IDisabledCallLogFilter) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["LogTypes"])) {
+        this.LogTypes = [] as any;
+        for (let item of _data["LogTypes"])
+          this.LogTypes!.push(item);
+      }
+      this.PidStartWith = _data["PidStartWith"];
+      this.Status = _data["Status"];
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.ConnectorOperation = _data["ConnectorOperation"];
+    }
+  }
+
+  static fromJS(data: any): DisabledCallLogFilter {
+    data = typeof data === 'object' ? data : {};
+    let result = new DisabledCallLogFilter();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.LogTypes)) {
+      data["LogTypes"] = [];
+      for (let item of this.LogTypes)
+        data["LogTypes"].push(item);
+    }
+    data["PidStartWith"] = this.PidStartWith;
+    data["Status"] = this.Status;
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["ConnectorOperation"] = this.ConnectorOperation;
+    return data;
+  }
+}
+
+/** Disabled CallLog Filter */
+export interface IDisabledCallLogFilter {
+  /** Call Log Type */
+  LogTypes?: EJupiterLogType[] | undefined;
+  /** Call Pid StartWith */
+  PidStartWith?: string | undefined;
+  /** Operation Status
+   ERROR Status will always be logged */
+  Status?: EOperationStatus | undefined;
+  /** ConnectorCode */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** ConnectorOperation */
+  ConnectorOperation?: EH2HOperation | undefined;
 }
 
 /** ElasticSearch Settings Class */
@@ -29585,8 +31157,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
   DisabledConnectorTypes?: EH2HConnectorType[] | undefined;
   /** Disabled Operations */
   DisabledOperations?: EH2HOperation[] | undefined;
-  /** Disabled CallLogs Operations */
-  JupiterCallLogsDisabledOperations?: EH2HOperation[] | undefined;
   /** Not set this in AppSettings will be rewrite form BaseConnector constructor */
   Version?: string | undefined;
   /** Return if the current Environment is the default for the Connector
@@ -29620,11 +31190,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
         this.DisabledOperations = [] as any;
         for (let item of _data["DisabledOperations"])
           this.DisabledOperations!.push(item);
-      }
-      if (Array.isArray(_data["JupiterCallLogsDisabledOperations"])) {
-        this.JupiterCallLogsDisabledOperations = [] as any;
-        for (let item of _data["JupiterCallLogsDisabledOperations"])
-          this.JupiterCallLogsDisabledOperations!.push(item);
       }
       this.Version = _data["Version"];
       this.IsDefaultEnvironment = _data["IsDefaultEnvironment"];
@@ -29663,11 +31228,6 @@ export class BaseConnectorSettings implements IBaseConnectorSettings {
       for (let item of this.DisabledOperations)
         data["DisabledOperations"].push(item);
     }
-    if (Array.isArray(this.JupiterCallLogsDisabledOperations)) {
-      data["JupiterCallLogsDisabledOperations"] = [];
-      for (let item of this.JupiterCallLogsDisabledOperations)
-        data["JupiterCallLogsDisabledOperations"].push(item);
-    }
     data["Version"] = this.Version;
     data["IsDefaultEnvironment"] = this.IsDefaultEnvironment;
     if (Array.isArray(this.EnabledConnectorTypes)) {
@@ -29696,8 +31256,6 @@ export interface IBaseConnectorSettings {
   DisabledConnectorTypes?: EH2HConnectorType[] | undefined;
   /** Disabled Operations */
   DisabledOperations?: EH2HOperation[] | undefined;
-  /** Disabled CallLogs Operations */
-  JupiterCallLogsDisabledOperations?: EH2HOperation[] | undefined;
   /** Not set this in AppSettings will be rewrite form BaseConnector constructor */
   Version?: string | undefined;
   /** Return if the current Environment is the default for the Connector

@@ -3,23 +3,32 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
-  AmadeusFlightAvailabilityInputCustomData, AmadeusFlightStepRequestCustomData,
+  AmadeusFlightAvailabilityInputCustomData,
+  AmadeusFlightBookPnrCustomData,
+  AmadeusFlightPnrCustomData,
+  AmadeusFlightStepRequestCustomData,
   AvailabilityInputCustomData,
   EFlightCabin,
-  EH2HConnectorCode, EH2HOperation,
-  EIHGReservationRetrieveMode,
+  EH2HConnectorCode,
+  EH2HOperation,
   ETripType,
+  FlightBookPnr,
   FlightFareGroupResult,
   FlightStepRequest,
   FlightStepRequestCustomData,
   JupiterFlightAvailabilityInput,
   JupiterFlightAvailabilityRQ,
   JupiterFlightAvailabilityRS,
+  JupiterFlightBookInput,
+  JupiterFlightBookRQ,
+  JupiterFlightBookRS,
   JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, RoomRequest,
-  SabreFlightAvailabilityInputCustomData, SabreFlightStepRequestCustomData, SabreSynXisRoomRequestCustomData,
-  SingleFlightAvailResult, TravelFusionFlightStepRequestCustomData,
+  JupiterFlightDetailRS, PnrTravelCompany,
+  SabreFlightAvailabilityInputCustomData,
+  SabreFlightStepRequestCustomData,
+  SingleFlightAvailResult,
+  TravelFusionFlightStepRequestCustomData,
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
 import {AppConfigService} from '../../../../services/app-config/app-config.service';
@@ -44,6 +53,9 @@ export class FlightSearchComponent implements OnInit {
 
   jupiterFlightDetailRq: JupiterFlightDetailRQ = null;
   jupiterFlightDetailRs: JupiterFlightDetailRS = null;
+
+  jupiterFlightBookRq: JupiterFlightBookRQ = null;
+  jupiterFlightBookRs: JupiterFlightBookRS = null;
 
   EFlightCabin = EFlightCabin;
   EFlightCabinList = Object.keys(EFlightCabin);
@@ -137,8 +149,9 @@ export class FlightSearchComponent implements OnInit {
             return c['_discriminator'] === EH2HConnectorCode.AMADEUS;
           })) {
             this.jupiterFlightAvailabilityRq.Request.ConnectorCustomData.push(new AmadeusFlightAvailabilityInputCustomData({
+              IsExpertSearch: false,
               AccountCodes: [],
-              IsExpertSearch: false
+              EnableFareFamilies: true,
             }));
           }
           break;
@@ -274,8 +287,6 @@ export class FlightSearchComponent implements OnInit {
               MaxChange: null,
               MaxHop: null,
               TimeOut: null,
-              TimeWindow: null,
-              TimeRequest: null,
               ShowCheckInCharges: true,
               ShowLuggageCharges: true,
               ShowSpeedyBoardingCharges: true,
@@ -284,7 +295,7 @@ export class FlightSearchComponent implements OnInit {
             // Add Custom Data Input Settings
             customData['_CustomDataInputSettings'] = new CustomDataInputSettings({
               dateProps: [],
-              numProps: ['MaxChange', 'MaxHop', 'MaxHop', 'TimeOut', 'TimeWindow'],
+              numProps: ['MaxChange', 'MaxHop', 'MaxHop', 'TimeOut'],
               tagProps: ['SisterOriginLocation', 'SisterDestinationLocation'],
               enumProps: [],
               boolProps: ['ShowCheckInCharges', 'ShowLuggageCharges', 'ShowSpeedyBoardingCharges'],
@@ -328,7 +339,7 @@ export class FlightSearchComponent implements OnInit {
       this.loading = false;
       this.dialogService.open(DialogApiErrorComponent, {
         context: {
-          title: 'hotelAvailability Error',
+          title: 'flightAvailability Error',
           error: error
         },
       });
@@ -364,7 +375,80 @@ export class FlightSearchComponent implements OnInit {
       this.loading = false;
       this.dialogService.open(DialogApiErrorComponent, {
         context: {
-          title: 'hotelAvailability Error',
+          title: 'flightDetails Error',
+          error: error
+        },
+      });
+    });
+
+    // flightFareGroupResult
+  }
+
+
+  /**
+   * Execute the flight book
+   */
+  flightBook() {
+    this.loading = true;
+
+    let pnrString = JSON.stringify(this.jupiterFlightDetailRs.Response.Pnr);
+    let bookPnr = <FlightBookPnr>JSON.parse(pnrString);
+
+    bookPnr = new FlightBookPnr({
+      AdditionalAncillaries: this.jupiterFlightDetailRs.Response.Pnr.AdditionalAncillaries,
+      AlternativeFares: this.jupiterFlightDetailRs.Response.Pnr.AlternativeFares,
+      Ancillaries: this.jupiterFlightDetailRs.Response.Pnr.Ancillaries,
+      CancelDate: this.jupiterFlightDetailRs.Response.Pnr.CancelDate,
+      ClosePnr: this.jupiterFlightDetailRs.Response.Pnr.ClosePnr,
+      ConnectorCode: this.jupiterFlightDetailRs.Response.Pnr.ConnectorCode,
+      // ConnectorCustomData: this.jupiterFlightDetailRs.Response.Pnr.ConnectorCustomData,
+      CreditCardPayment: this.jupiterFlightDetailRs.Response.Pnr.CreditCardPayment,
+      Fare: this.jupiterFlightDetailRs.Response.Pnr.Fare,
+      FlightSegments: this.jupiterFlightDetailRs.Response.Pnr.FlightSegments,
+      LastTicketDate: this.jupiterFlightDetailRs.Response.Pnr.LastTicketDate,
+      OsiSsr: this.jupiterFlightDetailRs.Response.Pnr.OsiSsr,
+      Paxes: this.jupiterFlightDetailRs.Response.Pnr.Paxes,
+      PnrDate: this.jupiterFlightDetailRs.Response.Pnr.PnrDate,
+      PnrNumber: this.jupiterFlightDetailRs.Response.Pnr.PnrNumber,
+      PseudoCityCode: this.jupiterFlightDetailRs.Response.Pnr.PseudoCityCode,
+      Remarks: this.jupiterFlightDetailRs.Response.Pnr.Remarks,
+      TravelCompany: this.jupiterFlightDetailRs.Response.Pnr.TravelCompany
+    });
+
+    // Book the same of detail
+    this.jupiterFlightBookRq = new JupiterFlightBookRQ({
+      ConnectorsEnvironment: this.jupiterFlightAvailabilityRq.ConnectorsEnvironment,
+      Request: new JupiterFlightBookInput({
+        Pnr: bookPnr,
+        ConnectorsDebug: this.jupiterFlightAvailabilityRq.Request.ConnectorsDebug,
+      })
+    });
+
+    if (bookPnr.ConnectorCode === EH2HConnectorCode.AMADEUS) {
+      // Add Firm
+      this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
+        PnrCustomData: new AmadeusFlightPnrCustomData({
+          ReceivedFrom: 'Andrea',
+          TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
+        })
+      });
+
+      this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
+        Name: 'NAAR TOUR OPERATOR 024855851'
+      });
+
+
+    }
+
+    this.jupiterApiService.flightBook(this.jupiterFlightBookRq).subscribe(response => {
+      this.jupiterFlightBookRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'flightBook Error',
           error: error
         },
       });

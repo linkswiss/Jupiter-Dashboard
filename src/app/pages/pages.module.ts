@@ -64,7 +64,9 @@ import { TravelCompanyComponent } from './test-api/common/book-components/travel
 import { ObjDisplayComponent } from './test-api/common/components/obj-display/obj-display.component';
 import { TrainAvailComponent } from './test-api/train/train-avail/train-avail.component';
 import {AppPreferenciesComponent} from './app-preferencies/app-preferencies.component';
-import dayGridPlugin from '@fullcalendar/daygrid'; 
+import { SegmentDisplayComponent } from './test-api/flight/components/segment-display/segment-display.component';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import { RefreshTokenComponent } from './auth/refresh-token/refresh-token.component';
 
 // import 'brace/ext/searchbox';
 
@@ -137,6 +139,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     ObjDisplayComponent,
     TrainAvailComponent,
     AppPreferenciesComponent,
+    SegmentDisplayComponent,
+    RefreshTokenComponent,
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [

@@ -5,10 +5,8 @@ import { JwtHelperService } from '@auth0/angular-jwt';
 import { Observable } from 'rxjs';
 import { share, shareReplay } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { ERole } from '../../api/dashboard/model/eRole';
-import { User } from '../../api/dashboard/model/user';
-import { UserAuthRQ } from '../../api/dashboard/model/userAuthRQ';
-import { AppConfigService } from '../app-config/app-config.service';
+import {AppConfigService, jwtOptions} from '../app-config/app-config.service';
+import {ERole, User, UserAuthRQ} from "../dashboard-api/dashboard-api-client";
 
 @Injectable({
   providedIn: 'root',
@@ -70,7 +68,7 @@ export class UserService {
 
   login(userAuthRQ: UserAuthRQ): Observable<User> {
     return new Observable(obs => {
-      this.httpClient.post<User>(this.appConfigService.config.dashboardApi.methods.user.authenticate, userAuthRQ)
+      this.httpClient.post<User>(this.appConfigService.config.dashboardApi.defaultApiUrl + '/users/authenticate', userAuthRQ)
       // .pipe(share())
           .subscribe(user => {
               this.saveCurrentUser(user);
@@ -85,7 +83,7 @@ export class UserService {
   logout(): Observable<boolean> {
     return new Observable(obs => {
 
-      this.httpClient.get(this.appConfigService.config.dashboardApi.methods.user.logout)
+      this.httpClient.get(this.appConfigService.config.dashboardApi.defaultApiUrl + '/users/logout')
           .subscribe(user => {
               this.deleteCurrentUser();
               obs.next(true);
@@ -100,7 +98,7 @@ export class UserService {
 
   refreshToken(): Observable<User> {
     return new Observable(obs => {
-      this.httpClient.post<User>(this.appConfigService.config.dashboardApi.methods.user.refreshToken, this.currentUser)
+      this.httpClient.post<User>(this.appConfigService.config.dashboardApi.defaultApiUrl + '/users/refresh-token', this.currentUser)
       // .pipe(share())
           .subscribe(user => {
               this.saveCurrentUser(user);

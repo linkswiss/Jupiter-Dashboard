@@ -3,6 +3,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Observable} from 'rxjs';
 import {environment} from '../../../environments/environment';
+// import {EH2HConnectorCode} from '../../api/dashboard/model/eH2HConnectorCode';
 import {UserService} from '../user/user.service';
 import * as _ from 'lodash';
 import {EH2HConnectorCode, EH2HOperation} from '../jupiter-api/jupiter-api-client';
@@ -75,12 +76,18 @@ export class AppConfigService implements OnInit {
   store: ElectronStore<UserSettings>;
   userAgent = navigator.userAgent.toLowerCase();
 
+  // store = new ElectronStore<UserSettings>({
+  //   defaults: {
+  //     Endpoints: []
+  //   }
+  // });
+
   constructor(private httpClient: HttpClient, private router: Router, public jwtHelper: JwtHelperService) {
-    this.store = new ElectronStore<UserSettings>({
-      defaults: {
-        Endpoints: []
-      }
-    });
+    //   this.store = new ElectronStore<UserSettings>({
+    //     defaults: {
+    //       Endpoints: []
+    //     }
+    //   });
     this.loadDefaultEndpoint();
   }
 

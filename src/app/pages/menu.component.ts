@@ -3,6 +3,7 @@ import {NbMenuItem} from '@nebular/theme';
 import {AppConfigService} from '../services/app-config/app-config.service';
 import {UserService} from '../services/user/user.service';
 import {EH2HConnectorCode} from '../services/jupiter-api/jupiter-api-client';
+import {ERole} from "../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-menu',
@@ -34,7 +35,7 @@ export class MenuComponent {
       },
     ];
 
-    if (this.userService.isRole('ADMIN')) {
+    if (this.userService.isRole(ERole.ADMIN)) {
       // TESTER
       this.menu.push(
         {

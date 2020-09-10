@@ -3,10 +3,12 @@ import { Router } from '@angular/router';
 import { AppConfigService } from '../../services/app-config/app-config.service';
 import { UserService } from '../../services/user/user.service';
 import { Endpoint } from '../../services/app-config/user-settings.model';
-import { FormGroupTyped } from '../../utility/form-group-typed';
+// import { FormGroupTyped } from '../../utility/form-group-typed';
 import { TravelFusionFlightDetailPnrCustomData } from 'src/app/services/jupiter-api/jupiter-api-client';
-import { FormControl, Validators } from '@angular/forms';
+import {FormBuilder, FormControl, Validators} from '@angular/forms';
 import * as _ from 'lodash';
+import {UserAuthRQ} from "../../services/dashboard-api/dashboard-api-client";
+import {FormGroupTyped} from "../../utility/form-group-typed";
 
 @Component({
   selector: 'jupiter-app-preferencies',
@@ -21,7 +23,7 @@ export class AppPreferenciesComponent implements OnInit {
   public endpointForm: FormGroupTyped<Endpoint>;
   public endpointsColumns = [];
 
-  constructor(public router: Router, public appConfigService: AppConfigService) { 
+  constructor(public router: Router, public appConfigService: AppConfigService, private formBuilder: FormBuilder) {
     this.endpoints = this.appConfigService.getEndpoints();
 
     //URL REGEX
@@ -41,9 +43,9 @@ export class AppPreferenciesComponent implements OnInit {
       {prop: 'Url', name: 'Endpoint Url'},
       {prop: 'Default', maxWidth: 100, cellTemplate: this.defaultTpl},
       {name: 'Action', maxWidth: 100, cellTemplate: this.deleteTpl}
-    
+
       // {prop: 'Path'},
-      
+
     ];
   }
 
