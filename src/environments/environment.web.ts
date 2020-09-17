@@ -12,12 +12,6 @@ export const environment = {
   // // LOCAL
   jupiterBaseApiUrl: 'https://localhost:5001',
 
-  // //DHO TEST
-  // jupiterBaseApiUrl: 'https://jupiter-dho-test.azurewebsites.net',
-
-  //DHO PROD
-  // jupiterBaseApiUrl: 'https://jupiter-dho-prod.azurewebsites.net',
-
   jupiterApiDocumentationPath: '/api_docs',
 
   jupiterDashboardApiPath: '/jupiter-dashboard-api',
