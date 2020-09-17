@@ -163,7 +163,7 @@
   <nb-card-body>
     <div *ngIf="jupiterHotelCalendarAvailabilityRs.Response.DaysAvails">
 
-      <full-calendar defaultView="dayGridMonth" [plugins]="calendarPlugins" [events]="calendarEvents" eventColor="CadetBlue" (eventRender)="renderEventDetails($event)" height="auto"></full-calendar>
+      <full-calendar [options]="calendarOptions" (eventRender)="renderEventDetails($event)" height="auto"></full-calendar>
 
       <div class="mt-3">
         <h5>Calendar Avail Table</h5>
