@@ -95,7 +95,10 @@ export class ApiDebugAccordionComponent implements OnInit {
   jsonToApiRq() {
     try {
       let data = JSON.parse(this.requestJson);
-      let parsedRq = this.ApiRq.constructor().fromJS(data);
+
+      //Load form Static fn fromJS -> need ts-ignore for be evaluated by browser
+      // @ts-ignore
+      let parsedRq = this.ApiRq.constructor.fromJS(data);
 
       switch (this.sampleType) {
         case 'JupiterHotelCalendarAvailabilityRQ':

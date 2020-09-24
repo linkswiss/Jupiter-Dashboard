@@ -6909,6 +6909,8 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
   TierLabels?: boolean;
   /** Encrypted key used to fetch rates for a set of properties matching the SearchCriteria object. When used, only Offset is considered to fetch the page number - all other parameters in the request are ignored. */
   ShopKey?: string | undefined;
+  /** Set to false to return all results */
+  RateDetailsInd?: boolean;
   /** 1: Lowest of all sources | 2: Lowest from each source | 3: Best rate from each source, along with the lowest negotiated/contractual rate. */
   BestOnly?: number;
   PrepaidQualifier?: EPrepaidQualifier;
@@ -6971,6 +6973,7 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
       this.PageSize = _data["PageSize"];
       this.TierLabels = _data["TierLabels"];
       this.ShopKey = _data["ShopKey"];
+      this.RateDetailsInd = _data["RateDetailsInd"];
       this.BestOnly = _data["BestOnly"];
       this.PrepaidQualifier = _data["PrepaidQualifier"];
       this.RefundableOnly = _data["RefundableOnly"];
@@ -7035,6 +7038,7 @@ export class SabreCSLAvailabilityInputCustomData extends AvailabilityInputCustom
     data["PageSize"] = this.PageSize;
     data["TierLabels"] = this.TierLabels;
     data["ShopKey"] = this.ShopKey;
+    data["RateDetailsInd"] = this.RateDetailsInd;
     data["BestOnly"] = this.BestOnly;
     data["PrepaidQualifier"] = this.PrepaidQualifier;
     data["RefundableOnly"] = this.RefundableOnly;
@@ -7087,6 +7091,8 @@ export interface ISabreCSLAvailabilityInputCustomData extends IAvailabilityInput
   TierLabels?: boolean;
   /** Encrypted key used to fetch rates for a set of properties matching the SearchCriteria object. When used, only Offset is considered to fetch the page number - all other parameters in the request are ignored. */
   ShopKey?: string | undefined;
+  /** Set to false to return all results */
+  RateDetailsInd?: boolean;
   /** 1: Lowest of all sources | 2: Lowest from each source | 3: Best rate from each source, along with the lowest negotiated/contractual rate. */
   BestOnly?: number;
   PrepaidQualifier?: EPrepaidQualifier;
@@ -13966,6 +13972,8 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
    "SS: NRI-SPA-23567",
    "SS: child-9, child-11" */
   NriExtraNotes?: string[] | undefined;
+  /** IHG CreditCard 3DsData passed as is to the IHG API */
+  CreditCard3DsData?: CreditCard3DsData[] | undefined;
 
   constructor(data?: IIHGHotelBookInputCustomData) {
     super(data);
@@ -14004,6 +14012,11 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
         this.NriExtraNotes = [] as any;
         for (let item of _data["NriExtraNotes"])
           this.NriExtraNotes!.push(item);
+      }
+      if (Array.isArray(_data["CreditCard3DsData"])) {
+        this.CreditCard3DsData = [] as any;
+        for (let item of _data["CreditCard3DsData"])
+          this.CreditCard3DsData!.push(CreditCard3DsData.fromJS(item));
       }
     }
   }
@@ -14046,6 +14059,11 @@ export class IHGHotelBookInputCustomData extends HotelBookInputCustomData implem
       data["NriExtraNotes"] = [];
       for (let item of this.NriExtraNotes)
         data["NriExtraNotes"].push(item);
+    }
+    if (Array.isArray(this.CreditCard3DsData)) {
+      data["CreditCard3DsData"] = [];
+      for (let item of this.CreditCard3DsData)
+        data["CreditCard3DsData"].push(item.toJSON());
     }
     super.toJSON(data);
     return data;
@@ -14109,6 +14127,8 @@ export interface IIHGHotelBookInputCustomData extends IHotelBookInputCustomData 
    "SS: NRI-SPA-23567",
    "SS: child-9, child-11" */
   NriExtraNotes?: string[] | undefined;
+  /** IHG CreditCard 3DsData passed as is to the IHG API */
+  CreditCard3DsData?: CreditCard3DsData[] | undefined;
 }
 
 export class Transportation implements ITransportation {
@@ -14183,6 +14203,122 @@ export interface ITransportation {
   Terminal?: string | undefined;
   /** IATA code of departure (ONLY used for arrival transport - as locationCode conerns arrival) (used only for ARR option in GDS) */
   RemoteLocation?: string | undefined;
+}
+
+export class CreditCard3DsData implements ICreditCard3DsData {
+  /** IHG AuthVerificationValue */
+  AuthVerificationValue?: string | undefined;
+  /** IHG MerchantName */
+  MerchantName?: string | undefined;
+  /** IHG Tavv */
+  Tavv?: string | undefined;
+  /** IHG Ucaf */
+  Ucaf?: string | undefined;
+  /** IHG EciFlag */
+  EciFlag?: string | undefined;
+  /** IHG DsTransactionId */
+  DsTransactionId?: string | undefined;
+  /** IHG IdentifierOfAuthorization */
+  IdentifierOfAuthorization?: string | undefined;
+  /** IHG ThreeDSVersion */
+  ThreeDsVersion?: string | undefined;
+  /** IHG Xid */
+  Xid?: string | undefined;
+  /** IHG BookingChannel */
+  BookingChannel?: string | undefined;
+  /** IHG CardNumberSource */
+  CardNumberSource?: string | undefined;
+  /** IHG ExemptionUsed */
+  ExemptionUsed?: string | undefined;
+  /** IHG AgreedMandate */
+  AgreedMandate?: string | undefined;
+  /** IHG AuthIncomplete */
+  AuthIncomplete?: string | undefined;
+
+  constructor(data?: ICreditCard3DsData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.AuthVerificationValue = _data["AuthVerificationValue"];
+      this.MerchantName = _data["MerchantName"];
+      this.Tavv = _data["Tavv"];
+      this.Ucaf = _data["Ucaf"];
+      this.EciFlag = _data["EciFlag"];
+      this.DsTransactionId = _data["DsTransactionId"];
+      this.IdentifierOfAuthorization = _data["IdentifierOfAuthorization"];
+      this.ThreeDsVersion = _data["ThreeDsVersion"];
+      this.Xid = _data["Xid"];
+      this.BookingChannel = _data["BookingChannel"];
+      this.CardNumberSource = _data["CardNumberSource"];
+      this.ExemptionUsed = _data["ExemptionUsed"];
+      this.AgreedMandate = _data["AgreedMandate"];
+      this.AuthIncomplete = _data["AuthIncomplete"];
+    }
+  }
+
+  static fromJS(data: any): CreditCard3DsData {
+    data = typeof data === 'object' ? data : {};
+    let result = new CreditCard3DsData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["AuthVerificationValue"] = this.AuthVerificationValue;
+    data["MerchantName"] = this.MerchantName;
+    data["Tavv"] = this.Tavv;
+    data["Ucaf"] = this.Ucaf;
+    data["EciFlag"] = this.EciFlag;
+    data["DsTransactionId"] = this.DsTransactionId;
+    data["IdentifierOfAuthorization"] = this.IdentifierOfAuthorization;
+    data["ThreeDsVersion"] = this.ThreeDsVersion;
+    data["Xid"] = this.Xid;
+    data["BookingChannel"] = this.BookingChannel;
+    data["CardNumberSource"] = this.CardNumberSource;
+    data["ExemptionUsed"] = this.ExemptionUsed;
+    data["AgreedMandate"] = this.AgreedMandate;
+    data["AuthIncomplete"] = this.AuthIncomplete;
+    return data;
+  }
+}
+
+export interface ICreditCard3DsData {
+  /** IHG AuthVerificationValue */
+  AuthVerificationValue?: string | undefined;
+  /** IHG MerchantName */
+  MerchantName?: string | undefined;
+  /** IHG Tavv */
+  Tavv?: string | undefined;
+  /** IHG Ucaf */
+  Ucaf?: string | undefined;
+  /** IHG EciFlag */
+  EciFlag?: string | undefined;
+  /** IHG DsTransactionId */
+  DsTransactionId?: string | undefined;
+  /** IHG IdentifierOfAuthorization */
+  IdentifierOfAuthorization?: string | undefined;
+  /** IHG ThreeDSVersion */
+  ThreeDsVersion?: string | undefined;
+  /** IHG Xid */
+  Xid?: string | undefined;
+  /** IHG BookingChannel */
+  BookingChannel?: string | undefined;
+  /** IHG CardNumberSource */
+  CardNumberSource?: string | undefined;
+  /** IHG ExemptionUsed */
+  ExemptionUsed?: string | undefined;
+  /** IHG AgreedMandate */
+  AgreedMandate?: string | undefined;
+  /** IHG AuthIncomplete */
+  AuthIncomplete?: string | undefined;
 }
 
 export class OkkamiHotelBookInputCustomData extends HotelBookInputCustomData implements IOkkamiHotelBookInputCustomData {
@@ -19061,8 +19197,11 @@ export interface IJupiterTrainBookRS extends IBaseRS {
 }
 
 export class JupiterTrainBookOutput extends BaseOutput implements IJupiterTrainBookOutput {
+  /** Connector Code of the Booking */
+  ConnectorCode?: EH2HConnectorCode;
   /** The Booking Status */
   BookingStatus?: EBookingStatus;
+  SolutionBooked?: TrainBookSolutionBooked | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: TrainBookOutputCustomData | undefined;
 
@@ -19073,7 +19212,9 @@ export class JupiterTrainBookOutput extends BaseOutput implements IJupiterTrainB
   init(_data?: any) {
     super.init(_data);
     if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
       this.BookingStatus = _data["BookingStatus"];
+      this.SolutionBooked = _data["SolutionBooked"] ? TrainBookSolutionBooked.fromJS(_data["SolutionBooked"]) : <any>undefined;
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? TrainBookOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
     }
   }
@@ -19087,7 +19228,9 @@ export class JupiterTrainBookOutput extends BaseOutput implements IJupiterTrainB
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
     data["BookingStatus"] = this.BookingStatus;
+    data["SolutionBooked"] = this.SolutionBooked ? this.SolutionBooked.toJSON() : <any>undefined;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
@@ -19095,10 +19238,368 @@ export class JupiterTrainBookOutput extends BaseOutput implements IJupiterTrainB
 }
 
 export interface IJupiterTrainBookOutput extends IBaseOutput {
+  /** Connector Code of the Booking */
+  ConnectorCode?: EH2HConnectorCode;
   /** The Booking Status */
   BookingStatus?: EBookingStatus;
+  SolutionBooked?: TrainBookSolutionBooked | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: TrainBookOutputCustomData | undefined;
+}
+
+export class TrainBookSolution implements ITrainBookSolution {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  TrainSegments?: TrainSegment[] | undefined;
+  SolutionFareList?: TrainFareGroupResult[] | undefined;
+  Paxes?: TrainBookPaxDetail[] | undefined;
+
+  constructor(data?: ITrainBookSolution) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      if (Array.isArray(_data["TrainSegments"])) {
+        this.TrainSegments = [] as any;
+        for (let item of _data["TrainSegments"])
+          this.TrainSegments!.push(TrainSegment.fromJS(item));
+      }
+      if (Array.isArray(_data["SolutionFareList"])) {
+        this.SolutionFareList = [] as any;
+        for (let item of _data["SolutionFareList"])
+          this.SolutionFareList!.push(TrainFareGroupResult.fromJS(item));
+      }
+      if (Array.isArray(_data["Paxes"])) {
+        this.Paxes = [] as any;
+        for (let item of _data["Paxes"])
+          this.Paxes!.push(TrainBookPaxDetail.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): TrainBookSolution {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainBookSolution();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    if (Array.isArray(this.TrainSegments)) {
+      data["TrainSegments"] = [];
+      for (let item of this.TrainSegments)
+        data["TrainSegments"].push(item.toJSON());
+    }
+    if (Array.isArray(this.SolutionFareList)) {
+      data["SolutionFareList"] = [];
+      for (let item of this.SolutionFareList)
+        data["SolutionFareList"].push(item.toJSON());
+    }
+    if (Array.isArray(this.Paxes)) {
+      data["Paxes"] = [];
+      for (let item of this.Paxes)
+        data["Paxes"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface ITrainBookSolution {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  TrainSegments?: TrainSegment[] | undefined;
+  SolutionFareList?: TrainFareGroupResult[] | undefined;
+  Paxes?: TrainBookPaxDetail[] | undefined;
+}
+
+export class TrainBookSolutionBooked extends TrainBookSolution implements ITrainBookSolutionBooked {
+  Pnr?: string | undefined;
+  ConnectorCustomData?: TrainBookSolutionBookedCustomData | undefined;
+
+  constructor(data?: ITrainBookSolutionBooked) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Pnr = _data["Pnr"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? TrainBookSolutionBookedCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): TrainBookSolutionBooked {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainBookSolutionBooked();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ITrainBookSolutionBooked extends ITrainBookSolution {
+  Pnr?: string | undefined;
+  ConnectorCustomData?: TrainBookSolutionBookedCustomData | undefined;
+}
+
+export abstract class TrainBookSolutionBookedCustomData implements ITrainBookSolutionBookedCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: ITrainBookSolutionBookedCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "TrainBookSolutionBookedCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): TrainBookSolutionBookedCustomData {
+    data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "EMINDS") {
+      let result = new EmindsTrainBookSolutionBookedCustomData();
+      result.init(data);
+      return result;
+    }
+    throw new Error("The abstract class 'TrainBookSolutionBookedCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ITrainBookSolutionBookedCustomData {
+}
+
+export class EmindsTrainBookSolutionBookedCustomData extends TrainBookSolutionBookedCustomData implements IEmindsTrainBookSolutionBookedCustomData {
+  Tickets?: string[] | undefined;
+
+  constructor(data?: IEmindsTrainBookSolutionBookedCustomData) {
+    super(data);
+    this._discriminator = "EMINDS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["Tickets"])) {
+        this.Tickets = [] as any;
+        for (let item of _data["Tickets"])
+          this.Tickets!.push(item);
+      }
+    }
+  }
+
+  static fromJS(data: any): EmindsTrainBookSolutionBookedCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new EmindsTrainBookSolutionBookedCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.Tickets)) {
+      data["Tickets"] = [];
+      for (let item of this.Tickets)
+        data["Tickets"].push(item);
+    }
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IEmindsTrainBookSolutionBookedCustomData extends ITrainBookSolutionBookedCustomData {
+  Tickets?: string[] | undefined;
+}
+
+export abstract class CustomerCustomDataOfTrainBookSolutionBooked implements ICustomerCustomDataOfTrainBookSolutionBooked {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfTrainBookSolutionBooked) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfTrainBookSolutionBooked";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfTrainBookSolutionBooked {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookSolutionBooked' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfTrainBookSolutionBooked {
+}
+
+export class TrainBookPaxDetail extends PaxDetails implements ITrainBookPaxDetail {
+  TrainSeats?: TrainSeatLocation[] | undefined;
+
+  constructor(data?: ITrainBookPaxDetail) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["TrainSeats"])) {
+        this.TrainSeats = [] as any;
+        for (let item of _data["TrainSeats"])
+          this.TrainSeats!.push(TrainSeatLocation.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): TrainBookPaxDetail {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainBookPaxDetail();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.TrainSeats)) {
+      data["TrainSeats"] = [];
+      for (let item of this.TrainSeats)
+        data["TrainSeats"].push(item.toJSON());
+    }
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ITrainBookPaxDetail extends IPaxDetails {
+  TrainSeats?: TrainSeatLocation[] | undefined;
+}
+
+export class TrainSeatLocation implements ITrainSeatLocation {
+  Number?: string | undefined;
+  Type?: ETrainSeatType;
+  Wagon?: string | undefined;
+  TrainNumber?: string | undefined;
+  Cp?: string | undefined;
+
+  constructor(data?: ITrainSeatLocation) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.Number = _data["Number"];
+      this.Type = _data["Type"];
+      this.Wagon = _data["Wagon"];
+      this.TrainNumber = _data["TrainNumber"];
+      this.Cp = _data["Cp"];
+    }
+  }
+
+  static fromJS(data: any): TrainSeatLocation {
+    data = typeof data === 'object' ? data : {};
+    let result = new TrainSeatLocation();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Number"] = this.Number;
+    data["Type"] = this.Type;
+    data["Wagon"] = this.Wagon;
+    data["TrainNumber"] = this.TrainNumber;
+    data["Cp"] = this.Cp;
+    return data;
+  }
+}
+
+export interface ITrainSeatLocation {
+  Number?: string | undefined;
+  Type?: ETrainSeatType;
+  Wagon?: string | undefined;
+  TrainNumber?: string | undefined;
+  Cp?: string | undefined;
+}
+
+export enum ETrainSeatType {
+  PLACE = "PLACE",
+  AISLE = "AISLE",
+  WINDOW = "WINDOW",
+  MIDDLE = "MIDDLE",
+  WINALONE = "WINALONE",
+}
+
+export abstract class CustomerCustomDataOfTrainBookPaxDetail implements ICustomerCustomDataOfTrainBookPaxDetail {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfTrainBookPaxDetail) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfTrainBookPaxDetail";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfTrainBookPaxDetail {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookPaxDetail' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfTrainBookPaxDetail {
 }
 
 export abstract class TrainBookOutputCustomData implements ITrainBookOutputCustomData {
@@ -19201,7 +19702,7 @@ export interface IJupiterTrainBookRQ extends IBaseRQ {
 }
 
 export class JupiterTrainBookInput extends BaseInput implements IJupiterTrainBookInput {
-  SolutionToBook?: TrainBookSolution | undefined;
+  SolutionToBook?: TrainBookSolutionToBook | undefined;
   ConnectorCustomData?: TrainBookInputCustomData | undefined;
 
   constructor(data?: IJupiterTrainBookInput) {
@@ -19211,7 +19712,7 @@ export class JupiterTrainBookInput extends BaseInput implements IJupiterTrainBoo
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.SolutionToBook = _data["SolutionToBook"] ? TrainBookSolution.fromJS(_data["SolutionToBook"]) : <any>undefined;
+      this.SolutionToBook = _data["SolutionToBook"] ? TrainBookSolutionToBook.fromJS(_data["SolutionToBook"]) : <any>undefined;
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? TrainBookInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
     }
   }
@@ -19233,209 +19734,67 @@ export class JupiterTrainBookInput extends BaseInput implements IJupiterTrainBoo
 }
 
 export interface IJupiterTrainBookInput extends IBaseInput {
-  SolutionToBook?: TrainBookSolution | undefined;
+  SolutionToBook?: TrainBookSolutionToBook | undefined;
   ConnectorCustomData?: TrainBookInputCustomData | undefined;
 }
 
-export class TrainBookSolution implements ITrainBookSolution {
-  /** Connector Code */
-  ConnectorCode!: EH2HConnectorCode;
+export class TrainBookSolutionToBook extends TrainBookSolution implements ITrainBookSolutionToBook {
   ResultId?: string | undefined;
   ResultKey?: string | undefined;
-  TrainSegments?: TrainSegment[] | undefined;
-  SolutionFareList?: TrainFareGroupResult[] | undefined;
-  Paxes?: TrainBookPaxDetail[] | undefined;
 
-  constructor(data?: ITrainBookSolution) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.ConnectorCode = _data["ConnectorCode"];
-      this.ResultId = _data["ResultId"];
-      this.ResultKey = _data["ResultKey"];
-      if (Array.isArray(_data["TrainSegments"])) {
-        this.TrainSegments = [] as any;
-        for (let item of _data["TrainSegments"])
-          this.TrainSegments!.push(TrainSegment.fromJS(item));
-      }
-      if (Array.isArray(_data["SolutionFareList"])) {
-        this.SolutionFareList = [] as any;
-        for (let item of _data["SolutionFareList"])
-          this.SolutionFareList!.push(TrainFareGroupResult.fromJS(item));
-      }
-      if (Array.isArray(_data["Paxes"])) {
-        this.Paxes = [] as any;
-        for (let item of _data["Paxes"])
-          this.Paxes!.push(TrainBookPaxDetail.fromJS(item));
-      }
-    }
-  }
-
-  static fromJS(data: any): TrainBookSolution {
-    data = typeof data === 'object' ? data : {};
-    let result = new TrainBookSolution();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data["ConnectorCode"] = this.ConnectorCode;
-    data["ResultId"] = this.ResultId;
-    data["ResultKey"] = this.ResultKey;
-    if (Array.isArray(this.TrainSegments)) {
-      data["TrainSegments"] = [];
-      for (let item of this.TrainSegments)
-        data["TrainSegments"].push(item.toJSON());
-    }
-    if (Array.isArray(this.SolutionFareList)) {
-      data["SolutionFareList"] = [];
-      for (let item of this.SolutionFareList)
-        data["SolutionFareList"].push(item.toJSON());
-    }
-    if (Array.isArray(this.Paxes)) {
-      data["Paxes"] = [];
-      for (let item of this.Paxes)
-        data["Paxes"].push(item.toJSON());
-    }
-    return data;
-  }
-}
-
-export interface ITrainBookSolution {
-  /** Connector Code */
-  ConnectorCode: EH2HConnectorCode;
-  ResultId?: string | undefined;
-  ResultKey?: string | undefined;
-  TrainSegments?: TrainSegment[] | undefined;
-  SolutionFareList?: TrainFareGroupResult[] | undefined;
-  Paxes?: TrainBookPaxDetail[] | undefined;
-}
-
-export class TrainBookPaxDetail extends PaxDetails implements ITrainBookPaxDetail {
-  TrainSeats?: TrainSeatLocation[] | undefined;
-
-  constructor(data?: ITrainBookPaxDetail) {
+  constructor(data?: ITrainBookSolutionToBook) {
     super(data);
   }
 
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      if (Array.isArray(_data["TrainSeats"])) {
-        this.TrainSeats = [] as any;
-        for (let item of _data["TrainSeats"])
-          this.TrainSeats!.push(TrainSeatLocation.fromJS(item));
-      }
+      this.ResultId = _data["ResultId"];
+      this.ResultKey = _data["ResultKey"];
     }
   }
 
-  static fromJS(data: any): TrainBookPaxDetail {
+  static fromJS(data: any): TrainBookSolutionToBook {
     data = typeof data === 'object' ? data : {};
-    let result = new TrainBookPaxDetail();
+    let result = new TrainBookSolutionToBook();
     result.init(data);
     return result;
   }
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    if (Array.isArray(this.TrainSeats)) {
-      data["TrainSeats"] = [];
-      for (let item of this.TrainSeats)
-        data["TrainSeats"].push(item.toJSON());
-    }
+    data["ResultId"] = this.ResultId;
+    data["ResultKey"] = this.ResultKey;
     super.toJSON(data);
     return data;
   }
 }
 
-export interface ITrainBookPaxDetail extends IPaxDetails {
-  TrainSeats?: TrainSeatLocation[] | undefined;
+export interface ITrainBookSolutionToBook extends ITrainBookSolution {
+  ResultId?: string | undefined;
+  ResultKey?: string | undefined;
 }
 
-export class TrainSeatLocation implements ITrainSeatLocation {
-  Number?: string | undefined;
-  Type?: ETrainSeatType;
-  Wagon?: string | undefined;
-  TrainNumber?: string | undefined;
-
-  constructor(data?: ITrainSeatLocation) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-  }
-
-  init(_data?: any) {
-    if (_data) {
-      this.Number = _data["Number"];
-      this.Type = _data["Type"];
-      this.Wagon = _data["Wagon"];
-      this.TrainNumber = _data["TrainNumber"];
-    }
-  }
-
-  static fromJS(data: any): TrainSeatLocation {
-    data = typeof data === 'object' ? data : {};
-    let result = new TrainSeatLocation();
-    result.init(data);
-    return result;
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data["Number"] = this.Number;
-    data["Type"] = this.Type;
-    data["Wagon"] = this.Wagon;
-    data["TrainNumber"] = this.TrainNumber;
-    return data;
-  }
-}
-
-export interface ITrainSeatLocation {
-  Number?: string | undefined;
-  Type?: ETrainSeatType;
-  Wagon?: string | undefined;
-  TrainNumber?: string | undefined;
-}
-
-export enum ETrainSeatType {
-  PLACE = "PLACE",
-  AISLE = "AISLE",
-  WINDOW = "WINDOW",
-  MIDDLE = "MIDDLE",
-  WINALONE = "WINALONE",
-}
-
-export abstract class CustomerCustomDataOfTrainBookPaxDetail implements ICustomerCustomDataOfTrainBookPaxDetail {
+export abstract class CustomerCustomDataOfTrainBookSolutionToBook implements ICustomerCustomDataOfTrainBookSolutionToBook {
 
   protected _discriminator: string;
 
-  constructor(data?: ICustomerCustomDataOfTrainBookPaxDetail) {
+  constructor(data?: ICustomerCustomDataOfTrainBookSolutionToBook) {
     if (data) {
       for (var property in data) {
         if (data.hasOwnProperty(property))
           (<any>this)[property] = (<any>data)[property];
       }
     }
-    this._discriminator = "CustomerCustomDataOfTrainBookPaxDetail";
+    this._discriminator = "CustomerCustomDataOfTrainBookSolutionToBook";
   }
 
   init(_data?: any) {
   }
 
-  static fromJS(data: any): CustomerCustomDataOfTrainBookPaxDetail {
+  static fromJS(data: any): CustomerCustomDataOfTrainBookSolutionToBook {
     data = typeof data === 'object' ? data : {};
-    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookPaxDetail' cannot be instantiated.");
+    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookSolutionToBook' cannot be instantiated.");
   }
 
   toJSON(data?: any) {
@@ -19445,39 +19804,7 @@ export abstract class CustomerCustomDataOfTrainBookPaxDetail implements ICustome
   }
 }
 
-export interface ICustomerCustomDataOfTrainBookPaxDetail {
-}
-
-export abstract class CustomerCustomDataOfTrainBookSolution implements ICustomerCustomDataOfTrainBookSolution {
-
-  protected _discriminator: string;
-
-  constructor(data?: ICustomerCustomDataOfTrainBookSolution) {
-    if (data) {
-      for (var property in data) {
-        if (data.hasOwnProperty(property))
-          (<any>this)[property] = (<any>data)[property];
-      }
-    }
-    this._discriminator = "CustomerCustomDataOfTrainBookSolution";
-  }
-
-  init(_data?: any) {
-  }
-
-  static fromJS(data: any): CustomerCustomDataOfTrainBookSolution {
-    data = typeof data === 'object' ? data : {};
-    throw new Error("The abstract class 'CustomerCustomDataOfTrainBookSolution' cannot be instantiated.");
-  }
-
-  toJSON(data?: any) {
-    data = typeof data === 'object' ? data : {};
-    data["CustomDataCode"] = this._discriminator;
-    return data;
-  }
-}
-
-export interface ICustomerCustomDataOfTrainBookSolution {
+export interface ICustomerCustomDataOfTrainBookSolutionToBook {
 }
 
 export abstract class TrainBookInputCustomData implements ITrainBookInputCustomData {
@@ -20383,7 +20710,7 @@ export interface IFlightSegment {
 
 export class FlightSegmentResult extends FlightSegment implements IFlightSegmentResult {
   /** Connector Custom Data */
-  ConnectorCustomData?: FlightSegmentResultCustomData | undefined;
+  ConnectorCustomData?: FlightSegmentResultCustomData[] | undefined;
 
   constructor(data?: IFlightSegmentResult) {
     super(data);
@@ -20392,7 +20719,11 @@ export class FlightSegmentResult extends FlightSegment implements IFlightSegment
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightSegmentResultCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      if (Array.isArray(_data["ConnectorCustomData"])) {
+        this.ConnectorCustomData = [] as any;
+        for (let item of _data["ConnectorCustomData"])
+          this.ConnectorCustomData!.push(FlightSegmentResultCustomData.fromJS(item));
+      }
     }
   }
 
@@ -20405,7 +20736,11 @@ export class FlightSegmentResult extends FlightSegment implements IFlightSegment
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    if (Array.isArray(this.ConnectorCustomData)) {
+      data["ConnectorCustomData"] = [];
+      for (let item of this.ConnectorCustomData)
+        data["ConnectorCustomData"].push(item.toJSON());
+    }
     super.toJSON(data);
     return data;
   }
@@ -20413,7 +20748,7 @@ export class FlightSegmentResult extends FlightSegment implements IFlightSegment
 
 export interface IFlightSegmentResult extends IFlightSegment {
   /** Connector Custom Data */
-  ConnectorCustomData?: FlightSegmentResultCustomData | undefined;
+  ConnectorCustomData?: FlightSegmentResultCustomData[] | undefined;
 }
 
 export abstract class FlightSegmentResultCustomData implements IFlightSegmentResultCustomData {
