@@ -20770,6 +20770,11 @@ export abstract class FlightSegmentResultCustomData implements IFlightSegmentRes
 
   static fromJS(data: any): FlightSegmentResultCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightSegmentResultCustomData();
+      result.init(data);
+      return result;
+    }
     if (data["CustomDataConnectorCode"] === "SABRE") {
       let result = new SabreFlightSegmentResultCustomData();
       result.init(data);
@@ -20791,6 +20796,50 @@ export abstract class FlightSegmentResultCustomData implements IFlightSegmentRes
 }
 
 export interface IFlightSegmentResultCustomData {
+}
+
+export class AmadeusFlightSegmentResultCustomData extends FlightSegmentResultCustomData implements IAmadeusFlightSegmentResultCustomData {
+  /** Flight Proposal Ref from Amadeus Response */
+  FlightProposalRef?: string | undefined;
+  /** Flight Index used as reference to map fares to the segments
+   It's a concatenation with StepGroupIndex_SegmentIndex  */
+  FlightIndex?: string | undefined;
+
+  constructor(data?: IAmadeusFlightSegmentResultCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.FlightProposalRef = _data["FlightProposalRef"];
+      this.FlightIndex = _data["FlightIndex"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightSegmentResultCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightSegmentResultCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["FlightProposalRef"] = this.FlightProposalRef;
+    data["FlightIndex"] = this.FlightIndex;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightSegmentResultCustomData extends IFlightSegmentResultCustomData {
+  /** Flight Proposal Ref from Amadeus Response */
+  FlightProposalRef?: string | undefined;
+  /** Flight Index used as reference to map fares to the segments
+   It's a concatenation with StepGroupIndex_SegmentIndex  */
+  FlightIndex?: string | undefined;
 }
 
 export class SabreFlightSegmentResultCustomData extends FlightSegmentResultCustomData implements ISabreFlightSegmentResultCustomData {
