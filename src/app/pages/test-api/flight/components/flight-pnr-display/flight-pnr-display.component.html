@@ -146,6 +146,7 @@
                 <nb-card-body>
                   <div><span class="text-black-50 mr-2">Pnr:</span> {{currentPnr.PnrNumber}}</div>
                   <div><span class="text-black-50 mr-2">Status:</span> <jupiter-booking-status [status]="currentPnr['BookingStatus']"></jupiter-booking-status></div>
+                  <div><span class="text-black-50 mr-2">PCC:</span> {{currentPnr.PseudoCityCode}}</div>
                   <div><span class="text-black-50 mr-2">Date:</span> {{currentPnr.PnrDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
                   <div><span class="text-black-50 mr-2">LastTicket Date:</span> {{currentPnr.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
                   <div><span class="text-black-50 mr-2">Cancel Date:</span> {{currentPnr.CancelDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
