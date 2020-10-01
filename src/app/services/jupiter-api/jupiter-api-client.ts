@@ -1322,6 +1322,135 @@ export class SabreClient extends ApiClientBase {
     }
     return Promise.resolve<JupiterConnectorCustomRSOfDeletePnrOutput>(<any>null);
   }
+
+  /**
+   * Get Reservation by Pnr Method
+   */
+  getReservation(request: JupiterConnectorCustomRQOfGetReservationInput): Promise<JupiterConnectorCustomRSOfGetReservationOutput> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Sabre/get-reservation";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGetReservation(_response);
+    });
+  }
+
+  protected processGetReservation(response: Response): Promise<JupiterConnectorCustomRSOfGetReservationOutput> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterConnectorCustomRSOfGetReservationOutput.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterConnectorCustomRSOfGetReservationOutput>(<any>null);
+  }
+
+  /**
+   * Add Remarks Method
+   */
+  addRemark(request: JupiterConnectorCustomRQOfAddRemarkInput): Promise<JupiterConnectorCustomRSOfAddRemarkOutput> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Sabre/add-remark";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processAddRemark(_response);
+    });
+  }
+
+  protected processAddRemark(response: Response): Promise<JupiterConnectorCustomRSOfAddRemarkOutput> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterConnectorCustomRSOfAddRemarkOutput.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterConnectorCustomRSOfAddRemarkOutput>(<any>null);
+  }
+
+  /**
+   * Add Remarks Method
+   */
+  queuePlacePnr(request: JupiterConnectorCustomRQOfQueuePlacePnrInput): Promise<JupiterConnectorCustomRSOfQueuePlacePnrOutput> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Sabre/queue-place-pnr";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processQueuePlacePnr(_response);
+    });
+  }
+
+  protected processQueuePlacePnr(response: Response): Promise<JupiterConnectorCustomRSOfQueuePlacePnrOutput> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterConnectorCustomRSOfQueuePlacePnrOutput.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterConnectorCustomRSOfQueuePlacePnrOutput>(<any>null);
+  }
 }
 
 export class TravelFusionClient extends ApiClientBase {
@@ -2022,6 +2151,7 @@ export enum EH2HConnectorCode {
   HOTELBEDS = "HOTELBEDS",
   EMINDS = "EMINDS",
   EXPEDIA = "EXPEDIA",
+  TEKURA = "TEKURA",
   A_SAMPLE = "A_SAMPLE",
 }
 
@@ -3860,6 +3990,8 @@ export class IHGRoomRatePlanCustomData extends RoomRatePlanCustomData implements
   IsFreeNight?: boolean | undefined;
   /** Indicates if the rate plan is a rewards night rate plan */
   IsRewardNight?: boolean | undefined;
+  /** Indicates the ProductCode List form ProductUses that have the property IsProductIncludedInOffer set as true */
+  IncludedProductCodes?: string[] | undefined;
 
   constructor(data?: IIHGRoomRatePlanCustomData) {
     super(data);
@@ -3889,6 +4021,11 @@ export class IHGRoomRatePlanCustomData extends RoomRatePlanCustomData implements
       this.IsIdRequired = _data["IsIdRequired"];
       this.IsFreeNight = _data["IsFreeNight"];
       this.IsRewardNight = _data["IsRewardNight"];
+      if (Array.isArray(_data["IncludedProductCodes"])) {
+        this.IncludedProductCodes = [] as any;
+        for (let item of _data["IncludedProductCodes"])
+          this.IncludedProductCodes!.push(item);
+      }
     }
   }
 
@@ -3921,6 +4058,11 @@ export class IHGRoomRatePlanCustomData extends RoomRatePlanCustomData implements
     data["IsIdRequired"] = this.IsIdRequired;
     data["IsFreeNight"] = this.IsFreeNight;
     data["IsRewardNight"] = this.IsRewardNight;
+    if (Array.isArray(this.IncludedProductCodes)) {
+      data["IncludedProductCodes"] = [];
+      for (let item of this.IncludedProductCodes)
+        data["IncludedProductCodes"].push(item);
+    }
     super.toJSON(data);
     return data;
   }
@@ -3951,6 +4093,8 @@ export interface IIHGRoomRatePlanCustomData extends IRoomRatePlanCustomData {
   IsFreeNight?: boolean | undefined;
   /** Indicates if the rate plan is a rewards night rate plan */
   IsRewardNight?: boolean | undefined;
+  /** Indicates the ProductCode List form ProductUses that have the property IsProductIncludedInOffer set as true */
+  IncludedProductCodes?: string[] | undefined;
 }
 
 export class IHGUpSell implements IIHGUpSell {
@@ -6504,6 +6648,8 @@ export class BookingDotComAvailabilityInputCustomData extends AvailabilityInputC
   Radius?: number | undefined;
   /** REQUIRED - Application affiliate id that you wish this request to be tracked against. */
   AffiliateId?: number | undefined;
+  /** REQUIRED - Guest country code (2 letters). Used to accurately display the best prices and price details for people from that country. */
+  GuestCountry?: string | undefined;
   MinReviewScore?: number | undefined;
   MaxPrice?: number | undefined;
   FreeCancellation?: boolean | undefined;
@@ -6534,6 +6680,7 @@ export class BookingDotComAvailabilityInputCustomData extends AvailabilityInputC
       this.Position = _data["Position"] ? LatLng.fromJS(_data["Position"]) : <any>undefined;
       this.Radius = _data["Radius"];
       this.AffiliateId = _data["AffiliateId"];
+      this.GuestCountry = _data["GuestCountry"];
       this.MinReviewScore = _data["MinReviewScore"];
       this.MaxPrice = _data["MaxPrice"];
       this.FreeCancellation = _data["FreeCancellation"];
@@ -6571,6 +6718,7 @@ export class BookingDotComAvailabilityInputCustomData extends AvailabilityInputC
     data["Position"] = this.Position ? this.Position.toJSON() : <any>undefined;
     data["Radius"] = this.Radius;
     data["AffiliateId"] = this.AffiliateId;
+    data["GuestCountry"] = this.GuestCountry;
     data["MinReviewScore"] = this.MinReviewScore;
     data["MaxPrice"] = this.MaxPrice;
     data["FreeCancellation"] = this.FreeCancellation;
@@ -6604,6 +6752,8 @@ export interface IBookingDotComAvailabilityInputCustomData extends IAvailability
   Radius?: number | undefined;
   /** REQUIRED - Application affiliate id that you wish this request to be tracked against. */
   AffiliateId?: number | undefined;
+  /** REQUIRED - Guest country code (2 letters). Used to accurately display the best prices and price details for people from that country. */
+  GuestCountry?: string | undefined;
   MinReviewScore?: number | undefined;
   MaxPrice?: number | undefined;
   FreeCancellation?: boolean | undefined;
@@ -7955,6 +8105,8 @@ export interface ISingleHotelAvailabilityInputCustomData {
 export class BookingDotComSingleHotelAvailabilityInputCustomData extends SingleHotelAvailabilityInputCustomData implements IBookingDotComSingleHotelAvailabilityInputCustomData {
   /** REQUIRED - Application affiliate id that you wish this request to be tracked against. */
   AffiliateId?: number | undefined;
+  /** REQUIRED - Guest country code (2 letters). Used to accurately display the best prices and price details for people from that country. */
+  GuestCountry?: string | undefined;
 
   constructor(data?: IBookingDotComSingleHotelAvailabilityInputCustomData) {
     super(data);
@@ -7965,6 +8117,7 @@ export class BookingDotComSingleHotelAvailabilityInputCustomData extends SingleH
     super.init(_data);
     if (_data) {
       this.AffiliateId = _data["AffiliateId"];
+      this.GuestCountry = _data["GuestCountry"];
     }
   }
 
@@ -7978,6 +8131,7 @@ export class BookingDotComSingleHotelAvailabilityInputCustomData extends SingleH
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
     data["AffiliateId"] = this.AffiliateId;
+    data["GuestCountry"] = this.GuestCountry;
     super.toJSON(data);
     return data;
   }
@@ -7986,6 +8140,8 @@ export class BookingDotComSingleHotelAvailabilityInputCustomData extends SingleH
 export interface IBookingDotComSingleHotelAvailabilityInputCustomData extends ISingleHotelAvailabilityInputCustomData {
   /** REQUIRED - Application affiliate id that you wish this request to be tracked against. */
   AffiliateId?: number | undefined;
+  /** REQUIRED - Guest country code (2 letters). Used to accurately display the best prices and price details for people from that country. */
+  GuestCountry?: string | undefined;
 }
 
 export class SabreSynXisSingleHotelAvailabilityInputCustomData extends SingleHotelAvailabilityInputCustomData implements ISabreSynXisSingleHotelAvailabilityInputCustomData {
@@ -10795,8 +10951,8 @@ export interface IHotelDetailInputCustomData {
 }
 
 export class BookingDotComHotelDetailInputCustomData extends HotelDetailInputCustomData implements IBookingDotComHotelDetailInputCustomData {
-  Rows?: number;
-  Offset?: number;
+  Rows?: number | undefined;
+  Offset?: number | undefined;
   /** If true return hotel accepted credit cards */
   ReturnAcceptedCreditCards?: boolean;
   ReturnRoomInfo?: boolean;
@@ -10862,8 +11018,8 @@ export class BookingDotComHotelDetailInputCustomData extends HotelDetailInputCus
 }
 
 export interface IBookingDotComHotelDetailInputCustomData extends IHotelDetailInputCustomData {
-  Rows?: number;
-  Offset?: number;
+  Rows?: number | undefined;
+  Offset?: number | undefined;
   /** If true return hotel accepted credit cards */
   ReturnAcceptedCreditCards?: boolean;
   ReturnRoomInfo?: boolean;
@@ -13258,6 +13414,9 @@ export class BookingDotComHotelBookInputCustomData extends HotelBookInputCustomD
   /** Specify here the options for this request. See the endpoint description for more detailed information about each option.
    possible values -&gt; use_guest_quantities_for_charges, allow_past, front_desk_24h, use_booker_country, booker_mailinglist_signup */
   Options?: string | undefined;
+  /** Flag that indicates whether to collect payment during reservation process.
+   possible values -&gt; 0, 1 */
+  Pay_now?: number | undefined;
   /** Unique id that identifies the request from client point of view */
   Request_id?: string | undefined;
   /** Enable bookings on test hotels (useful for debugging). Note: don't use this setting for making test bookings on live hotels!
@@ -13269,6 +13428,18 @@ export class BookingDotComHotelBookInputCustomData extends HotelBookInputCustomD
   /** Booker's choice of travel purpose. It may be 'business' or 'leisure'.
    possible values -&gt; business, leisure */
   Travel_purpose?: string | undefined;
+  /** Company that will issue an authorisation form for the virtual credit card. */
+  Vc_company_for_auth_form?: string | undefined;
+  /** VAT number of the company to be invoiced. */
+  Vc_company_vat_number_for_invoices?: string | undefined;
+  /** Set to true (1) if an invoice is requested for this booking.
+   possible values -&gt; 0, 1 */
+  Vc_invoice?: number | undefined;
+  /** Email to send the invoice to. If not specified, invoice will be sent to the booker_email address, or to the first guest_emails address if vc_invoice_to_guest is true. */
+  Vc_invoice_email?: string | undefined;
+  /** What can be paid with the virtual credit card other than the reservation itself.
+   possible values -&gt; breakfast, taxes, parking, internet, phone, food_beverage, alcohol, no_alcohol, room */
+  Vc_itemised_charges?: EVcItemisedCharges[] | undefined;
 
   constructor(data?: IBookingDotComHotelBookInputCustomData) {
     super(data);
@@ -13304,10 +13475,20 @@ export class BookingDotComHotelBookInputCustomData extends HotelBookInputCustomD
       this.Hour_of_arrival = _data["hour_of_arrival"];
       this.Next_trips = _data["next_trips"];
       this.Options = _data["options"];
+      this.Pay_now = _data["pay_now"];
       this.Request_id = _data["request_id"];
       this.Show_test = _data["show_test"];
       this.Test_mode = _data["test_mode"];
       this.Travel_purpose = _data["travel_purpose"];
+      this.Vc_company_for_auth_form = _data["vc_company_for_auth_form"];
+      this.Vc_company_vat_number_for_invoices = _data["vc_company_vat_number_for_invoices"];
+      this.Vc_invoice = _data["vc_invoice"];
+      this.Vc_invoice_email = _data["vc_invoice_email"];
+      if (Array.isArray(_data["vc_itemised_charges"])) {
+        this.Vc_itemised_charges = [] as any;
+        for (let item of _data["vc_itemised_charges"])
+          this.Vc_itemised_charges!.push(item);
+      }
     }
   }
 
@@ -13346,10 +13527,20 @@ export class BookingDotComHotelBookInputCustomData extends HotelBookInputCustomD
     data["hour_of_arrival"] = this.Hour_of_arrival;
     data["next_trips"] = this.Next_trips;
     data["options"] = this.Options;
+    data["pay_now"] = this.Pay_now;
     data["request_id"] = this.Request_id;
     data["show_test"] = this.Show_test;
     data["test_mode"] = this.Test_mode;
     data["travel_purpose"] = this.Travel_purpose;
+    data["vc_company_for_auth_form"] = this.Vc_company_for_auth_form;
+    data["vc_company_vat_number_for_invoices"] = this.Vc_company_vat_number_for_invoices;
+    data["vc_invoice"] = this.Vc_invoice;
+    data["vc_invoice_email"] = this.Vc_invoice_email;
+    if (Array.isArray(this.Vc_itemised_charges)) {
+      data["vc_itemised_charges"] = [];
+      for (let item of this.Vc_itemised_charges)
+        data["vc_itemised_charges"].push(item);
+    }
     super.toJSON(data);
     return data;
   }
@@ -13411,6 +13602,9 @@ export interface IBookingDotComHotelBookInputCustomData extends IHotelBookInputC
   /** Specify here the options for this request. See the endpoint description for more detailed information about each option.
    possible values -&gt; use_guest_quantities_for_charges, allow_past, front_desk_24h, use_booker_country, booker_mailinglist_signup */
   Options?: string | undefined;
+  /** Flag that indicates whether to collect payment during reservation process.
+   possible values -&gt; 0, 1 */
+  Pay_now?: number | undefined;
   /** Unique id that identifies the request from client point of view */
   Request_id?: string | undefined;
   /** Enable bookings on test hotels (useful for debugging). Note: don't use this setting for making test bookings on live hotels!
@@ -13422,6 +13616,30 @@ export interface IBookingDotComHotelBookInputCustomData extends IHotelBookInputC
   /** Booker's choice of travel purpose. It may be 'business' or 'leisure'.
    possible values -&gt; business, leisure */
   Travel_purpose?: string | undefined;
+  /** Company that will issue an authorisation form for the virtual credit card. */
+  Vc_company_for_auth_form?: string | undefined;
+  /** VAT number of the company to be invoiced. */
+  Vc_company_vat_number_for_invoices?: string | undefined;
+  /** Set to true (1) if an invoice is requested for this booking.
+   possible values -&gt; 0, 1 */
+  Vc_invoice?: number | undefined;
+  /** Email to send the invoice to. If not specified, invoice will be sent to the booker_email address, or to the first guest_emails address if vc_invoice_to_guest is true. */
+  Vc_invoice_email?: string | undefined;
+  /** What can be paid with the virtual credit card other than the reservation itself.
+   possible values -&gt; breakfast, taxes, parking, internet, phone, food_beverage, alcohol, no_alcohol, room */
+  Vc_itemised_charges?: EVcItemisedCharges[] | undefined;
+}
+
+export enum EVcItemisedCharges {
+  ALCOHOL = "ALCOHOL",
+  BREAKFAST = "BREAKFAST",
+  FOOD_BEVERAGE = "FOOD_BEVERAGE",
+  INTERNET = "INTERNET",
+  NO_ALCOHOL = "NO_ALCOHOL",
+  PARKING = "PARKING",
+  PHONE = "PHONE",
+  ROOM = "ROOM",
+  TAXES = "TAXES",
 }
 
 export class SabreSynXisHotelBookInputCustomData extends HotelBookInputCustomData implements ISabreSynXisHotelBookInputCustomData {
@@ -30546,6 +30764,420 @@ export class DeletePnrInput extends BaseInput implements IDeletePnrInput {
 }
 
 export interface IDeletePnrInput extends IBaseInput {
+  Pnr?: string | undefined;
+}
+
+export class JupiterConnectorCustomRSOfGetReservationOutput extends BaseRS implements IJupiterConnectorCustomRSOfGetReservationOutput {
+  Response?: GetReservationOutput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRSOfGetReservationOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? GetReservationOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRSOfGetReservationOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRSOfGetReservationOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRSOfGetReservationOutput extends IBaseRS {
+  Response?: GetReservationOutput | undefined;
+}
+
+export class GetReservationOutput extends BaseOutput implements IGetReservationOutput {
+  Pnr?: FlightBookPnr | undefined;
+
+  constructor(data?: IGetReservationOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Pnr = _data["Pnr"] ? FlightBookPnr.fromJS(_data["Pnr"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): GetReservationOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetReservationOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr ? this.Pnr.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IGetReservationOutput extends IBaseOutput {
+  Pnr?: FlightBookPnr | undefined;
+}
+
+export class JupiterConnectorCustomRQOfGetReservationInput extends BaseRQ implements IJupiterConnectorCustomRQOfGetReservationInput {
+  Request?: GetReservationInput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRQOfGetReservationInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? GetReservationInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRQOfGetReservationInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRQOfGetReservationInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRQOfGetReservationInput extends IBaseRQ {
+  Request?: GetReservationInput | undefined;
+}
+
+export class GetReservationInput extends BaseInput implements IGetReservationInput {
+  Pnr?: string | undefined;
+
+  constructor(data?: IGetReservationInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Pnr = _data["Pnr"];
+    }
+  }
+
+  static fromJS(data: any): GetReservationInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new GetReservationInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IGetReservationInput extends IBaseInput {
+  Pnr?: string | undefined;
+}
+
+export class JupiterConnectorCustomRSOfAddRemarkOutput extends BaseRS implements IJupiterConnectorCustomRSOfAddRemarkOutput {
+  Response?: AddRemarkOutput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRSOfAddRemarkOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? AddRemarkOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRSOfAddRemarkOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRSOfAddRemarkOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRSOfAddRemarkOutput extends IBaseRS {
+  Response?: AddRemarkOutput | undefined;
+}
+
+export class AddRemarkOutput extends BaseOutput implements IAddRemarkOutput {
+  Pnr?: FlightBookPnr | undefined;
+
+  constructor(data?: IAddRemarkOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Pnr = _data["Pnr"] ? FlightBookPnr.fromJS(_data["Pnr"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AddRemarkOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new AddRemarkOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr ? this.Pnr.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAddRemarkOutput extends IBaseOutput {
+  Pnr?: FlightBookPnr | undefined;
+}
+
+export class JupiterConnectorCustomRQOfAddRemarkInput extends BaseRQ implements IJupiterConnectorCustomRQOfAddRemarkInput {
+  Request?: AddRemarkInput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRQOfAddRemarkInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? AddRemarkInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRQOfAddRemarkInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRQOfAddRemarkInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRQOfAddRemarkInput extends IBaseRQ {
+  Request?: AddRemarkInput | undefined;
+}
+
+export class AddRemarkInput extends BaseInput implements IAddRemarkInput {
+  Pnr?: string | undefined;
+  Remarks?: PnrRemarks[] | undefined;
+  CreditCardPayment?: CreditCardInfo | undefined;
+
+  constructor(data?: IAddRemarkInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Pnr = _data["Pnr"];
+      if (Array.isArray(_data["Remarks"])) {
+        this.Remarks = [] as any;
+        for (let item of _data["Remarks"])
+          this.Remarks!.push(PnrRemarks.fromJS(item));
+      }
+      this.CreditCardPayment = _data["CreditCardPayment"] ? CreditCardInfo.fromJS(_data["CreditCardPayment"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): AddRemarkInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new AddRemarkInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr;
+    if (Array.isArray(this.Remarks)) {
+      data["Remarks"] = [];
+      for (let item of this.Remarks)
+        data["Remarks"].push(item.toJSON());
+    }
+    data["CreditCardPayment"] = this.CreditCardPayment ? this.CreditCardPayment.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAddRemarkInput extends IBaseInput {
+  Pnr?: string | undefined;
+  Remarks?: PnrRemarks[] | undefined;
+  CreditCardPayment?: CreditCardInfo | undefined;
+}
+
+export class JupiterConnectorCustomRSOfQueuePlacePnrOutput extends BaseRS implements IJupiterConnectorCustomRSOfQueuePlacePnrOutput {
+  Response?: QueuePlacePnrOutput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRSOfQueuePlacePnrOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? QueuePlacePnrOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRSOfQueuePlacePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRSOfQueuePlacePnrOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRSOfQueuePlacePnrOutput extends IBaseRS {
+  Response?: QueuePlacePnrOutput | undefined;
+}
+
+export class QueuePlacePnrOutput extends BaseOutput implements IQueuePlacePnrOutput {
+
+  constructor(data?: IQueuePlacePnrOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+  }
+
+  static fromJS(data: any): QueuePlacePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueuePlacePnrOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IQueuePlacePnrOutput extends IBaseOutput {
+}
+
+export class JupiterConnectorCustomRQOfQueuePlacePnrInput extends BaseRQ implements IJupiterConnectorCustomRQOfQueuePlacePnrInput {
+  Request?: QueuePlacePnrInput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRQOfQueuePlacePnrInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? QueuePlacePnrInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRQOfQueuePlacePnrInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRQOfQueuePlacePnrInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRQOfQueuePlacePnrInput extends IBaseRQ {
+  Request?: QueuePlacePnrInput | undefined;
+}
+
+export class QueuePlacePnrInput extends BaseInput implements IQueuePlacePnrInput {
+  QueueNumber?: string | undefined;
+  PrefatoryInstructionCode?: string | undefined;
+  Pnr?: string | undefined;
+
+  constructor(data?: IQueuePlacePnrInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.QueueNumber = _data["QueueNumber"];
+      this.PrefatoryInstructionCode = _data["PrefatoryInstructionCode"];
+      this.Pnr = _data["Pnr"];
+    }
+  }
+
+  static fromJS(data: any): QueuePlacePnrInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new QueuePlacePnrInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["QueueNumber"] = this.QueueNumber;
+    data["PrefatoryInstructionCode"] = this.PrefatoryInstructionCode;
+    data["Pnr"] = this.Pnr;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IQueuePlacePnrInput extends IBaseInput {
+  QueueNumber?: string | undefined;
+  PrefatoryInstructionCode?: string | undefined;
   Pnr?: string | undefined;
 }
 
