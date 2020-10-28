@@ -130,7 +130,11 @@ export class HotelAvailExtrasComponent implements OnInit {
         break;
       case EH2HConnectorCode.OKKAMI:
         this.jupiterHotelAvailabilityExtrasRQ.Request.HotelRefId = '000-000-0019';
-        // ['000-000-0019', '000-000-0055'];
+        // [
+        // '000-000-0019', //Yao Noi
+        // '000-000-0055',
+        // '000-000-0054' //Maxwell
+        // ];
 
         break;
     }
