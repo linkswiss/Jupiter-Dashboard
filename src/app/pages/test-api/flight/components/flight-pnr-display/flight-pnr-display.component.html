@@ -174,63 +174,143 @@
         </nb-accordion-item-body>
       </nb-accordion-item>
       <nb-accordion-item expanded="false">
-        <nb-accordion-item-header class="font-weight-bold">Fares</nb-accordion-item-header>
+        <nb-accordion-item-header class="font-weight-bold">Fare</nb-accordion-item-header>
         <nb-accordion-item-body>
 
           <div *ngIf="currentPnr.Fare && currentPnr.Fare.PaxFareList">
             <div *ngFor="let fare of currentPnr.Fare.PaxFareList; let paxFareIndex = index;">
 
-              <div *ngIf="paxFareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
-              <div class="row">
-                <nb-card class="shadow-none col-sm-6">
-                  <nb-card-header>Fare Infos</nb-card-header>
-                  <nb-card-body>
-                    <div><span class="text-black-50 mr-1">Id:</span> {{fare.Id}}</div>
-                    <div><span class="text-black-50 mr-1">Pax:</span> {{fare.PaxCount}} {{fare.PaxType}}</div>
-                    <div><span class="text-black-50 mr-1">Refundable:</span> {{fare.Refundable}}</div>
-                    <div><span class="text-black-50 mr-1">LastTicket Date:</span> {{fare.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
-                    <!--                  <div><span class="text-black-50">Segments:</span>-->
-                    <!--                    <div *ngIf="fare.FlightSegmentDetails" class="row">-->
-                    <!--                      <div class="col-md-4">-->
-                    <!--                        <jupiter-obj-display *ngFor="let segmentDetail of fare.FlightSegmentDetails" [Data]="segmentDetail" [StyleClass]="'border-box col-md-4'"></jupiter-obj-display>-->
-                    <!--                      </div>-->
-                    <!--                    </div>-->
-                    <!--                  </div>-->
+              <jupiter-fare-display [paxFareIndex]="paxFareIndex" [fare]="fare" [fareRules]="currentPnr.Fare.FareRules"></jupiter-fare-display>
 
-                    <div><span class="text-black-50 mr-1">Amount:</span> <span class="font-weight-bold">{{fare.Amount.Amount}}</span> {{fare.Amount.Currency}}</div>
-                    <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>
-                    <div><span class="text-black-50 mr-1">Tax:</span> {{fare.Amount.Taxes?.Amount}} {{fare.Amount.Taxes?.Currency}}</div>
-                    <div><span class="text-black-50 mr-1">Tax List:</span>
-                      <div *ngIf="fare.Amount.Taxes && fare.Amount.Taxes.TaxList" class="row">
-                        <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >
-                          <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>
-                        </div>
-                      </div>
-                    </div>
+<!--              <div *ngIf="paxFareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>-->
+<!--              <div class="row">-->
+<!--                <nb-card class="shadow-none col-sm-6">-->
+<!--                  <nb-card-header>Fare Infos</nb-card-header>-->
+<!--                  <nb-card-body>-->
+<!--                    <div><span class="text-black-50 mr-1">Id:</span> {{fare.Id}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">Pax:</span> {{fare.PaxCount}} {{fare.PaxType}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">Refundable:</span> {{fare.Refundable}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">LastTicket Date:</span> {{fare.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>-->
 
-                  </nb-card-body>
-                </nb-card>
+<!--                    <div><span class="text-black-50 mr-1">Amount:</span> <span class="font-weight-bold">{{fare.Amount.Amount}}</span> {{fare.Amount.Currency}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">Tax:</span> {{fare.Amount.Taxes?.Amount}} {{fare.Amount.Taxes?.Currency}}</div>-->
+<!--                    <div><span class="text-black-50 mr-1">Tax List:</span>-->
+<!--                      <div *ngIf="fare.Amount.Taxes && fare.Amount.Taxes.TaxList" class="row">-->
+<!--                        <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >-->
+<!--                          <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
 
-                <nb-card class="shadow-none col-sm-6">
-                  <nb-card-header>Fare Segments</nb-card-header>
-                  <nb-card-body>
-                    <div>
-                      <!--                    <span class="text-black-50 mr-1">Segments:</span>-->
-                      <div *ngIf="fare.FlightSegmentDetails" class="row">
-                        <div *ngFor="let segmentDetail of fare.FlightSegmentDetails" class="col-sm-6">
-                          <jupiter-obj-display [Data]="segmentDetail" [StyleClass]="'border-box'"></jupiter-obj-display>
-                        </div>
-                      </div>
-                    </div>
-                  </nb-card-body>
-                </nb-card>
-              </div>
+<!--                    <div><span class="text-black-50 mr-1">Fare Penalties:</span>-->
+<!--                      <div *ngIf="fare.FarePenalties" class="row">-->
+<!--                        <div><span class="text-black-50 mr-1">Exchange Before:</span> Applicable {{fare.FarePenalties.ExchangeBefore?.IsApplicable}} - {{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Amount}} {{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>-->
+<!--                      </div>-->
+<!--                    </div>-->
 
-<!--                  <jupiter-obj-display [Data]="fare"></jupiter-obj-display>-->
+
+
+<!--                    &lt;!&ndash; Fare Rules &ndash;&gt;-->
+<!--                    <div *ngIf="paxFareIndex == 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>-->
+<!--                    <div><span class="text-black-50 mr-1">Fare List:</span>-->
+<!--                      <div *ngIf="currentPnr.Fare.FareRules && fare.Amount.Taxes.TaxList" class="row">-->
+<!--                        <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >-->
+<!--                          <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+
+<!--                  </nb-card-body>-->
+<!--                </nb-card>-->
+
+<!--                <nb-card class="shadow-none col-sm-6">-->
+<!--                  <nb-card-header>Fare Segments</nb-card-header>-->
+<!--                  <nb-card-body>-->
+<!--                    <div>-->
+<!--                      &lt;!&ndash;                    <span class="text-black-50 mr-1">Segments:</span>&ndash;&gt;-->
+<!--                      <div *ngIf="fare.FlightSegmentDetails" class="row">-->
+<!--                        <div *ngFor="let segmentDetail of fare.FlightSegmentDetails" class="col-sm-6">-->
+<!--                          <jupiter-obj-display [Data]="segmentDetail" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--                        </div>-->
+<!--                      </div>-->
+<!--                    </div>-->
+<!--                  </nb-card-body>-->
+<!--                </nb-card>-->
+<!--              </div>-->
+
+              <!--                  <jupiter-obj-display [Data]="fare"></jupiter-obj-display>-->
             </div>
 
           </div>
 
+
+        </nb-accordion-item-body>
+      </nb-accordion-item>
+      <nb-accordion-item expanded="false">
+        <nb-accordion-item-header class="font-weight-bold">Alternative Fares</nb-accordion-item-header>
+        <nb-accordion-item-body>
+
+          <div *ngIf="currentPnr.AlternativeFares">
+            <div *ngFor="let alternativeFare of currentPnr.AlternativeFares; let alternativeFareIndex = index;">
+              <div *ngIf="alternativeFare && alternativeFare.PaxFareList">
+                <div *ngFor="let fare of alternativeFare.PaxFareList; let paxFareIndex = index;">
+                  <jupiter-fare-display [paxFareIndex]="paxFareIndex" [fare]="fare" [fareRules]="alternativeFare.FareRules"></jupiter-fare-display>
+
+<!--                  <div *ngIf="paxFareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>-->
+<!--                  <div class="row">-->
+<!--                    <nb-card class="shadow-none col-sm-6">-->
+<!--                      <nb-card-header>Fare Infos</nb-card-header>-->
+<!--                      <nb-card-body>-->
+<!--                        <div><span class="text-black-50 mr-1">Id:</span> {{fare.Id}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Pax:</span> {{fare.PaxCount}} {{fare.PaxType}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Refundable:</span> {{fare.Refundable}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">LastTicket Date:</span> {{fare.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>-->
+<!--                        &lt;!&ndash;                  <div><span class="text-black-50">Segments:</span>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    <div *ngIf="fare.FlightSegmentDetails" class="row">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                      <div class="col-md-4">&ndash;&gt;-->
+<!--                        &lt;!&ndash;                        <jupiter-obj-display *ngFor="let segmentDetail of fare.FlightSegmentDetails" [Data]="segmentDetail" [StyleClass]="'border-box col-md-4'"></jupiter-obj-display>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                      </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                    </div>&ndash;&gt;-->
+<!--                        &lt;!&ndash;                  </div>&ndash;&gt;-->
+
+<!--                        <div><span class="text-black-50 mr-1">Amount:</span> <span class="font-weight-bold">{{fare.Amount.Amount}}</span> {{fare.Amount.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Tax:</span> {{fare.Amount.Taxes?.Amount}} {{fare.Amount.Taxes?.Currency}}</div>-->
+<!--                        <div><span class="text-black-50 mr-1">Tax List:</span>-->
+<!--                          <div *ngIf="fare.Amount.Taxes && fare.Amount.Taxes.TaxList" class="row">-->
+<!--                            <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >-->
+<!--                              <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+
+<!--                      </nb-card-body>-->
+<!--                    </nb-card>-->
+
+<!--                    <nb-card class="shadow-none col-sm-6">-->
+<!--                      <nb-card-header>Fare Segments</nb-card-header>-->
+<!--                      <nb-card-body>-->
+<!--                        <div>-->
+<!--                          &lt;!&ndash;                    <span class="text-black-50 mr-1">Segments:</span>&ndash;&gt;-->
+<!--                          <div *ngIf="fare.FlightSegmentDetails" class="row">-->
+<!--                            <div *ngFor="let segmentDetail of fare.FlightSegmentDetails" class="col-sm-6">-->
+<!--                              <jupiter-obj-display [Data]="segmentDetail" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--                            </div>-->
+<!--                          </div>-->
+<!--                        </div>-->
+<!--                      </nb-card-body>-->
+<!--                    </nb-card>-->
+<!--                  </div>-->
+
+                </div>
+
+              </div>
+            </div>
+          </div>
 
         </nb-accordion-item-body>
       </nb-accordion-item>

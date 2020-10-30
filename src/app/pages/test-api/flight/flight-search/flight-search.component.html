@@ -225,99 +225,6 @@
 
               <div *ngFor="let segment of result.FlightSegments; let segIndex = index;" class="container p-0">
                 <jupiter-segment-display [segment]="segment" [segIndex]="segIndex" [lastStepGroupId]="segIndex > 0 ? result.FlightSegments[segIndex-1].StepGroupId : '0'" [paxFares]="fare.PaxFareList"></jupiter-segment-display>
-
-<!--                <div *ngIf="segIndex > 0 && segment.StepGroupId !== result.FlightSegments[segIndex-1].StepGroupId" class="border-bottom border-primary mt-3 mb-3"></div>-->
-<!--                <div *ngIf="segIndex > 0 && segment.StepGroupId === result.FlightSegments[segIndex-1].StepGroupId" class="row align-items-center">-->
-<!--                  <div class="col-sm-5"></div>-->
-<!--                  <div class="col-sm-4 text-center">&#45;&#45; Connection: {{segment.ConnectionTime.substr(0,5)}} &#45;&#45;</div>-->
-<!--                </div>-->
-<!--                <div class="row align-items-center">-->
-<!--                  <div class="col-sm-3">-->
-<!--                    &lt;!&ndash;<h1>{{segment.StepGroupId}}</h1>&ndash;&gt;-->
-<!--                    <span class="pr-2"><img [src]="segment.MarketingCarrier.IataCode | carrierImage" width="32px"/></span>-->
-<!--                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.MarketingCarrier.Name}}" placement="top" container="body">{{segment.MarketingCarrier.IataCode}}&nbsp;{{segment.MarketingCarrier.FlightNumber}}</span>-->
-<!--                    <span *ngIf="segment.MarketingCarrier.IataCode !== segment.OperatingCarrier.IataCode" class="badge badge-warning text-white p-2 m-1 cursor-pointer" ngbTooltip="Operating Carrier: {{segment.OperatingCarrier.Name}}" placement="top" container="body">{{segment.OperatingCarrier.IataCode}}</span>-->
-<!--                  </div>-->
-<!--                  <div class="col-sm-2">-->
-<!--                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.DepartureAirport.Name}} ({{segment.DepartureAirport.CityName}})" placement="top" container="body">{{segment.DepartureAirport.IataCode}}</span>-->
-<!--                    <span class="font-weight-bold ml-1 mr-1">&#45;&#45;</span>-->
-<!--                    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalAirport.Name}} ({{segment.ArrivalAirport.CityName}})" placement="top" container="body">{{segment.ArrivalAirport.IataCode}}</span>-->
-<!--                  </div>-->
-<!--                  &lt;!&ndash;<div class="col-sm-2">&ndash;&gt;-->
-<!--                  <div class="col-sm-4 text-center">-->
-<!--                    <span class="font-weight-bold pr-2">{{segment.DepartureDate | amDateFormat:'HH:mm'}}</span>-->
-<!--                    <span class="font-italic font-size-small">{{segment.DepartureDate | amDateFormat:'DD/MM'}}</span>-->
-<!--                    &lt;!&ndash;</div>&ndash;&gt;-->
-<!--                    &lt;!&ndash;<div class="col-sm-2">&ndash;&gt;-->
-<!--                    <span class="font-weight-bold pr-2 pl-5">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>-->
-<!--                    <span class="font-italic font-size-small">{{segment.ArrivalDate | amDateFormat:'DD/MM'}}</span>-->
-<!--                  </div>-->
-
-<!--                  <div class="col-sm-3">-->
-
-<!--                    <div *ngFor="let paxFare of fare.PaxFareList" class="row mb-1">-->
-<!--                      <span *ngIf="fare.PaxFareList && fare.PaxFareList.length > 1" class="badge bg-hint text-white p-2 m-1">{{paxFare.PaxCount}} {{paxFare.PaxType}}</span>-->
-
-<!--                      <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="cursor-pointer">-->
-<!--                        <span [ngSwitch]="paxFare.FlightSegmentDetails[segIndex].FareType" ngbTooltip="Fare Type: {{paxFare.FlightSegmentDetails[segIndex].FareType}}" placement="right" container="body">-->
-<!--                          <span *ngSwitchCase="'PUBLIC'" class="badge badge-secondary text-white p-2 m-1">PU</span>-->
-<!--                          <span *ngSwitchCase="'PRIVATE'" class="badge badge-info text-white p-2 m-1">PR</span>-->
-<!--                          <span *ngSwitchCase="'TO'" class="badge badge-primary text-white p-2 m-1">TO</span>-->
-<!--                          <span *ngSwitchDefault class="badge badge-warning text-white p-2 m-1">?</span>-->
-<!--                        </span>-->
-<!--                      </span>-->
-
-<!--                      <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="cursor-pointer">-->
-<!--                        <span [ngSwitch]="paxFare.FlightSegmentDetails[segIndex].Cabin" ngbTooltip="Cabin: {{paxFare.FlightSegmentDetails[segIndex].Cabin}}" placement="right" container="body">-->
-<!--                          <span *ngSwitchCase="'ECONOMY'" class="badge badge-secondary text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchCase="'PREMIUM_ECONOMY'" class="badge badge-secondary text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchCase="'BUSINESS'" class="badge badge-info text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchCase="'PREMIUM_BUSINESS'" class="badge badge-info text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchCase="'FIRST'" class="badge badge-success text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchCase="'PREMIUM_FIRST'" class="badge badge-success text-white p-2 m-1">{{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span>-->
-<!--                          <span *ngSwitchDefault class="badge badge-warning text-white p-2 m-1">?</span>-->
-<!--                        </span>-->
-<!--                      </span>-->
-
-<!--                      <span *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]" class="pt-1 pl-1 cursor-pointer" ngbTooltip="Baggage: {{paxFare.FlightSegmentDetails[segIndex]?.BaggageDetails?.BaggageCount}} pieces" placement="right" container="body">-->
-<!--                        <span *ngIf="paxFare.FlightSegmentDetails[segIndex] && paxFare.FlightSegmentDetails[segIndex].BaggageDetails && paxFare.FlightSegmentDetails[segIndex].BaggageDetails.BaggageCount > 0">-->
-<!--                          <i class="fas fa-camera fa-suitcase-rolling info-icon text-primary"></i>-->
-<!--                        </span>-->
-<!--                        <span *ngIf="!paxFare.FlightSegmentDetails[segIndex] || !paxFare.FlightSegmentDetails[segIndex].BaggageDetails || paxFare.FlightSegmentDetails[segIndex].BaggageDetails.BaggageCount === 0">-->
-<!--                          <i class="fas fa-camera fa-suitcase-rolling info-icon text-black-50"></i>-->
-<!--                        </span>-->
-<!--                      </span>-->
-
-<!--                      <span class="pt-1 pl-1 cursor-pointer" [ngbPopover]="fareTemplate" placement="right" container="body" popoverTitle="Fare Infos" triggers="mouseenter:mouseleave">-->
-<!--                        <i class="fas fa-info-circle info-icon text-black-50"></i>-->
-<!--                      </span>-->
-
-<!--                      <span *ngIf="paxFare.Refundable === false" class="pt-1 pl-1 cursor-pointer" ngbTooltip="Not Refundable" placement="right" container="body"> <i class="fas fa-exclamation-triangle text-warning info-icon"></i></span>-->
-
-<!--                      <ng-template #fareTemplate>-->
-<!--                        <div>Pax Fare: <span class="badge badge-pill badge-primary">{{paxFare.PaxCount}} {{paxFare.PaxType}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">BrandedFare: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].BrandedFare}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareType: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareType}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareType Code: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareTypeCode}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">MatchedAccountCode: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].MatchedAccountCode}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">FareBasis: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].FareBasis}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Cabin: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].Cabin}} - {{paxFare.FlightSegmentDetails[segIndex].CabinCode}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Class Avail: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].ClassAvail}} {{paxFare.FlightSegmentDetails[segIndex].Class}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Bag: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex]?.BaggageDetails?.BaggageCount}}</span></div>-->
-<!--                        <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">Meal: <span class="badge badge-pill badge-primary">{{paxFare.FlightSegmentDetails[segIndex].Meal?.Code}} {{paxFare.FlightSegmentDetails[segIndex].Meal?.Text}}</span></div>-->
-<!--                      </ng-template>-->
-
-<!--                      <span class="pt-1 pl-1 cursor-pointer" [ngbPopover]="fareDebug" placement="right" container="body" popoverTitle="Pax Fare Debug" triggers="click:click">-->
-<!--                        <i class="fas fa-bug text-black-50"></i>-->
-<!--                      </span>-->
-
-<!--                      <ng-template #fareDebug>-->
-<!--                        <pre>Fare Json: {{paxFare | json }}</pre>-->
-<!--                      </ng-template>-->
-
-<!--                    </div>-->
-<!--                  </div>-->
-<!--                </div>-->
               </div>
             </div>
             <div class="col-sm-2 text-right">
@@ -352,12 +259,31 @@
 
               <div class="text-right">
                 <span class="mr-2"><i class="fas fa-bug" (click)="result['_Debug'] = !result['_Debug'];"></i></span>
+                <span class="mr-2"><i class="fas fa-chevron-down" (click)="result['_Expand'] = !result['_Expand'];"></i></span>
                 <button class="btn btn-sm btn-primary" (click)="flightDetails(result,fare)"><i class="fas fa-search"></i> Details</button>
               </div>
 
               <!--<div>{{result.ResultKey}}</div>-->
             </div>
           </div>
+        </div>
+
+        <div *ngIf="result['_Expand']">
+          <nb-card>
+            <nb-card-header>
+              <span class="h4">Fare Details</span>
+              <span class="float-right">
+                  <button class="btn btn-sm btn-warning" (click)="result['_Expand'] = !result['_Expand'];"><i class="fas fa-times"></i> </button>
+              </span>
+            </nb-card-header>
+            <nb-card-body>
+              <div class="container" *ngFor="let fare of result.FareList; let fareIndex = index;">
+                  <div *ngFor="let fare of fare.PaxFareList; let paxFareIndex = index;">
+                    <jupiter-fare-display [paxFareIndex]="paxFareIndex" [fare]="fare"></jupiter-fare-display>
+                  </div>
+                </div>
+            </nb-card-body>
+          </nb-card>
         </div>
 
         <div *ngIf="result['_Debug']">
