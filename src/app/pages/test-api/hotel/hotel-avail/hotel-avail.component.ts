@@ -3,9 +3,11 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
+  AicAvailabilityInputCustomData,
   AvailabilityInputCustomData,
   BookingDotComAvailabilityInputCustomData,
   CreoleHotelAvailabilityInputCustomData,
+  EAvailabilityType,
   EH2HConnectorCode,
   EH2HOperation,
   EPaxType, HotelbedsAvailabilityInputCustomData,
@@ -219,7 +221,19 @@ export class HotelAvailComponent implements OnInit {
             }));
           }
           break;
-        // case EH2HConnectorCode.PACIFIC_DESTINATIONS_AU:
+        case EH2HConnectorCode.AIC:
+            if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+              return c['_discriminator'] === EH2HConnectorCode.AIC;
+            })) {
+              this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new AicAvailabilityInputCustomData({
+                DestinationRefIds: ['PAR'],
+                Nationality: 'IT',
+                AvailabilityTypes: [EAvailabilityType.AVAILONLY]
+                // Add others properties
+              }));
+            }
+            break;
+          // case EH2HConnectorCode.PACIFIC_DESTINATIONS_AU:
         //   if (!_.some(this.hotelSearchModel.ConnectorSettings, function (c: AvailabilityInputCustomData) {
         //     return c['_discriminator'] === EH2HConnectorCode.PACIFIC_DESTINATIONS_AU;
         //   })) {

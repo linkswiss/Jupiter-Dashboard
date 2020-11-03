@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AicHotelBookDetailInputCustomData,
   EBookingStatus, EH2HConnectorCode,
   EH2HOperation, EIHGReservationRetrieveMode, IHGHotelBookCancelInputCustomData, IHGHotelBookDetailInputCustomData,
   IHGHotelBookSearchInputCustomData, JupiterHotelBookCancelInput,
@@ -107,6 +108,13 @@ export class HotelBookDetailComponent implements OnInit {
           // PropertyUid: '000-000-0055' // Six Istanbul
         });
         break;
+        case EH2HConnectorCode.AIC:
+          this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = 'aicbookcode001';
+
+          this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new AicHotelBookDetailInputCustomData({
+            BookingCode: '20-3252'
+          });
+          break;
     }
   }
 
