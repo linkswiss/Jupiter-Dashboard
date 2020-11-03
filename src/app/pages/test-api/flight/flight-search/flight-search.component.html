@@ -205,9 +205,26 @@
 </div>
 <!-- END FLIGHT DETAILS MESSAGES/DEBUG -->
 
+<!-- FLIGHT BOOK MESSAGES/DEBUG -->
+<div *ngIf="jupiterFlightBookRq">
+  <jupiter-api-messages-accordion Title="Flight Book" [ApiRs]="jupiterFlightBookRs"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Flight Book" [(ApiRq)]="jupiterFlightBookRq" [ApiRs]="jupiterFlightBookRs"></jupiter-api-debug-accordion>
+</div>
+<!-- END FLIGHT BOOK MESSAGES/DEBUG -->
+
+<!-- FLIGHT BOOK RESPONSE -->
+<div *ngIf="jupiterFlightBookRs && jupiterFlightBookRs.Response && jupiterFlightBookRs.Response.Pnr">
+  <jupiter-flight-pnr-display [currentPnr]="jupiterFlightBookRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
+</div>
+<!-- END BOOK DETAILS RESPONSE -->
+
 <!-- FLIGHT DETAILS RESPONSE -->
 <div *ngIf="jupiterFlightDetailRs && jupiterFlightDetailRs.Response && jupiterFlightDetailRs.Response.Pnr">
-  <button class="btn btn-sm btn-primary" (click)="flightBook()"><i class="fas fa-search"></i> Book</button>
+  <div class="row m-1">
+    <div class="col-md-12 text-center">
+      <button class="btn btn-sm btn-primary center mb-1" (click)="flightBook()"><i class="fas fa-receipt"></i> Book Flights</button>
+    </div>
+  </div>
   <jupiter-flight-pnr-display [currentPnr]="jupiterFlightDetailRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
 </div>
 <!-- END FLIGHT DETAILS RESPONSE -->

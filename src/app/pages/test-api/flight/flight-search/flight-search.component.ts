@@ -328,6 +328,8 @@ export class FlightSearchComponent implements OnInit {
 
     this.jupiterFlightDetailRq = null;
     this.jupiterFlightDetailRs = null;
+    this.jupiterFlightBookRq = null;
+    this.jupiterFlightBookRs = null
     this.jupiterFlightAvailabilityRs = null;
 
     this.jupiterApiService.flightAvailability(this.jupiterFlightAvailabilityRq).subscribe(response => {
