@@ -430,16 +430,14 @@ export class FlightSearchComponent implements OnInit {
       // Add Firm
       this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
         PnrCustomData: new AmadeusFlightPnrCustomData({
-          ReceivedFrom: 'Andrea',
+          ReceivedFrom: 'John Agent',
           TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
         })
       });
 
       this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
-        Name: 'NAAR TOUR OPERATOR 024855851'
+        Name: 'My Travel Agency 123123123'
       });
-
-
     }
 
     this.jupiterApiService.flightBook(this.jupiterFlightBookRq).subscribe(response => {
