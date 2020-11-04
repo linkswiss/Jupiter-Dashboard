@@ -390,7 +390,7 @@ export class FlightSearchComponent implements OnInit {
   /**
    * Execute the flight book
    */
-  flightBook() {
+  flightBook(closePnr: boolean) {
     this.loading = true;
 
     let pnrString = JSON.stringify(this.jupiterFlightDetailRs.Response.Pnr);
@@ -416,6 +416,9 @@ export class FlightSearchComponent implements OnInit {
       Remarks: this.jupiterFlightDetailRs.Response.Pnr.Remarks,
       TravelCompany: this.jupiterFlightDetailRs.Response.Pnr.TravelCompany
     });
+
+    //Close the PNR
+    bookPnr.ClosePnr = closePnr;
 
     // Book the same of detail
     this.jupiterFlightBookRq = new JupiterFlightBookRQ({

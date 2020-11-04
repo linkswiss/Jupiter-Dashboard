@@ -222,7 +222,8 @@
 <div *ngIf="jupiterFlightDetailRs && jupiterFlightDetailRs.Response && jupiterFlightDetailRs.Response.Pnr">
   <div class="row m-1">
     <div class="col-md-12 text-center">
-      <button class="btn btn-sm btn-primary center mb-1" (click)="flightBook()"><i class="fas fa-receipt"></i> Book Flights</button>
+      <button class="btn btn-sm btn-primary center mb-1" (click)="flightBook(false)"><i class="fas fa-receipt"></i> Book Flights NOPNR</button>
+      <button class="btn btn-sm btn-primary center mb-1" (click)="flightBook(true)"><i class="fas fa-receipt"></i> Book Flights AND CLOSE PNR</button>
     </div>
   </div>
   <jupiter-flight-pnr-display [currentPnr]="jupiterFlightDetailRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
