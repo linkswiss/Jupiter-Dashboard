@@ -1141,6 +1141,178 @@ export class FlightClient extends ApiClientBase {
     }
     return Promise.resolve<JupiterFlightPnrRetrieveRS>(<any>null);
   }
+
+  /**
+   * Flight PNR Delete
+   */
+  flightPnrDelete(request: JupiterFlightPnrDeleteRQ): Promise<JupiterFlightPnrDeleteRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Flight/pnr-delete";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processFlightPnrDelete(_response);
+    });
+  }
+
+  protected processFlightPnrDelete(response: Response): Promise<JupiterFlightPnrDeleteRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterFlightPnrDeleteRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterFlightPnrDeleteRS>(<any>null);
+  }
+
+  /**
+   * Flight Queue List
+   */
+  flightQueueList(request: JupiterFlightQueueListRQ): Promise<JupiterFlightQueueListRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Flight/queue-list";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processFlightQueueList(_response);
+    });
+  }
+
+  protected processFlightQueueList(response: Response): Promise<JupiterFlightQueueListRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterFlightQueueListRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterFlightQueueListRS>(<any>null);
+  }
+
+  /**
+   * Flight Queue Place PNR
+   */
+  flightQueuePlacePnr(request: JupiterFlightQueuePlacePnrRQ): Promise<JupiterFlightQueuePlacePnrRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Flight/queue-place";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processFlightQueuePlacePnr(_response);
+    });
+  }
+
+  protected processFlightQueuePlacePnr(response: Response): Promise<JupiterFlightQueuePlacePnrRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterFlightQueuePlacePnrRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterFlightQueuePlacePnrRS>(<any>null);
+  }
+
+  /**
+   * Flight Queue Remove PNR
+   */
+  flightQueueRemovePnr(request: JupiterFlightQueueRemovePnrRQ): Promise<JupiterFlightQueueRemovePnrRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Flight/queue-remove";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processFlightQueueRemovePnr(_response);
+    });
+  }
+
+  protected processFlightQueueRemovePnr(response: Response): Promise<JupiterFlightQueueRemovePnrRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterFlightQueueRemovePnrRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterFlightQueueRemovePnrRS>(<any>null);
+  }
 }
 
 export class SessionAndCrypticClient extends ApiClientBase {
@@ -28107,8 +28279,10 @@ export abstract class BaseOperationPnr implements IBaseOperationPnr {
   ConnectorCode!: EH2HConnectorCode;
   /** Close Pnr is used in GDS requests
    if true do EndTransaction to save
-   if false it will not skip the EndTransaction */
+   if false it will skip the EndTransaction */
   ClosePnr?: boolean | undefined;
+  /** The Booking Status */
+  BookingStatus?: EBookingStatus | undefined;
   /** PNR Number */
   PnrNumber?: string | undefined;
   /** PCC of the PNR */
@@ -28157,6 +28331,7 @@ export abstract class BaseOperationPnr implements IBaseOperationPnr {
     if (_data) {
       this.ConnectorCode = _data["ConnectorCode"];
       this.ClosePnr = _data["ClosePnr"];
+      this.BookingStatus = _data["BookingStatus"];
       this.PnrNumber = _data["PnrNumber"];
       this.PseudoCityCode = _data["PseudoCityCode"];
       this.PnrDate = _data["PnrDate"];
@@ -28212,6 +28387,7 @@ export abstract class BaseOperationPnr implements IBaseOperationPnr {
     data = typeof data === 'object' ? data : {};
     data["ConnectorCode"] = this.ConnectorCode;
     data["ClosePnr"] = this.ClosePnr;
+    data["BookingStatus"] = this.BookingStatus;
     data["PnrNumber"] = this.PnrNumber;
     data["PseudoCityCode"] = this.PseudoCityCode;
     data["PnrDate"] = this.PnrDate;
@@ -28264,8 +28440,10 @@ export interface IBaseOperationPnr {
   ConnectorCode: EH2HConnectorCode;
   /** Close Pnr is used in GDS requests
    if true do EndTransaction to save
-   if false it will not skip the EndTransaction */
+   if false it will skip the EndTransaction */
   ClosePnr?: boolean | undefined;
+  /** The Booking Status */
+  BookingStatus?: EBookingStatus | undefined;
   /** PNR Number */
   PnrNumber?: string | undefined;
   /** PCC of the PNR */
@@ -31520,6 +31698,9 @@ export class JupiterFlightDetailInput extends BaseInput implements IJupiterFligh
   SelectedFlightAvail?: SingleFlightAvailResult | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightDetailInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
 
   constructor(data?: IJupiterFlightDetailInput) {
     super(data);
@@ -31531,6 +31712,7 @@ export class JupiterFlightDetailInput extends BaseInput implements IJupiterFligh
       this.ConnectorCode = _data["ConnectorCode"];
       this.SelectedFlightAvail = _data["SelectedFlightAvail"] ? SingleFlightAvailResult.fromJS(_data["SelectedFlightAvail"]) : <any>undefined;
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightDetailInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
     }
   }
 
@@ -31546,6 +31728,7 @@ export class JupiterFlightDetailInput extends BaseInput implements IJupiterFligh
     data["ConnectorCode"] = this.ConnectorCode;
     data["SelectedFlightAvail"] = this.SelectedFlightAvail ? this.SelectedFlightAvail.toJSON() : <any>undefined;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
   }
@@ -31559,6 +31742,9 @@ export interface IJupiterFlightDetailInput extends IBaseInput {
   SelectedFlightAvail?: SingleFlightAvailResult | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightDetailInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
 }
 
 export abstract class FlightDetailInputCustomData implements IFlightDetailInputCustomData {
@@ -31599,20 +31785,23 @@ export interface IFlightDetailInputCustomData {
 }
 
 export class AmadeusFlightDetailInputCustomData extends FlightDetailInputCustomData implements IAmadeusFlightDetailInputCustomData {
-  /** Amadeus Session if you want to use a Context-full (State) call
-
-   If not specified the FlightAvailability will use a Context-less (Stateless) */
-  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+  /** Used only if the Connector settings is FlightDetailsOperationType is FARE_INFORMATIVE
+   If FareInformativeBestPrice is true the Detail process will use the FareInformativeBestPrice as default
+   If false it will use the FareInformative and if error the FareInformativeBestPrice */
+  FareInformativeBestPrice?: boolean;
 
   constructor(data?: IAmadeusFlightDetailInputCustomData) {
     super(data);
+    if (!data) {
+      this.FareInformativeBestPrice = false;
+    }
     this._discriminator = "AMADEUS";
   }
 
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
+      this.FareInformativeBestPrice = _data["FareInformativeBestPrice"] !== undefined ? _data["FareInformativeBestPrice"] : false;
     }
   }
 
@@ -31625,17 +31814,17 @@ export class AmadeusFlightDetailInputCustomData extends FlightDetailInputCustomD
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
+    data["FareInformativeBestPrice"] = this.FareInformativeBestPrice;
     super.toJSON(data);
     return data;
   }
 }
 
 export interface IAmadeusFlightDetailInputCustomData extends IFlightDetailInputCustomData {
-  /** Amadeus Session if you want to use a Context-full (State) call
-
-   If not specified the FlightAvailability will use a Context-less (Stateless) */
-  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+  /** Used only if the Connector settings is FlightDetailsOperationType is FARE_INFORMATIVE
+   If FareInformativeBestPrice is true the Detail process will use the FareInformativeBestPrice as default
+   If false it will use the FareInformative and if error the FareInformativeBestPrice */
+  FareInformativeBestPrice?: boolean;
 }
 
 export abstract class CustomerCustomDataOfJupiterFlightDetailInput implements ICustomerCustomDataOfJupiterFlightDetailInput {
@@ -32597,11 +32786,11 @@ export class JupiterFlightBookInput extends BaseInput implements IJupiterFlightB
   Pnr!: FlightBookPnr;
   /** Expected Amount of previous call */
   ExpectedAmount?: CurrencyAmount | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightBookInputCustomData | undefined;
   /** GDS Session - Optional
    If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
   SessionConnectorCustomData?: GdsSessionCustomData | undefined;
-  /** Connector Custom Data */
-  ConnectorCustomData?: FlightBookInputCustomData | undefined;
 
   constructor(data?: IJupiterFlightBookInput) {
     super(data);
@@ -32615,8 +32804,8 @@ export class JupiterFlightBookInput extends BaseInput implements IJupiterFlightB
     if (_data) {
       this.Pnr = _data["Pnr"] ? FlightBookPnr.fromJS(_data["Pnr"]) : new FlightBookPnr();
       this.ExpectedAmount = _data["ExpectedAmount"] ? CurrencyAmount.fromJS(_data["ExpectedAmount"]) : <any>undefined;
-      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightBookInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
     }
   }
 
@@ -32631,8 +32820,8 @@ export class JupiterFlightBookInput extends BaseInput implements IJupiterFlightB
     data = typeof data === 'object' ? data : {};
     data["Pnr"] = this.Pnr ? this.Pnr.toJSON() : <any>undefined;
     data["ExpectedAmount"] = this.ExpectedAmount ? this.ExpectedAmount.toJSON() : <any>undefined;
-    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
   }
@@ -32643,11 +32832,11 @@ export interface IJupiterFlightBookInput extends IBaseInput {
   Pnr: FlightBookPnr;
   /** Expected Amount of previous call */
   ExpectedAmount?: CurrencyAmount | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightBookInputCustomData | undefined;
   /** GDS Session - Optional
    If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
   SessionConnectorCustomData?: GdsSessionCustomData | undefined;
-  /** Connector Custom Data */
-  ConnectorCustomData?: FlightBookInputCustomData | undefined;
 }
 
 export abstract class FlightBookInputCustomData implements IFlightBookInputCustomData {
@@ -32693,10 +32882,10 @@ export interface IFlightBookInputCustomData {
 }
 
 export class AmadeusFlightBookInputCustomData extends FlightBookInputCustomData implements IAmadeusFlightBookInputCustomData {
-  /** Amadeus Session if you want to use a Context-full (State) call
-
-   If not specified the FlightAvailability will use a Context-less (Stateless) */
-  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+  /** List of Sabre command Pre Book */
+  PreBookCrypticCommands?: string[] | undefined;
+  /** List of Sabre command Post Book */
+  PostBookCrypticCommands?: string[] | undefined;
 
   constructor(data?: IAmadeusFlightBookInputCustomData) {
     super(data);
@@ -32706,7 +32895,16 @@ export class AmadeusFlightBookInputCustomData extends FlightBookInputCustomData 
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
+      if (Array.isArray(_data["PreBookCrypticCommands"])) {
+        this.PreBookCrypticCommands = [] as any;
+        for (let item of _data["PreBookCrypticCommands"])
+          this.PreBookCrypticCommands!.push(item);
+      }
+      if (Array.isArray(_data["PostBookCrypticCommands"])) {
+        this.PostBookCrypticCommands = [] as any;
+        for (let item of _data["PostBookCrypticCommands"])
+          this.PostBookCrypticCommands!.push(item);
+      }
     }
   }
 
@@ -32719,17 +32917,26 @@ export class AmadeusFlightBookInputCustomData extends FlightBookInputCustomData 
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
+    if (Array.isArray(this.PreBookCrypticCommands)) {
+      data["PreBookCrypticCommands"] = [];
+      for (let item of this.PreBookCrypticCommands)
+        data["PreBookCrypticCommands"].push(item);
+    }
+    if (Array.isArray(this.PostBookCrypticCommands)) {
+      data["PostBookCrypticCommands"] = [];
+      for (let item of this.PostBookCrypticCommands)
+        data["PostBookCrypticCommands"].push(item);
+    }
     super.toJSON(data);
     return data;
   }
 }
 
 export interface IAmadeusFlightBookInputCustomData extends IFlightBookInputCustomData {
-  /** Amadeus Session if you want to use a Context-full (State) call
-
-   If not specified the FlightAvailability will use a Context-less (Stateless) */
-  AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
+  /** List of Sabre command Pre Book */
+  PreBookCrypticCommands?: string[] | undefined;
+  /** List of Sabre command Post Book */
+  PostBookCrypticCommands?: string[] | undefined;
 }
 
 /** Sabre Custom Data */
@@ -32901,8 +33108,6 @@ export interface IJupiterFlightPnrRetrieveOutput extends IBaseOutput {
 }
 
 export class FlightRetrievePnr extends BaseOperationPnr implements IFlightRetrievePnr {
-  /** The Booking Status */
-  BookingStatus?: EBookingStatus;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightRetrievePnrCustomData | undefined;
 
@@ -32913,7 +33118,6 @@ export class FlightRetrievePnr extends BaseOperationPnr implements IFlightRetrie
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      this.BookingStatus = _data["BookingStatus"];
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightRetrievePnrCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
     }
   }
@@ -32927,7 +33131,6 @@ export class FlightRetrievePnr extends BaseOperationPnr implements IFlightRetrie
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    data["BookingStatus"] = this.BookingStatus;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
@@ -32935,8 +33138,6 @@ export class FlightRetrievePnr extends BaseOperationPnr implements IFlightRetrie
 }
 
 export interface IFlightRetrievePnr extends IBaseOperationPnr {
-  /** The Booking Status */
-  BookingStatus?: EBookingStatus;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightRetrievePnrCustomData | undefined;
 }
@@ -33496,6 +33697,1214 @@ export abstract class CustomerCustomDataOfJupiterFlightPnrRetrieveInput implemen
 }
 
 export interface ICustomerCustomDataOfJupiterFlightPnrRetrieveInput {
+}
+
+export class JupiterFlightPnrDeleteRS extends BaseRS implements IJupiterFlightPnrDeleteRS {
+  /** JupiterFlightPnrDeleteOutput Response */
+  Response?: JupiterFlightPnrDeleteOutput | undefined;
+
+  constructor(data?: IJupiterFlightPnrDeleteRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? JupiterFlightPnrDeleteOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightPnrDeleteRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightPnrDeleteRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightPnrDeleteRS extends IBaseRS {
+  /** JupiterFlightPnrDeleteOutput Response */
+  Response?: JupiterFlightPnrDeleteOutput | undefined;
+}
+
+export class JupiterFlightPnrDeleteOutput extends BaseOutput implements IJupiterFlightPnrDeleteOutput {
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightPnrDeleteOutputCustomData | undefined;
+
+  constructor(data?: IJupiterFlightPnrDeleteOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightPnrDeleteOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightPnrDeleteOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightPnrDeleteOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightPnrDeleteOutput extends IBaseOutput {
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightPnrDeleteOutputCustomData | undefined;
+}
+
+export abstract class FlightPnrDeleteOutputCustomData implements IFlightPnrDeleteOutputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightPnrDeleteOutputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightPnrDeleteOutputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightPnrDeleteOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightPnrDeleteOutputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightPnrDeleteOutputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightPnrDeleteOutput implements ICustomerCustomDataOfJupiterFlightPnrDeleteOutput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightPnrDeleteOutput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightPnrDeleteOutput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightPnrDeleteOutput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightPnrDeleteOutput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightPnrDeleteOutput {
+}
+
+export class JupiterFlightPnrDeleteRQ extends BaseRQ implements IJupiterFlightPnrDeleteRQ {
+  /** JupiterFlightPnrDeleteRQ Request */
+  Request?: JupiterFlightPnrDeleteInput | undefined;
+
+  constructor(data?: IJupiterFlightPnrDeleteRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? JupiterFlightPnrDeleteInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightPnrDeleteRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightPnrDeleteRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightPnrDeleteRQ extends IBaseRQ {
+  /** JupiterFlightPnrDeleteRQ Request */
+  Request?: JupiterFlightPnrDeleteInput | undefined;
+}
+
+export class JupiterFlightPnrDeleteInput extends BaseInput implements IJupiterFlightPnrDeleteInput {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  /** PNR Number - Optional
+   If no session is present it's mandatory */
+  PnrNumber?: string | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightPnrDeleteInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, and delete the PNR form the session, if not it will take a new session form Pool and delete the PnrNumber */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+
+  constructor(data?: IJupiterFlightPnrDeleteInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.PnrNumber = _data["PnrNumber"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightPnrDeleteInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightPnrDeleteInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightPnrDeleteInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["PnrNumber"] = this.PnrNumber;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightPnrDeleteInput extends IBaseInput {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  /** PNR Number - Optional
+   If no session is present it's mandatory */
+  PnrNumber?: string | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightPnrDeleteInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, and delete the PNR form the session, if not it will take a new session form Pool and delete the PnrNumber */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+}
+
+export abstract class FlightPnrDeleteInputCustomData implements IFlightPnrDeleteInputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightPnrDeleteInputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightPnrDeleteInputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightPnrDeleteInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightPnrDeleteInputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightPnrDeleteInputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightPnrDeleteInput implements ICustomerCustomDataOfJupiterFlightPnrDeleteInput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightPnrDeleteInput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightPnrDeleteInput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightPnrDeleteInput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightPnrDeleteInput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightPnrDeleteInput {
+}
+
+export class JupiterFlightQueueListRS extends BaseRS implements IJupiterFlightQueueListRS {
+  /** JupiterFlightQueueListOutput Response */
+  Response?: JupiterFlightQueueListOutput | undefined;
+
+  constructor(data?: IJupiterFlightQueueListRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? JupiterFlightQueueListOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueListRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueListRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueListRS extends IBaseRS {
+  /** JupiterFlightQueueListOutput Response */
+  Response?: JupiterFlightQueueListOutput | undefined;
+}
+
+export class JupiterFlightQueueListOutput extends BaseOutput implements IJupiterFlightQueueListOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueListOutputCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueueListOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["PnrNumberList"])) {
+        this.PnrNumberList = [] as any;
+        for (let item of _data["PnrNumberList"])
+          this.PnrNumberList!.push(item);
+      }
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueueListOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueListOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueListOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.PnrNumberList)) {
+      data["PnrNumberList"] = [];
+      for (let item of this.PnrNumberList)
+        data["PnrNumberList"].push(item);
+    }
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueListOutput extends IBaseOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueListOutputCustomData | undefined;
+}
+
+export abstract class FlightQueueListOutputCustomData implements IFlightQueueListOutputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueueListOutputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueueListOutputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueueListOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueueListOutputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueueListOutputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueueListOutput implements ICustomerCustomDataOfJupiterFlightQueueListOutput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueueListOutput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueueListOutput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueueListOutput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueueListOutput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueueListOutput {
+}
+
+export class JupiterFlightQueueListRQ extends BaseRQ implements IJupiterFlightQueueListRQ {
+  /** JupiterFlightQueueListRQ Request */
+  Request?: JupiterFlightQueueListInput | undefined;
+
+  constructor(data?: IJupiterFlightQueueListRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? JupiterFlightQueueListInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueListRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueListRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueListRQ extends IBaseRQ {
+  /** JupiterFlightQueueListRQ Request */
+  Request?: JupiterFlightQueueListInput | undefined;
+}
+
+export class JupiterFlightQueueListInput extends BaseInput implements IJupiterFlightQueueListInput {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  /** Queue Number */
+  QueueNumber!: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueListInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueueListInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.QueueNumber = _data["QueueNumber"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueueListInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueListInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueListInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["QueueNumber"] = this.QueueNumber;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueListInput extends IBaseInput {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  /** Queue Number */
+  QueueNumber: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueListInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+}
+
+export abstract class FlightQueueListInputCustomData implements IFlightQueueListInputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueueListInputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueueListInputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueueListInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueueListInputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueueListInputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueueListInput implements ICustomerCustomDataOfJupiterFlightQueueListInput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueueListInput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueueListInput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueueListInput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueueListInput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueueListInput {
+}
+
+export class JupiterFlightQueuePlacePnrRS extends BaseRS implements IJupiterFlightQueuePlacePnrRS {
+  /** JupiterFlightQueuePlacePnrOutput Response */
+  Response?: JupiterFlightQueuePlacePnrOutput | undefined;
+
+  constructor(data?: IJupiterFlightQueuePlacePnrRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? JupiterFlightQueuePlacePnrOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueuePlacePnrRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueuePlacePnrRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueuePlacePnrRS extends IBaseRS {
+  /** JupiterFlightQueuePlacePnrOutput Response */
+  Response?: JupiterFlightQueuePlacePnrOutput | undefined;
+}
+
+export class JupiterFlightQueuePlacePnrOutput extends BaseOutput implements IJupiterFlightQueuePlacePnrOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueuePlacePnrOutputCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueuePlacePnrOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["PnrNumberList"])) {
+        this.PnrNumberList = [] as any;
+        for (let item of _data["PnrNumberList"])
+          this.PnrNumberList!.push(item);
+      }
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueuePlacePnrOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueuePlacePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueuePlacePnrOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.PnrNumberList)) {
+      data["PnrNumberList"] = [];
+      for (let item of this.PnrNumberList)
+        data["PnrNumberList"].push(item);
+    }
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueuePlacePnrOutput extends IBaseOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueuePlacePnrOutputCustomData | undefined;
+}
+
+export abstract class FlightQueuePlacePnrOutputCustomData implements IFlightQueuePlacePnrOutputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueuePlacePnrOutputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueuePlacePnrOutputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueuePlacePnrOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueuePlacePnrOutputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueuePlacePnrOutputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueuePlacePnrOutput implements ICustomerCustomDataOfJupiterFlightQueuePlacePnrOutput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueuePlacePnrOutput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueuePlacePnrOutput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueuePlacePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueuePlacePnrOutput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueuePlacePnrOutput {
+}
+
+export class JupiterFlightQueuePlacePnrRQ extends BaseRQ implements IJupiterFlightQueuePlacePnrRQ {
+  /** JupiterFlightQueuePlacePnrRQ Request */
+  Request?: JupiterFlightQueuePlacePnrInput | undefined;
+
+  constructor(data?: IJupiterFlightQueuePlacePnrRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? JupiterFlightQueuePlacePnrInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueuePlacePnrRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueuePlacePnrRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueuePlacePnrRQ extends IBaseRQ {
+  /** JupiterFlightQueuePlacePnrRQ Request */
+  Request?: JupiterFlightQueuePlacePnrInput | undefined;
+}
+
+export class JupiterFlightQueuePlacePnrInput extends BaseInput implements IJupiterFlightQueuePlacePnrInput {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  /** PNR Number - Optional */
+  PnrNumber!: string;
+  /** Queue Number */
+  QueueNumber!: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueuePlacePnrInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueuePlacePnrInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.PnrNumber = _data["PnrNumber"];
+      this.QueueNumber = _data["QueueNumber"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueuePlacePnrInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueuePlacePnrInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueuePlacePnrInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["PnrNumber"] = this.PnrNumber;
+    data["QueueNumber"] = this.QueueNumber;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueuePlacePnrInput extends IBaseInput {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  /** PNR Number - Optional */
+  PnrNumber: string;
+  /** Queue Number */
+  QueueNumber: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueuePlacePnrInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+}
+
+export abstract class FlightQueuePlacePnrInputCustomData implements IFlightQueuePlacePnrInputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueuePlacePnrInputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueuePlacePnrInputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueuePlacePnrInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueuePlacePnrInputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueuePlacePnrInputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueuePlacePnrInput implements ICustomerCustomDataOfJupiterFlightQueuePlacePnrInput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueuePlacePnrInput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueuePlacePnrInput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueuePlacePnrInput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueuePlacePnrInput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueuePlacePnrInput {
+}
+
+export class JupiterFlightQueueRemovePnrRS extends BaseRS implements IJupiterFlightQueueRemovePnrRS {
+  /** JupiterFlightQueueRemovePnrOutput Response */
+  Response?: JupiterFlightQueueRemovePnrOutput | undefined;
+
+  constructor(data?: IJupiterFlightQueueRemovePnrRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? JupiterFlightQueueRemovePnrOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueRemovePnrRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueRemovePnrRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueRemovePnrRS extends IBaseRS {
+  /** JupiterFlightQueueRemovePnrOutput Response */
+  Response?: JupiterFlightQueueRemovePnrOutput | undefined;
+}
+
+export class JupiterFlightQueueRemovePnrOutput extends BaseOutput implements IJupiterFlightQueueRemovePnrOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueRemovePnrOutputCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueueRemovePnrOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      if (Array.isArray(_data["PnrNumberList"])) {
+        this.PnrNumberList = [] as any;
+        for (let item of _data["PnrNumberList"])
+          this.PnrNumberList!.push(item);
+      }
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueueRemovePnrOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueRemovePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueRemovePnrOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.PnrNumberList)) {
+      data["PnrNumberList"] = [];
+      for (let item of this.PnrNumberList)
+        data["PnrNumberList"].push(item);
+    }
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueRemovePnrOutput extends IBaseOutput {
+  /** Pnr Numbers in queue */
+  PnrNumberList?: string[] | undefined;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueRemovePnrOutputCustomData | undefined;
+}
+
+export abstract class FlightQueueRemovePnrOutputCustomData implements IFlightQueueRemovePnrOutputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueueRemovePnrOutputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueueRemovePnrOutputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueueRemovePnrOutputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueueRemovePnrOutputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueueRemovePnrOutputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueueRemovePnrOutput implements ICustomerCustomDataOfJupiterFlightQueueRemovePnrOutput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueueRemovePnrOutput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueueRemovePnrOutput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueueRemovePnrOutput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueueRemovePnrOutput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueueRemovePnrOutput {
+}
+
+export class JupiterFlightQueueRemovePnrRQ extends BaseRQ implements IJupiterFlightQueueRemovePnrRQ {
+  /** JupiterFlightQueueRemovePnrRQ Request */
+  Request?: JupiterFlightQueueRemovePnrInput | undefined;
+
+  constructor(data?: IJupiterFlightQueueRemovePnrRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? JupiterFlightQueueRemovePnrInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueRemovePnrRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueRemovePnrRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueRemovePnrRQ extends IBaseRQ {
+  /** JupiterFlightQueueRemovePnrRQ Request */
+  Request?: JupiterFlightQueueRemovePnrInput | undefined;
+}
+
+export class JupiterFlightQueueRemovePnrInput extends BaseInput implements IJupiterFlightQueueRemovePnrInput {
+  /** Connector Code */
+  ConnectorCode!: EH2HConnectorCode;
+  /** PNR Number - Optional */
+  PnrNumber!: string;
+  /** Queue Number */
+  QueueNumber!: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueRemovePnrInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+
+  constructor(data?: IJupiterFlightQueueRemovePnrInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.PnrNumber = _data["PnrNumber"];
+      this.QueueNumber = _data["QueueNumber"];
+      this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueueRemovePnrInputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
+      this.SessionConnectorCustomData = _data["SessionConnectorCustomData"] ? GdsSessionCustomData.fromJS(_data["SessionConnectorCustomData"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterFlightQueueRemovePnrInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterFlightQueueRemovePnrInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["PnrNumber"] = this.PnrNumber;
+    data["QueueNumber"] = this.QueueNumber;
+    data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
+    data["SessionConnectorCustomData"] = this.SessionConnectorCustomData ? this.SessionConnectorCustomData.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterFlightQueueRemovePnrInput extends IBaseInput {
+  /** Connector Code */
+  ConnectorCode: EH2HConnectorCode;
+  /** PNR Number - Optional */
+  PnrNumber: string;
+  /** Queue Number */
+  QueueNumber: string;
+  /** Connector Custom Data */
+  ConnectorCustomData?: FlightQueueRemovePnrInputCustomData | undefined;
+  /** GDS Session - Optional
+   If present the system try to get the specified session form Pool, if not it will take a new session form Pool */
+  SessionConnectorCustomData?: GdsSessionCustomData | undefined;
+}
+
+export abstract class FlightQueueRemovePnrInputCustomData implements IFlightQueueRemovePnrInputCustomData {
+
+  protected _discriminator: string;
+
+  constructor(data?: IFlightQueueRemovePnrInputCustomData) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "FlightQueueRemovePnrInputCustomData";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): FlightQueueRemovePnrInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'FlightQueueRemovePnrInputCustomData' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataConnectorCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface IFlightQueueRemovePnrInputCustomData {
+}
+
+export abstract class CustomerCustomDataOfJupiterFlightQueueRemovePnrInput implements ICustomerCustomDataOfJupiterFlightQueueRemovePnrInput {
+
+  protected _discriminator: string;
+
+  constructor(data?: ICustomerCustomDataOfJupiterFlightQueueRemovePnrInput) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+    this._discriminator = "CustomerCustomDataOfJupiterFlightQueueRemovePnrInput";
+  }
+
+  init(_data?: any) {
+  }
+
+  static fromJS(data: any): CustomerCustomDataOfJupiterFlightQueueRemovePnrInput {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'CustomerCustomDataOfJupiterFlightQueueRemovePnrInput' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CustomDataCode"] = this._discriminator;
+    return data;
+  }
+}
+
+export interface ICustomerCustomDataOfJupiterFlightQueueRemovePnrInput {
 }
 
 export class JupiterCrypticRS extends BaseRS implements IJupiterCrypticRS {
@@ -36248,6 +37657,10 @@ export enum EH2HOperation {
   FLIGHT_PRICE_VERIFY = "FLIGHT_PRICE_VERIFY",
   FLIGHT_BOOK = "FLIGHT_BOOK",
   FLIGHT_PNR_RETRIEVE = "FLIGHT_PNR_RETRIEVE",
+  FLIGHT_PNR_DELETE = "FLIGHT_PNR_DELETE",
+  FLIGHT_QUEUE_LIST = "FLIGHT_QUEUE_LIST",
+  FLIGHT_QUEUE_PLACE_PNR = "FLIGHT_QUEUE_PLACE_PNR",
+  FLIGHT_QUEUE_REMOVE_PNR = "FLIGHT_QUEUE_REMOVE_PNR",
   TRAIN_AVAIL = "TRAIN_AVAIL",
   TRAIN_BOOK = "TRAIN_BOOK",
   DESTINATION_LIST = "DESTINATION_LIST",

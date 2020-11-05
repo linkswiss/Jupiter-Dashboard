@@ -4,7 +4,7 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
   AmadeusFlightAvailabilityInputCustomData,
-  AmadeusFlightBookPnrCustomData,
+  AmadeusFlightBookPnrCustomData, AmadeusFlightDetailInputCustomData,
   AmadeusFlightPnrCustomData,
   AmadeusFlightStepRequestCustomData,
   AvailabilityInputCustomData,
@@ -24,7 +24,8 @@ import {
   JupiterFlightBookRS,
   JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, PnrTravelCompany,
+  JupiterFlightDetailRS,
+  PnrTravelCompany,
   SabreFlightAvailabilityInputCustomData,
   SabreFlightStepRequestCustomData,
   SingleFlightAvailResult,
@@ -50,6 +51,8 @@ export class FlightSearchComponent implements OnInit {
 
   jupiterFlightAvailabilityRq: JupiterFlightAvailabilityRQ = null;
   jupiterFlightAvailabilityRs: JupiterFlightAvailabilityRS = null;
+
+  selectedResult: SingleFlightAvailResult = null;
 
   jupiterFlightDetailRq: JupiterFlightDetailRQ = null;
   jupiterFlightDetailRs: JupiterFlightDetailRS = null;
@@ -320,6 +323,15 @@ export class FlightSearchComponent implements OnInit {
     step['_ConnectorCustomDataConnectors'].splice(index, 1);
   }
 
+  resetSelected(){
+    this.jupiterFlightDetailRq = null;
+    this.jupiterFlightDetailRs = null;
+    this.jupiterFlightBookRq = null;
+    this.jupiterFlightBookRs = null;
+
+    this.selectedResult = null;
+  }
+
   /**
    * Execute the flight search
    */
@@ -329,8 +341,10 @@ export class FlightSearchComponent implements OnInit {
     this.jupiterFlightDetailRq = null;
     this.jupiterFlightDetailRs = null;
     this.jupiterFlightBookRq = null;
-    this.jupiterFlightBookRs = null
+    this.jupiterFlightBookRs = null;
     this.jupiterFlightAvailabilityRs = null;
+
+    this.selectedResult = null;
 
     this.jupiterApiService.flightAvailability(this.jupiterFlightAvailabilityRq).subscribe(response => {
       this.jupiterFlightAvailabilityRs = response;
@@ -353,10 +367,17 @@ export class FlightSearchComponent implements OnInit {
    * @param singleFlightAvailResult
    * @param flightFareGroupResult
    */
-  flightDetails(singleFlightAvailResult: SingleFlightAvailResult, flightFareGroupResult: FlightFareGroupResult) {
+  flightDetails(singleFlightAvailResult: SingleFlightAvailResult, flightFareGroupResult: FlightFareGroupResult, isBestPrice = false) {
     this.loading = true;
 
-    singleFlightAvailResult.FareList = _.filter(singleFlightAvailResult.FareList, function (f: FlightFareGroupResult) {
+    //Set Current selected
+    if(!this.selectedResult || this.selectedResult.Id !== singleFlightAvailResult.Id){
+      this.selectedResult = singleFlightAvailResult;
+    }
+
+    //Copy and get the single fare selected
+    let resultCopy = SingleFlightAvailResult.fromJS(JSON.parse(JSON.stringify(singleFlightAvailResult)));
+    resultCopy.FareList = _.filter(singleFlightAvailResult.FareList, function (f: FlightFareGroupResult) {
       return f.Id === flightFareGroupResult.Id;
     });
 
@@ -364,10 +385,18 @@ export class FlightSearchComponent implements OnInit {
       ConnectorsEnvironment: this.jupiterFlightAvailabilityRq.ConnectorsEnvironment,
       Request: new JupiterFlightDetailInput({
         ConnectorCode: flightFareGroupResult.ConnectorCode,
-        SelectedFlightAvail: singleFlightAvailResult,
+        SelectedFlightAvail: resultCopy,
         ConnectorsDebug: this.jupiterFlightAvailabilityRq.Request.ConnectorsDebug,
       })
     });
+
+    //If Amadeus and isBestPrice force the FareInformativeBestPrice
+    if(flightFareGroupResult.ConnectorCode === EH2HConnectorCode.AMADEUS && isBestPrice)
+    {
+      this.jupiterFlightDetailRq.Request.ConnectorCustomData = new AmadeusFlightDetailInputCustomData({
+        FareInformativeBestPrice: true
+      });
+    }
 
     this.jupiterApiService.flightDetails(this.jupiterFlightDetailRq).subscribe(response => {
       this.jupiterFlightDetailRs = response;

@@ -7,6 +7,7 @@ import {BaseOperationPnr} from '../../../../../services/jupiter-api/jupiter-api-
   styleUrls: ['./flight-pnr-display.component.scss']
 })
 export class FlightPnrDisplayComponent implements OnInit {
+  @Input() title = "";
   @Input() currentPnr: BaseOperationPnr;
 
   isDebug = false;
