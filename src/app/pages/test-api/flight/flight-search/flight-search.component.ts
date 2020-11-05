@@ -4,10 +4,13 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
   AmadeusFlightAvailabilityInputCustomData,
-  AmadeusFlightBookPnrCustomData, AmadeusFlightDetailInputCustomData,
+  AmadeusFlightBookPnrCustomData,
+  AmadeusFlightDetailInputCustomData,
   AmadeusFlightPnrCustomData,
   AmadeusFlightStepRequestCustomData,
   AvailabilityInputCustomData,
+  CreditCardInfo,
+  ECreditCardType,
   EFlightCabin,
   EH2HConnectorCode,
   EH2HOperation,
@@ -467,6 +470,19 @@ export class FlightSearchComponent implements OnInit {
         })
       });
 
+      //TODO Remove this to not provide the FOP Call
+      //Add fake CC
+      this.jupiterFlightBookRq.Request.Pnr.CreditCardPayment = new CreditCardInfo({
+        CardHolderFirstName: 'John',
+        CardHolderLastName: 'Doe',
+        // CreditCardType: ECreditCardType.MASTERCARD,
+        CreditCardType: ECreditCardType.VISA,
+        CreditCardNumber: '4111111111111111',
+        CreditCardCvv: '999',
+        ExpireDate: '01/23'
+      });
+
+      //Add Travel Agency
       this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
         Name: 'My Travel Agency 123123123'
       });
