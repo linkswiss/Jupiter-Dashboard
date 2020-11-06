@@ -1,34 +1,35 @@
 <div *ngIf="segIndex > 0 && segment.StepGroupId !== lastStepGroupId" class="border-bottom border-primary mt-3 mb-3"></div>
 <div *ngIf="segIndex > 0 && segment.StepGroupId === lastStepGroupId" class="row align-items-center">
-  <div class="col-sm-5"></div>
-  <div class="col-sm-4 text-center">-- Connection: {{segment.ConnectionTime.substr(0,5)}} --</div>
+  <div class="col-sm-3"></div>
+  <div class="col-sm-4 text-center font-italic font-size-small">-- Connection: {{segment.ConnectionTime.substr(0,5)}} --</div>
 </div>
 <div class="row align-items-center">
-  <div class="col-sm-3">
+  <div class="col-sm-3 pr-0">
     <!--<h1>{{segment.StepGroupId}}</h1>-->
     <span *ngIf="showSegmentId" class="pr-1">{{segment.Id}}</span>
     <span class="pr-2"><img [src]="segment.MarketingCarrier.IataCode | carrierImage" width="32px"/></span>
     <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.MarketingCarrier.Name}}" placement="top" container="body">{{segment.MarketingCarrier.IataCode}}&nbsp;{{segment.MarketingCarrier.FlightNumber}}</span>
     <span *ngIf="segment.MarketingCarrier.IataCode !== segment.OperatingCarrier.IataCode" class="badge badge-warning text-white p-2 m-1 cursor-pointer" ngbTooltip="Operating Carrier: {{segment.OperatingCarrier.Name}}" placement="top" container="body">{{segment.OperatingCarrier.IataCode}}</span>
   </div>
-  <div class="col-sm-2">
+  <div class="col-sm-2 p-0">
     <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.DepartureAirport.Name}} ({{segment.DepartureAirport.CityName}})" placement="top" container="body">{{segment.DepartureAirport.IataCode}}</span>
-    <span class="font-weight-bold ml-1 mr-1">--</span>
-    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalAirport.Name}} ({{segment.ArrivalAirport.CityName}})" placement="top" container="body">{{segment.ArrivalAirport.IataCode}}</span>
-  </div>
-  <!--<div class="col-sm-2">-->
-  <div class="col-sm-4 text-center">
+    <br>
     <span class="font-weight-bold pr-2">{{segment.DepartureDate | amDateFormat:'HH:mm'}}</span>
     <span class="font-italic font-size-small">{{segment.DepartureDate | amDateFormat:'DD/MM'}}</span>
-    <!--</div>-->
-    <!--<div class="col-sm-2">-->
-    <span class="font-weight-bold pr-2 pl-5">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>
+  </div>
+  <div class="col-sm-1 p-0">
+    <span class="d-inline-block font-weight-bold ml-1 mr-1">&#45;&#45;</span>
+  </div>
+  <div class="col-sm-2 p-0">
+    <span class="font-weight-bold cursor-pointer" ngbTooltip="{{segment.ArrivalAirport.Name}} ({{segment.ArrivalAirport.CityName}})" placement="top" container="body">{{segment.ArrivalAirport.IataCode}}</span>
+    <br>
+    <span class="font-weight-bold pr-2">{{segment.ArrivalDate | amDateFormat:'HH:mm'}}</span>
     <span class="font-italic font-size-small">{{segment.ArrivalDate | amDateFormat:'DD/MM'}}</span>
   </div>
 
-  <div class="col-sm-3">
+  <div class="col-sm-4 p-0">
     <div *ngIf="paxFares">
-      <div *ngFor="let paxFare of paxFares" class="row mb-1">
+      <div *ngFor="let paxFare of paxFares" class="mb-1">
         <div *ngIf="paxFares.length > 1" class="badge bg-hint text-white p-2 m-1 d-inline-block">{{paxFare.PaxCount}} {{paxFare.PaxType}}</div>
 
         <div *ngIf="paxFare.FlightSegmentDetails && paxFare.FlightSegmentDetails[segIndex]">

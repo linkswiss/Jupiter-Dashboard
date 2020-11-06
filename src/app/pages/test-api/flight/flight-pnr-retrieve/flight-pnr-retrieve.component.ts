@@ -2,12 +2,23 @@ import {Component, OnInit} from '@angular/core';
 import {
   ConnectorEnvironment,
   EFlightCabin,
-  EH2HConnectorCode, EH2HOperation, FlightFareGroupResult, JupiterFlightAvailabilityInput,
+  EH2HConnectorCode,
+  EH2HOperation,
+  FlightFareGroupResult,
+  JupiterFlightAvailabilityInput,
   JupiterFlightAvailabilityRQ,
-  JupiterFlightAvailabilityRS, JupiterFlightDetailInput,
+  JupiterFlightAvailabilityRS,
+  JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, JupiterFlightPnrRetrieveInput,
-  JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS, SabreFlightPnrCustomData, SabreFlightRetrievePnrCustomData,
+  JupiterFlightDetailRS,
+  JupiterFlightPnrDeleteInput,
+  JupiterFlightPnrDeleteRQ,
+  JupiterFlightPnrDeleteRS,
+  JupiterFlightPnrRetrieveInput,
+  JupiterFlightPnrRetrieveRQ,
+  JupiterFlightPnrRetrieveRS,
+  SabreFlightPnrCustomData,
+  SabreFlightRetrievePnrCustomData,
   SingleFlightAvailResult
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import * as moment from 'moment';
@@ -25,6 +36,9 @@ export class FlightPnrRetrieveComponent implements OnInit {
 
   jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
   jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
+
+  jupiterFlightPnrDeleteRq: JupiterFlightPnrDeleteRQ = null;
+  jupiterFlightPnrDeleteRs: JupiterFlightPnrDeleteRS = null;
 
   pnrNumber = '';
 
@@ -79,7 +93,10 @@ export class FlightPnrRetrieveComponent implements OnInit {
   retrievePnr() {
     this.loading = true;
 
-    // this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+    this.jupiterFlightPnrDeleteRq = null;
+    this.jupiterFlightPnrDeleteRs = null;
+
+    // this.JupiterFlightPnrDeleteRq = new JupiterFlightPnrRetrieveRQ({
     //   ConnectorsEnvironment: this.connectorsEnvironment,
     //   Request: new JupiterFlightPnrRetrieveInput({
     //     PnrNumber: this.pnrNumber,
@@ -90,18 +107,6 @@ export class FlightPnrRetrieveComponent implements OnInit {
 
     this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
       this.jupiterFlightPnrRetrieveRs = response;
-
-      // Prettify Debug Data
-      if (response && response.ConnectorsResponseDetails && response.ConnectorsResponseDetails.length > 0) {
-        for (let debug of response.ConnectorsResponseDetails) {
-          if (debug.ConnectorDebugData) {
-            // Format it
-            debug.ConnectorDebugData.Request = this.prettifyXml(debug.ConnectorDebugData.Request);
-            debug.ConnectorDebugData.Response = this.prettifyXml(debug.ConnectorDebugData.Response);
-          }
-        }
-      }
-
       this.loading = false;
     }, error => {
       console.error(error);
@@ -110,30 +115,23 @@ export class FlightPnrRetrieveComponent implements OnInit {
 
   }
 
-  getJson(object): string {
-    return JSON.stringify(object, null, 2);
-  }
+  deletePnr(){
+    this.jupiterFlightPnrDeleteRq = new JupiterFlightPnrDeleteRQ({
+      ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrDeleteInput({
+        PnrNumber: this.jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber,
+        ConnectorCode: this.jupiterFlightPnrRetrieveRs.Response.Pnr.ConnectorCode,
+        ConnectorsDebug: this.selectedConnectorsDebug
+      })
+    });
 
-  prettifyXml(sourceXml): string {
-    let xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
-    let xsltDoc = new DOMParser().parseFromString([
-      // describes how we want to modify the XML - indent everything
-      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
-      '  <xsl:strip-space elements="*"/>',
-      '  <xsl:template match="para[content-style][not(text())]">', // change to just text() to strip space in text nodes
-      '    <xsl:value-of select="normalize-space(.)"/>',
-      '  </xsl:template>',
-      '  <xsl:template match="node()|@*">',
-      '    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
-      '  </xsl:template>',
-      '  <xsl:output indent="yes"/>',
-      '</xsl:stylesheet>',
-    ].join('\n'), 'application/xml');
+    this.jupiterApiService.flightPnrDelete(this.jupiterFlightPnrDeleteRq).subscribe(response => {
+      this.jupiterFlightPnrDeleteRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+    });
 
-    let xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(xsltDoc);
-    let resultDoc = xsltProcessor.transformToDocument(xmlDoc);
-    let resultXml = new XMLSerializer().serializeToString(resultDoc);
-    return resultXml;
   }
 }

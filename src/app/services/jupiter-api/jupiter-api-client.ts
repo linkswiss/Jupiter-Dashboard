@@ -33735,6 +33735,8 @@ export interface IJupiterFlightPnrDeleteRS extends IBaseRS {
 }
 
 export class JupiterFlightPnrDeleteOutput extends BaseOutput implements IJupiterFlightPnrDeleteOutput {
+  /** Pnr Details */
+  Pnr?: FlightRetrievePnr | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightPnrDeleteOutputCustomData | undefined;
 
@@ -33745,6 +33747,7 @@ export class JupiterFlightPnrDeleteOutput extends BaseOutput implements IJupiter
   init(_data?: any) {
     super.init(_data);
     if (_data) {
+      this.Pnr = _data["Pnr"] ? FlightRetrievePnr.fromJS(_data["Pnr"]) : <any>undefined;
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightPnrDeleteOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
     }
   }
@@ -33758,6 +33761,7 @@ export class JupiterFlightPnrDeleteOutput extends BaseOutput implements IJupiter
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data["Pnr"] = this.Pnr ? this.Pnr.toJSON() : <any>undefined;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
@@ -33765,6 +33769,8 @@ export class JupiterFlightPnrDeleteOutput extends BaseOutput implements IJupiter
 }
 
 export interface IJupiterFlightPnrDeleteOutput extends IBaseOutput {
+  /** Pnr Details */
+  Pnr?: FlightRetrievePnr | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightPnrDeleteOutputCustomData | undefined;
 }

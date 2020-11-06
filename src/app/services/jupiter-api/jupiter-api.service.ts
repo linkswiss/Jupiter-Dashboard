@@ -41,7 +41,7 @@ import {
   JupiterFlightBookRS,
   JupiterTrainAvailabilityRQ,
   JupiterTrainAvailabilityRS,
-  TrainClient,
+  TrainClient, JupiterFlightPnrDeleteRQ, JupiterFlightPnrDeleteRS,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -261,6 +261,19 @@ export class JupiterApiService {
       let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
       flightClient.flightPnrRetrieve(jupiterFlightPnrRetrieveRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightPnrDelete(jupiterFlightPnrDeleteRQ: JupiterFlightPnrDeleteRQ): Observable<JupiterFlightPnrDeleteRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightPnrDelete(jupiterFlightPnrDeleteRQ).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);

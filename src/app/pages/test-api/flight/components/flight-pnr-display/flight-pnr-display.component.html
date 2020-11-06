@@ -8,22 +8,12 @@
   <nb-card-body>
 
     <div class="row align-items-center">
-      <div class="col-sm-10 pr-0">
+      <div class="col-sm-9 pr-0">
         <div *ngFor="let segment of currentPnr.FlightSegments; let segIndex = index;" class="container p-0">
           <jupiter-segment-display [segment]="segment" showSegmentId="true" [segIndex]="segIndex" [lastStepGroupId]="segIndex > 0 ? currentPnr.FlightSegments[segIndex-1].StepGroupId : '0'" [paxFares]="currentPnr.Fare?.PaxFareList"></jupiter-segment-display>
         </div>
       </div>
-      <div class="col-sm-2">
-        <div [ngSwitch]="currentPnr.ConnectorCode" class="text-right">
-          <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare?.Id}}</span>
-          <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare?.Id}}</span>
-          <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{currentPnr.ConnectorCode}}</span>
-
-          <span class="float-right">
-                <i class="fas fa-bug" (click)="isDebug = true;"></i>
-              </span>
-        </div>
-
+      <div class="col-sm-3">
         <div class="text-right" *ngIf="currentPnr.Fare">
           <div>
             <span class="font-weight-bold h5">{{currentPnr.Fare.Amount.Amount}}</span>
@@ -41,6 +31,14 @@
             </ng-template>
 
           </div>
+        </div>
+
+        <div [ngSwitch]="currentPnr.ConnectorCode" class="text-right">
+          <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare?.Id}}</span>
+          <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{currentPnr.ConnectorCode}} {{currentPnr.Fare?.Id}}</span>
+          <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{currentPnr.ConnectorCode}}</span>
+
+          <span class="mr-2"><i class="fas fa-bug" (click)="isDebug = !isDebug;"></i></span>
         </div>
 
       </div>

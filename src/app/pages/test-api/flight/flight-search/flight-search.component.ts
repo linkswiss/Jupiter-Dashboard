@@ -27,7 +27,7 @@ import {
   JupiterFlightBookRS,
   JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS,
+  JupiterFlightDetailRS, JupiterFlightPnrRetrieveInput, JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS,
   PnrTravelCompany,
   SabreFlightAvailabilityInputCustomData,
   SabreFlightStepRequestCustomData,
@@ -51,6 +51,7 @@ export class FlightSearchComponent implements OnInit {
 
   utils = Utils;
   loading = false;
+  showFilters = false;
 
   jupiterFlightAvailabilityRq: JupiterFlightAvailabilityRQ = null;
   jupiterFlightAvailabilityRs: JupiterFlightAvailabilityRS = null;
@@ -62,6 +63,9 @@ export class FlightSearchComponent implements OnInit {
 
   jupiterFlightBookRq: JupiterFlightBookRQ = null;
   jupiterFlightBookRs: JupiterFlightBookRS = null;
+
+  jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
+  jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
 
   EFlightCabin = EFlightCabin;
   EFlightCabinList = Object.keys(EFlightCabin);
@@ -331,6 +335,8 @@ export class FlightSearchComponent implements OnInit {
     this.jupiterFlightDetailRs = null;
     this.jupiterFlightBookRq = null;
     this.jupiterFlightBookRs = null;
+    this.jupiterFlightPnrRetrieveRq = null;
+    this.jupiterFlightPnrRetrieveRs = null;
 
     this.selectedResult = null;
   }
@@ -345,6 +351,9 @@ export class FlightSearchComponent implements OnInit {
     this.jupiterFlightDetailRs = null;
     this.jupiterFlightBookRq = null;
     this.jupiterFlightBookRs = null;
+    this.jupiterFlightPnrRetrieveRq = null;
+    this.jupiterFlightPnrRetrieveRs = null;
+
     this.jupiterFlightAvailabilityRs = null;
 
     this.selectedResult = null;
@@ -503,6 +512,62 @@ export class FlightSearchComponent implements OnInit {
     });
 
     // flightFareGroupResult
+  }
+
+  retrievePnr() {
+    this.loading = true;
+
+    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+      ConnectorsEnvironment: this.jupiterFlightBookRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrRetrieveInput({
+        ConnectorsDebug: [],
+        ConnectorCode: this.jupiterFlightBookRs.Response.Pnr.ConnectorCode,
+        ConnectorCustomData: null,
+        PnrNumber: this.jupiterFlightBookRs.Response.Pnr.PnrNumber,
+      })
+    });
+
+    this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
+      this.jupiterFlightPnrRetrieveRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'flightPnrRetrieve Error',
+          error: error
+        },
+      });
+    });
+  }
+
+  deletePnr() {
+    this.loading = true;
+
+    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+      ConnectorsEnvironment: this.jupiterFlightBookRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrRetrieveInput({
+        ConnectorsDebug: [],
+        ConnectorCode: this.jupiterFlightBookRs.Response.Pnr.ConnectorCode,
+        ConnectorCustomData: null,
+        PnrNumber: this.jupiterFlightBookRs.Response.Pnr.PnrNumber,
+      })
+    });
+
+    this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
+      this.jupiterFlightPnrRetrieveRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+      this.dialogService.open(DialogApiErrorComponent, {
+        context: {
+          title: 'flightPnrRetrieve Error',
+          error: error
+        },
+      });
+    });
   }
 }
 

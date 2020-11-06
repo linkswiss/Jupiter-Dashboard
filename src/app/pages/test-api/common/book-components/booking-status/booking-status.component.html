@@ -1,4 +1,4 @@
-<span [ngSwitch]="status">
+<span [ngSwitch]="status" class="m-1">
   <span *ngSwitchCase="EBookingStatus.BOOKED" class="badge badge-pill badge-success">{{status}}</span>
   <span *ngSwitchCase="EBookingStatus.MODIFIED" class="badge badge-pill badge-info">{{status}}</span>
   <span *ngSwitchCase="EBookingStatus.PENDING" class="badge badge-pill badge-warning">{{status}}</span>

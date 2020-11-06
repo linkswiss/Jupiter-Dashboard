@@ -216,24 +216,13 @@
         <div class="container" *ngFor="let fare of selectedResult.FareList; let fareIndex = index;">
           <div *ngIf="fareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
           <div class="row align-items-center">
-            <div class="col-sm-8 pr-0">
-
+            <div class="col-sm-9 pr-0">
               <div *ngFor="let segment of selectedResult.FlightSegments; let segIndex = index;" class="container p-0">
                 <jupiter-segment-display [segment]="segment" [segIndex]="segIndex" [lastStepGroupId]="segIndex > 0 ? selectedResult.FlightSegments[segIndex-1].StepGroupId : '0'" [paxFares]="fare.PaxFareList"></jupiter-segment-display>
               </div>
             </div>
-            <div class="col-sm-2 text-right">
-              <div [ngSwitch]="fare.ConnectorCode" class="text-right">
-                <span class="badge badge-pill badge-secondary text-white p-1 m-1">{{fare.Id}}</span>
-                <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-                <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-                <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-              </div>
-            </div>
-            <div class="col-sm-2">
-
+            <div class="col-sm-3 pl-0">
               <div class="text-right">
-                <!--                <div *ngIf="fare.PaxFareList[0]?.FlightSegmentDetails[0]"><span class="badge badge-pill badge-primary p-1 m-1">{{fare.PaxFareList[0]?.FlightSegmentDetails[0].BrandedFare}}</span></div>-->
                 <div>
                   <span class="font-weight-bold h5">{{fare.Amount.Amount}}</span>
                   <span>{{fare.Amount.Currency}}</span>
@@ -252,15 +241,20 @@
                 </div>
               </div>
 
-              <div class="text-right">
+              <div [ngSwitch]="fare.ConnectorCode" class="text-right">
+                <span class="badge badge-pill badge-secondary text-white p-1 m-1">{{fare.Id}}</span>
+                <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+                <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+                <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+
                 <span class="mr-2"><i class="fas fa-bug" (click)="selectedResult['_Debug'] = !selectedResult['_Debug'];"></i></span>
                 <span class="mr-2"><i class="fas fa-chevron-down" (click)="selectedResult['_Expand'] = !selectedResult['_Expand'];"></i></span>
+              </div>
 
+              <div class="text-right">
                 <button class="btn btn-sm btn-primary" (click)="flightDetails(selectedResult,fare,false)"><i class="fas fa-search"></i> Details</button>
                 <!-- If Amadeus provide a FareInformativeBestPrice Details -->
-                <div *ngIf="fare.ConnectorCode === 'AMADEUS'" class="mt-1">
-                  <button class="btn btn-sm btn-primary" (click)="flightDetails(selectedResult,fare,true)"><i class="fas fa-search"></i> Details Best Price</button>
-                </div>
+                <button *ngIf="fare.ConnectorCode === 'AMADEUS'" class="btn btn-sm btn-primary m-1" (click)="flightDetails(selectedResult,fare,true)"><i class="fas fa-search"></i> Details Best Price</button>
               </div>
 
               <!--<div>{{result.ResultKey}}</div>-->
@@ -273,8 +267,8 @@
             <nb-card-header>
               <span class="h4">Fare Details</span>
               <span class="float-right">
-                  <button class="btn btn-sm btn-warning" (click)="selectedResult['_Expand'] = !selectedResult['_Expand'];"><i class="fas fa-times"></i> </button>
-              </span>
+                      <button class="btn btn-sm btn-warning" (click)="selectedResult['_Expand'] = !selectedResult['_Expand'];"><i class="fas fa-times"></i> </button>
+                    </span>
             </nb-card-header>
             <nb-card-body>
               <div class="container" *ngFor="let fare of selectedResult.FareList; let fareIndex = index;">
@@ -307,101 +301,120 @@
 
   <!-- FLIGHT AVAIL RESPONSE -->
   <div *ngIf="jupiterFlightAvailabilityRs && jupiterFlightAvailabilityRs.Response && jupiterFlightAvailabilityRs.Response.FlightResults && !selectedResult">
-
-    <virtual-scroll [items]="jupiterFlightAvailabilityRs.Response.FlightResults" (update)="viewPortItems = $event" style="height: 700px">
-      <nb-card *ngFor="let result of viewPortItems; let resIndex = index;" class="mb-2">
-        <nb-card-body class="m-0 p-0 pt-1 pb-1">
-          <div class="container" *ngFor="let fare of result.FareList; let fareIndex = index;">
-            <div *ngIf="fareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
-            <div class="row align-items-center">
-              <div class="col-sm-8 pr-0">
-
-                <div *ngFor="let segment of result.FlightSegments; let segIndex = index;" class="container p-0">
-                  <jupiter-segment-display [segment]="segment" [segIndex]="segIndex" [lastStepGroupId]="segIndex > 0 ? result.FlightSegments[segIndex-1].StepGroupId : '0'" [paxFares]="fare.PaxFareList"></jupiter-segment-display>
-                </div>
-              </div>
-              <div class="col-sm-2 text-right">
-                <div [ngSwitch]="fare.ConnectorCode" class="text-right">
-                  <span class="badge badge-pill badge-secondary text-white p-1 m-1">{{fare.Id}}</span>
-                  <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-                  <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-                  <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{fare.ConnectorCode}}</span>
-                </div>
-              </div>
-              <div class="col-sm-2">
-
-                <div class="text-right">
-                  <!--                <div *ngIf="fare.PaxFareList[0]?.FlightSegmentDetails[0]"><span class="badge badge-pill badge-primary p-1 m-1">{{fare.PaxFareList[0]?.FlightSegmentDetails[0].BrandedFare}}</span></div>-->
-                  <div>
-                    <span class="font-weight-bold h5">{{fare.Amount.Amount}}</span>
-                    <span>{{fare.Amount.Currency}}</span>
-                  </div>
-                  <div *ngIf="fare.FeeList && fare.FeeList.length > 0">
-                    <span class="text-warning font-weight-bold cursor-pointer" [ngbPopover]="feesTemplate" placement="left" container="body" popoverTitle="Fee List" triggers="mouseenter:mouseleave">Included Fees <i class="fas fa-info-circle"></i></span>
-
-                    <ng-template #feesTemplate>
-                      <div *ngFor="let fee of fare.FeeList">
-                        <div class="font-weight-bold">{{fee.Code}} - {{fee.Name}}</div>
-                        <div>{{fee.Amount}} {{fee.Currency}}</div>
-                        <hr>
-                      </div>
-                    </ng-template>
-
-                  </div>
-                </div>
-
-                <div class="text-right">
-                  <span class="mr-2"><i class="fas fa-bug" (click)="result['_Debug'] = !result['_Debug'];"></i></span>
-                  <span class="mr-2"><i class="fas fa-chevron-down" (click)="result['_Expand'] = !result['_Expand'];"></i></span>
-
-                  <button class="btn btn-sm btn-primary" (click)="flightDetails(result,fare,false)"><i class="fas fa-search"></i> Details</button>
-                  <!-- If Amadeus provide a FareInformativeBestPrice Details -->
-                  <div *ngIf="fare.ConnectorCode === 'AMADEUS'" class="mt-1">
-                    <button class="btn btn-sm btn-primary" (click)="flightDetails(result,fare,true)"><i class="fas fa-search"></i> Details Best Price</button>
-                  </div>
-                </div>
-
-                <!--<div>{{result.ResultKey}}</div>-->
-              </div>
+    <div class="row">
+      <div *ngIf="showFilters" class="col-sm-2 pr-0">
+        <nb-card>
+          <nb-card-header>
+            Filters
+            <div class="float-right">
+              <button class="btn btn-sm btn-warning" (click)="showFilters = !showFilters;"><i class="fas fa-times"></i> </button>
             </div>
-          </div>
+          </nb-card-header>
+          <nb-card-body>
+            <div>
+              <button class="btn btn-sm btn-primary center m-1 float-left" (click)="showFilters = !showFilters;"><i class="fas fa-list"></i> Hide Filters</button>
+              <span class="float-right">Results: {{jupiterFlightAvailabilityRs.Response.FlightResults.length}} Flights</span>
+            </div>
 
-          <div *ngIf="result['_Expand']">
-            <nb-card>
-              <nb-card-header>
-                <span class="h4">Fare Details</span>
-                <span class="float-right">
-                  <button class="btn btn-sm btn-warning" (click)="result['_Expand'] = !result['_Expand'];"><i class="fas fa-times"></i> </button>
-              </span>
-              </nb-card-header>
-              <nb-card-body>
-                <div class="container" *ngFor="let fare of result.FareList; let fareIndex = index;">
-                  <div *ngFor="let fare of fare.PaxFareList; let paxFareIndex = index;">
-                    <jupiter-fare-display [paxFareIndex]="paxFareIndex" [fare]="fare"></jupiter-fare-display>
+          </nb-card-body>
+        </nb-card>
+      </div>
+      <div [class.col-sm-10]="showFilters" [class.col-sm-12]="!showFilters">
+        <nb-card *ngIf="!showFilters" class="mb-2">
+          <nb-card-body>
+            <button class="btn btn-sm btn-primary center m-1 float-left" (click)="showFilters = !showFilters;"><i class="fas fa-list"></i> Show Filters</button>
+            <h6 class="float-right">Results: {{jupiterFlightAvailabilityRs.Response.FlightResults.length}} Flights</h6>
+          </nb-card-body>
+        </nb-card>
+        <virtual-scroll [items]="jupiterFlightAvailabilityRs.Response.FlightResults" (update)="viewPortItems = $event" style="height: 700px">
+          <nb-card *ngFor="let result of viewPortItems; let resIndex = index;" class="mb-2">
+            <nb-card-body class="m-0 p-0 pt-1 pb-1">
+              <div class="container" *ngFor="let fare of result.FareList; let fareIndex = index;">
+                <div *ngIf="fareIndex > 0"> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
+                <div class="row align-items-center">
+                  <div class="col-sm-9 pr-0">
+                    <div *ngFor="let segment of result.FlightSegments; let segIndex = index;" class="container p-0">
+                      <jupiter-segment-display [segment]="segment" [segIndex]="segIndex" [lastStepGroupId]="segIndex > 0 ? result.FlightSegments[segIndex-1].StepGroupId : '0'" [paxFares]="fare.PaxFareList"></jupiter-segment-display>
+                    </div>
+                  </div>
+                  <div class="col-sm-3 pl-0">
+                    <div class="text-right">
+                      <div>
+                        <span class="font-weight-bold h5">{{fare.Amount.Amount}}</span>
+                        <span>{{fare.Amount.Currency}}</span>
+                      </div>
+                      <div *ngIf="fare.FeeList && fare.FeeList.length > 0">
+                        <span class="text-warning font-weight-bold cursor-pointer" [ngbPopover]="feesTemplate" placement="left" container="body" popoverTitle="Fee List" triggers="mouseenter:mouseleave">Included Fees <i class="fas fa-info-circle"></i></span>
+
+                        <ng-template #feesTemplate>
+                          <div *ngFor="let fee of fare.FeeList">
+                            <div class="font-weight-bold">{{fee.Code}} - {{fee.Name}}</div>
+                            <div>{{fee.Amount}} {{fee.Currency}}</div>
+                            <hr>
+                          </div>
+                        </ng-template>
+
+                      </div>
+                    </div>
+
+                   <div [ngSwitch]="fare.ConnectorCode" class="text-right">
+                      <span class="badge badge-pill badge-secondary text-white p-1 m-1">{{fare.Id}}</span>
+                      <span *ngSwitchCase="'AMADEUS'" class="badge amadeus-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+                      <span *ngSwitchCase="'SABRE'" class="badge sabre-color text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+                      <span *ngSwitchDefault class="badge bg-info text-white p-2 m-1">{{fare.ConnectorCode}}</span>
+
+                        <span class="mr-2"><i class="fas fa-bug" (click)="result['_Debug'] = !result['_Debug'];"></i></span>
+                        <span class="mr-2"><i class="fas fa-chevron-down" (click)="result['_Expand'] = !result['_Expand'];"></i></span>
+                    </div>
+
+                    <div class="text-right">
+                      <button class="btn btn-sm btn-primary" (click)="flightDetails(result,fare,false)"><i class="fas fa-search"></i> Details</button>
+                      <!-- If Amadeus provide a FareInformativeBestPrice Details -->
+                      <button *ngIf="fare.ConnectorCode === 'AMADEUS'" class="btn btn-sm btn-primary m-1" (click)="flightDetails(result,fare,true)"><i class="fas fa-search"></i> Details Best Price</button>
+                    </div>
+
+                    <!--<div>{{result.ResultKey}}</div>-->
                   </div>
                 </div>
-              </nb-card-body>
-            </nb-card>
-          </div>
+              </div>
 
-          <div *ngIf="result['_Debug']">
-            <nb-card>
-              <nb-card-header>
-                <span class="h4">Result Json</span>
-                <span class="float-right">
+              <div *ngIf="result['_Expand']">
+                <nb-card>
+                  <nb-card-header>
+                    <span class="h4">Fare Details</span>
+                    <span class="float-right">
+                      <button class="btn btn-sm btn-warning" (click)="result['_Expand'] = !result['_Expand'];"><i class="fas fa-times"></i> </button>
+                    </span>
+                  </nb-card-header>
+                  <nb-card-body>
+                    <div class="container" *ngFor="let fare of result.FareList; let fareIndex = index;">
+                      <div *ngFor="let fare of fare.PaxFareList; let paxFareIndex = index;">
+                        <jupiter-fare-display [paxFareIndex]="paxFareIndex" [fare]="fare"></jupiter-fare-display>
+                      </div>
+                    </div>
+                  </nb-card-body>
+                </nb-card>
+              </div>
+
+              <div *ngIf="result['_Debug']">
+                <nb-card>
+                  <nb-card-header>
+                    <span class="h4">Result Json</span>
+                    <span class="float-right">
                   <button class="btn btn-sm btn-warning" (click)="result['_Debug'] = !result['_Debug'];"><i class="fas fa-times"></i> </button>
               </span>
-              </nb-card-header>
-              <nb-card-body>
-                <ace [mode]="'json'" [theme]="'monokai'" [value]="result | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
-                <!--<pre>{{result | json}}</pre>-->
-              </nb-card-body>
-            </nb-card>
-          </div>
-        </nb-card-body>
-      </nb-card>
-    </virtual-scroll>
-
+                  </nb-card-header>
+                  <nb-card-body>
+                    <ace [mode]="'json'" [theme]="'monokai'" [value]="result | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                    <!--<pre>{{result | json}}</pre>-->
+                  </nb-card-body>
+                </nb-card>
+              </div>
+            </nb-card-body>
+          </nb-card>
+        </virtual-scroll>
+      </div>
+    </div>
   </div>
   <!-- END FLIGHT AVAIL RESPONSE -->
 
@@ -416,8 +429,8 @@
   <div *ngIf="jupiterFlightDetailRs && jupiterFlightDetailRs.Response && jupiterFlightDetailRs.Response.Pnr">
     <div class="row m-1">
       <div class="col-md-12 text-center">
-        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(false)"><i class="fas fa-receipt"></i> Book Flights NOPNR</button>
-        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(true)"><i class="fas fa-receipt"></i> Book Flights AND CLOSE PNR</button>
+        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(false)"><i class="fas fa-passport"></i> Book Flights NOPNR</button>
+        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(true)"><i class="fas fa-passport"></i> Book Flights AND CLOSE PNR</button>
       </div>
     </div>
     <jupiter-flight-pnr-display [title]="'Flight Details'" [currentPnr]="jupiterFlightDetailRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
@@ -433,9 +446,27 @@
 
   <!-- FLIGHT BOOK RESPONSE -->
   <div *ngIf="jupiterFlightBookRs && jupiterFlightBookRs.Response && jupiterFlightBookRs.Response.Pnr">
+    <div *ngIf="jupiterFlightBookRs.Response.Pnr.PnrNumber" class="row m-1">
+      <div class="col-md-12 text-center">
+        <button class="btn btn-sm btn-primary center m-1" (click)="retrievePnr()"><i class="fas fa-passport"></i> Retrieve PNR {{jupiterFlightBookRs.Response.Pnr.PnrNumber}}</button>
+      </div>
+    </div>
     <jupiter-flight-pnr-display [title]="'Flight Book'" [currentPnr]="jupiterFlightBookRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
   </div>
-  <!-- END BOOK DETAILS RESPONSE -->
+  <!-- END FLIGHT BOOK RESPONSE -->
+
+  <!-- FLIGHT PNR RETRIEVE MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightPnrRetrieveRq">
+    <jupiter-api-messages-accordion Title="Flight Book" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Book" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
+  </div>
+  <!-- END FLIGHT PNR RETRIEVE MESSAGES/DEBUG -->
+
+  <!-- FLIGHT PNR RETRIEVE RESPONSE -->
+  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
+    <jupiter-flight-pnr-display [title]="'Flight Retrieve'" [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
+  </div>
+  <!-- END PNR RETRIEVE RESPONSE -->
 
 </div>
 
