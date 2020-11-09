@@ -38,7 +38,7 @@ export class HotelCalendarAvailComponent implements OnInit {
     events: [],
     eventColor: 'CadetBlue'
   };
-  
+
   //calendarPlugins = [dayGridPlugin];
   //calendarEvents = null;
 
@@ -54,7 +54,7 @@ export class HotelCalendarAvailComponent implements OnInit {
   connectors: EH2HConnectorCode[] = null;
 
   constructor(private dialogService: NbDialogService, private jupiterApiService: JupiterApiService, public appConfigService: AppConfigService) {
-    const name = Calendar.name; // add this line in your constructor 
+    const name = Calendar.name; // add this line in your constructor
   }
 
   ngOnInit() {

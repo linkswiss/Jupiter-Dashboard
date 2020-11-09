@@ -17,7 +17,9 @@ export class ObjDisplayComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.allProps = Object.keys(this.Data);
+    if(this.Data){
+      this.allProps = Object.keys(this.Data);
+    }
   }
 
   getTypeof(prop): string {

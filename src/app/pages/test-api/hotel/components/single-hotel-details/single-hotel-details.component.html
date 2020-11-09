@@ -13,101 +13,104 @@
 <!--  <nb-card-body>-->
 
 <div *ngIf="hotel">
-  <div class="row mb-1">
-    <div class="col-sm-3">
-      <img *ngIf="hotel.Thumbnail" class="hotel-image" [src]="hotel.Thumbnail.OriginalUrl">
-      <img *ngIf="!hotel.Thumbnail" class="hotel-image" src="https://via.placeholder.com/250">
-    </div>
-    <div class="col-sm-9">
-      <!-- MAIN INFOS -->
-      <div class="font-weight-bold">{{hotel.Name}}</div>
-      <div><span>Id:</span><span class="ml-1">{{hotel.Id}}</span></div>
-
-      <div>Connectors Match:
-        <div *ngFor="let match of hotel.ConnectorsMatch">
-          <span class="badge badge-info text-white p-2 m-1">{{match.ConnectorCode}} {{match.RefId}}</span>
-          <!--                    <button nbButton size="tiny" class="ml-1" (click)="goToSingleHotelAvail(hotel, match.ConnectorCode)"><i class="fas fa-search"></i> Single Avail</button>-->
+    <div class="row mb-1">
+        <div class="col-sm-3">
+            <img *ngIf="hotel.Thumbnail" class="hotel-image" [src]="hotel.Thumbnail.OriginalUrl">
+            <img *ngIf="!hotel.Thumbnail" class="hotel-image" src="https://via.placeholder.com/250">
         </div>
-      </div>
+        <div class="col-sm-9">
+            <!-- MAIN INFOS -->
+            <div class="font-weight-bold">{{hotel.Name}}</div>
+            <div><span>Id:</span><span class="ml-1">{{hotel.Id}}</span></div>
 
-      <div>Location: <span *ngIf="hotel.Location" class="badge badge-pill badge-secondary">Lat: {{hotel.Location?.Lat}} Lng: {{hotel.Location?.Lng}}</span></div>
-    </div>
-  </div>
-  <nb-accordion class="shadow-none border-box p-0" multi>
-    <!-- HOTEL DETAILS-->
-    <nb-accordion-item [expanded]="openDetails">
-      <nb-accordion-item-header>Hotel Details</nb-accordion-item-header>
-      <nb-accordion-item-body>
-        <div class="mb-1">Chain: <span *ngIf="hotel.Chain" class="badge badge-pill badge-warning">{{hotel.Chain}}</span></div>
-        <div class="mb-1">Chain List:<span *ngIf="hotel.ChainList"><span *ngFor="let chain of hotel.ChainList" class="badge badge-pill badge-warning">{{chain.Id}}: {{chain.Name}}</span></span></div>
-
-        <hr>
-        <div class="mb-1">Star Rating: <span *ngIf="hotel.StarRating" class="badge badge-pill badge-warning">{{hotel.StarRating}}</span></div>
-        <div class="mb-1">Review Score: <span *ngIf="hotel.ReviewScore" class="badge badge-pill badge-primary">{{hotel.ReviewScore}} from {{hotel.NumberOfReview}} reviews</span></div>
-
-        <hr>
-        <div class="mb-1">Links:
-          <div *ngIf="hotel.Links"><a *ngFor="let link of hotel.Links" [href]="link.Url"><i class="fas fa-link"></i> Link</a></div>
-        </div>
-        <div class="mb-1">Emails:
-          <div *ngIf="hotel.Emails"><span *ngFor="let email of hotel.Emails">{{email.Title}}: {{email.Value}}</span></div>
-        </div>
-        <div class="mb-1">Phones:
-          <div *ngIf="hotel.Phones"><span *ngFor="let phone of hotel.Phones">{{phone.Title}}: {{phone.Value}}</span></div>
-        </div>
-
-        <hr>
-        <div class="mb-1">Hotel Currency: <span class="badge badge-pill badge-success">{{hotel.Currency}}</span></div>
-        <div class="mb-1">Accepted Credit Cards: <span *ngIf="hotel.AcceptedCreditCardTypes"><span *ngFor="let creditCard of hotel.AcceptedCreditCardTypes" class="badge badge-pill badge-success ml-1">{{creditCard}}</span></span></div>
-
-        <hr>
-        <div class="mb-1">Amenities: <span *ngIf="hotel.Amenities"><span *ngFor="let amenity of hotel.Amenities" class="badge badge-pill badge-secondary ml-1">{{amenity}}</span></span></div>
-
-        <!-- POLICIES -->
-        <hr>
-        <div>Hotel Policies:
-          <div *ngIf="hotel.HotelPolicies">
-            <div *ngFor="let policy of hotel.HotelPolicies">
-              <span *ngIf="policy && policy.PolicyText" class="pl-1 cursor-pointer"> Code: {{policy.PolicyCode}} - Text: {{policy.PolicyText}}</span>
+            <div>Connectors Match:
+                <div *ngFor="let match of hotel.ConnectorsMatch">
+                    <span class="badge badge-info text-white p-2 m-1">{{match.ConnectorCode}} {{match.RefId}}</span>
+                    <!--                    <button nbButton size="tiny" class="ml-1" (click)="goToSingleHotelAvail(hotel, match.ConnectorCode)"><i class="fas fa-search"></i> Single Avail</button>-->
+                </div>
             </div>
-          </div>
+
+            <div>Location: <span *ngIf="hotel.Location" class="badge badge-pill badge-secondary">Lat: {{hotel.Location?.Lat}} Lng: {{hotel.Location?.Lng}}</span></div>
         </div>
+    </div>
+    <nb-accordion class="shadow-none border-box p-0" multi>
+        <!-- HOTEL DETAILS-->
+        <nb-accordion-item [expanded]="openDetails">
+            <nb-accordion-item-header>Hotel Details</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <div class="mb-1">Chain: <span *ngIf="hotel.Chain" class="badge badge-pill badge-warning">{{hotel.Chain}}</span></div>
+                <div class="mb-1">Chain List:<span *ngIf="hotel.ChainList"><span *ngFor="let chain of hotel.ChainList" class="badge badge-pill badge-warning">{{chain.Id}}: {{chain.Name}}</span></span>
+                </div>
 
-        <!-- IMAGES -->
-        <hr>
-        <div>Images:
-          <div *ngIf="hotel.Images" class="row">
-            <div class="col-sm-3" *ngFor="let image of hotel.Images">
-              <img class="hotel-image" [src]="image.OriginalUrl">
-            </div>
-          </div>
-        </div>
+                <hr>
+                <div class="mb-1">Star Rating: <span *ngIf="hotel.StarRating" class="badge badge-pill badge-warning">{{hotel.StarRating}}</span></div>
+                <div class="mb-1">Review Score: <span *ngIf="hotel.ReviewScore" class="badge badge-pill badge-primary">{{hotel.ReviewScore}} from {{hotel.NumberOfReview}} reviews</span></div>
 
-        <!-- DESCRIPTION -->
-        <hr>
-        <div>Hotel Description:</div>
-        <p class="text-secondary" [innerHTML]="hotel.Description"></p>
+                <hr>
+                <div class="mb-1">Links:
+                    <div *ngIf="hotel.Links"><a *ngFor="let link of hotel.Links" [href]="link.Url"><i class="fas fa-link"></i> Link</a></div>
+                </div>
+                <div class="mb-1">Emails:
+                    <div *ngIf="hotel.Emails"><span *ngFor="let email of hotel.Emails">{{email.Title}}: {{email.Value}}</span></div>
+                </div>
+                <div class="mb-1">Phones:
+                    <div *ngIf="hotel.Phones"><span *ngFor="let phone of hotel.Phones">{{phone.Title}}: {{phone.Value}}</span></div>
+                </div>
 
-      </nb-accordion-item-body>
-    </nb-accordion-item>
+                <hr>
+                <div class="mb-1">Hotel Currency: <span class="badge badge-pill badge-success">{{hotel.Currency}}</span></div>
+                <div class="mb-1">Accepted Credit Cards: <span *ngIf="hotel.AcceptedCreditCardTypes"><span *ngFor="let creditCard of hotel.AcceptedCreditCardTypes" class="badge badge-pill badge-success ml-1">{{creditCard}}</span></span>
+                </div>
 
-    <!-- HOTEL CUSTOM DATA-->
-    <nb-accordion-item *ngIf="hotel['ConnectorCustomData']">
-      <nb-accordion-item-header>Hotel Custom Data</nb-accordion-item-header>
-      <nb-accordion-item-body>
-        <pre class="border-box bg-light">{{hotel['ConnectorCustomData'] | json}}</pre>
-      </nb-accordion-item-body>
-    </nb-accordion-item>
+                <hr>
+                <div class="mb-1">Amenities: <span *ngIf="hotel.Amenities"><span *ngFor="let amenity of hotel.Amenities" class="badge badge-pill badge-secondary ml-1">{{amenity.Name}}</span></span>
+                </div>
 
-    <!-- HOTEL DEBUG-->
-    <nb-accordion-item *ngIf="hotel['_Debug']">
-      <nb-accordion-item-header>Hotel Debug Json</nb-accordion-item-header>
-      <nb-accordion-item-body>
-        <ace [mode]="'json'" [theme]="'monokai'" [value]="hotel | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
-      </nb-accordion-item-body>
-    </nb-accordion-item>
+                <!-- POLICIES -->
+                <hr>
+                <div>Hotel Policies:
+                    <div *ngIf="hotel.HotelPolicies">
+                        <div *ngFor="let policy of hotel.HotelPolicies">
+                            <span *ngIf="policy && policy.PolicyText" class="pl-1 cursor-pointer"> Code: {{policy.PolicyCode}} - Text: {{policy.PolicyText}}</span>
+                        </div>
+                    </div>
+                </div>
 
-  </nb-accordion>
+                <!-- IMAGES -->
+                <hr>
+                <div>Images:
+                    <div *ngIf="hotel.Images" class="row">
+                        <div class="col-sm-3" *ngFor="let image of hotel.Images">
+                            <img class="hotel-image" [src]="image.OriginalUrl">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DESCRIPTION -->
+                <hr>
+                <div>Hotel Description:</div>
+                <p class="text-secondary" [innerHTML]="hotel.Description"></p>
+
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+
+        <!-- HOTEL CUSTOM DATA-->
+        <nb-accordion-item *ngIf="hotel['ConnectorCustomData']">
+            <nb-accordion-item-header>Hotel Custom Data</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <pre class="border-box bg-light">{{hotel['ConnectorCustomData'] | json}}</pre>
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+
+        <!-- HOTEL DEBUG-->
+        <nb-accordion-item *ngIf="hotel['_Debug']">
+            <nb-accordion-item-header>Hotel Debug Json</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <ace [mode]="'json'" [theme]="'monokai'" [value]="hotel | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+
+    </nb-accordion>
 </div>
 
 <!--  </nb-card-body>-->
