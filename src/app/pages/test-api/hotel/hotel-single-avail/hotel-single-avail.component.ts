@@ -2,8 +2,9 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AicSingleHotelAvailabilityInputCustomData,
   AvailabilityInputCustomData,
-  BookingDotComAvailabilityInputCustomData, BookingDotComSingleHotelAvailabilityInputCustomData, EH2HConnectorCode,
+  BookingDotComAvailabilityInputCustomData, BookingDotComSingleHotelAvailabilityInputCustomData, EAvailabilityType, EH2HConnectorCode,
   EH2HOperation, EPaxType, IHGAvailabilityInputCustomData,
   JupiterHotelAvailabilityInput,
   JupiterHotelAvailabilityRQ,
@@ -102,6 +103,17 @@ export class HotelSingleAvailComponent implements OnInit {
             this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(new BookingDotComSingleHotelAvailabilityInputCustomData({
               HotelRefId: '470860',
               AffiliateId: null
+            }));
+          }
+          break;
+        case EH2HConnectorCode.AIC:
+          if (!_.some(this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+            return c['_discriminator'] === EH2HConnectorCode.AIC;
+          })) {
+            this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(new AicSingleHotelAvailabilityInputCustomData({
+              HotelRefId: '15905',
+              Nationality: 'IT',
+                AvailabilityTypes: [EAvailabilityType.AVAILONLY]
             }));
           }
           break;
