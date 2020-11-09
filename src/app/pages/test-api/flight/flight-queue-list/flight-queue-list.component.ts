@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {
   AmadeusFlightQueueListInputCustomData,
   ConnectorEnvironment,
-  EH2HConnectorCode, EH2HOperation, JupiterFlightPnrRetrieveInput,
+  EH2HConnectorCode, EH2HOperation, FlightQueuePnr, JupiterFlightPnrRetrieveInput,
   JupiterFlightPnrRetrieveRQ,
   JupiterFlightPnrRetrieveRS, JupiterFlightQueueListInput, JupiterFlightQueueListRQ, JupiterFlightQueueListRS
 } from "../../../../services/jupiter-api/jupiter-api-client";
@@ -16,9 +16,12 @@ import {AppConfigService} from "../../../../services/app-config/app-config.servi
 })
 export class FlightQueueListComponent implements OnInit {
   loading = false;
+  columns = [];
 
   jupiterFlightQueueListRq: JupiterFlightQueueListRQ = null;
   jupiterFlightQueueListRs: JupiterFlightQueueListRS = null;
+
+  flightQueueSelectedResults: FlightQueuePnr[] = null;
 
   jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
   jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
@@ -72,6 +75,8 @@ export class FlightQueueListComponent implements OnInit {
   queueList() {
     this.loading = true;
 
+    this.resetSelected();
+
     this.jupiterFlightPnrRetrieveRq = null;
 
     this.jupiterApiService.flightQueueList(this.jupiterFlightQueueListRq).subscribe(response => {
@@ -81,6 +86,12 @@ export class FlightQueueListComponent implements OnInit {
       console.error(error);
       this.loading = false;
     });
+  }
+
+  resetSelected(){
+    this.flightQueueSelectedResults = null;
+    this.jupiterFlightPnrRetrieveRq = null;
+    this.jupiterFlightPnrRetrieveRs = null;
   }
 
   queuePlacePnr(pnrNumber: string, queueNumber: string) {
@@ -127,8 +138,10 @@ export class FlightQueueListComponent implements OnInit {
     // });
   }
 
-  retrievePnr(pnrNumber: string) {
+  retrievePnr(flightQueuePnr: FlightQueuePnr) {
     this.loading = true;
+
+    this.flightQueueSelectedResults = [flightQueuePnr];
 
     this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
       ConnectorsEnvironment: this.jupiterFlightQueueListRq.ConnectorsEnvironment,
@@ -136,7 +149,7 @@ export class FlightQueueListComponent implements OnInit {
         ConnectorsDebug: [],
         ConnectorCode: this.jupiterFlightQueueListRs.Response.ConnectorCode,
         ConnectorCustomData: null,
-        PnrNumber: pnrNumber,
+        PnrNumber: flightQueuePnr.PnrNumber,
       })
     });
 

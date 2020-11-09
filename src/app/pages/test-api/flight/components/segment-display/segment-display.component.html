@@ -1,7 +1,7 @@
 <div *ngIf="segIndex > 0 && segment.StepGroupId !== lastStepGroupId" class="border-bottom border-primary mt-3 mb-3"></div>
 <div *ngIf="segIndex > 0 && segment.StepGroupId === lastStepGroupId" class="row align-items-center">
   <div class="col-sm-3"></div>
-  <div class="col-sm-4 text-center font-italic font-size-small">-- Connection: {{segment.ConnectionTime.substr(0,5)}} --</div>
+  <div class="col-sm-4 text-center font-italic font-size-small">-- Connection: {{segment?.ConnectionTime?.substr(0,5)}} --</div>
 </div>
 <div class="row align-items-center">
   <div class="col-sm-3 pr-0">
@@ -28,6 +28,11 @@
   </div>
 
   <div class="col-sm-4 p-0">
+    <div *ngIf="segment['FlightStatus']" class="cursor-pointer d-inline-block">
+      <span ngbTooltip="Flight Status: {{segment['FlightStatus']}}" placement="right" container="body">
+        <span class="badge badge-secondary text-white p-2 m-1">{{segment['FlightStatus']}}</span>
+      </span>
+    </div>
     <div *ngIf="paxFares">
       <div *ngFor="let paxFare of paxFares" class="mb-1">
         <div *ngIf="paxFares.length > 1" class="badge bg-hint text-white p-2 m-1 d-inline-block">{{paxFare.PaxCount}} {{paxFare.PaxType}}</div>

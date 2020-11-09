@@ -60,37 +60,62 @@
   <jupiter-api-debug-accordion Title="Flight Queue List" [(ApiRq)]="jupiterFlightQueueListRq" [ApiRs]="jupiterFlightQueueListRs"></jupiter-api-debug-accordion>
   <!-- END QUEUE LIST MESSAGES/DEBUG -->
 
-  <!-- FLIGHT QUEUE LIST RESPONSE -->
-  <div *ngIf="jupiterFlightQueueListRs && jupiterFlightQueueListRs.Response && jupiterFlightQueueListRs.Response.QueuePnrList">
-    <nb-card *ngFor="let queuePnr of jupiterFlightQueueListRs.Response.QueuePnrList; let resIndex = index;" class="mb-2">
-      <nb-card-body class="m-0 p-0 pt-1 pb-1">
-        <div class="container row">
-          <div class="col-sm-2">
-            <span class="font-weight-bold">PNR: {{queuePnr.PnrNumber}}</span>
-          </div>
-          <div class="col-sm-2">
-            <span class="font-weight-bold">Pnr Date: {{queuePnr.PnrDate}}</span>
-          </div>
-          <div class="col-sm-2">
-            <span class="font-weight-bold">Pax: {{queuePnr.PaxSurname}}</span>
-          </div>
-          <div class="col-sm-2">
-            <span class="font-weight-bold">Departure Date: {{queuePnr.DepartureDate}}</span>
-          </div>
-          <div class="col-sm-3">
-            <button class="btn btn-sm btn-primary" (click)="retrievePnr(queuePnr.PnrNumber)"><i class="fas fa-exchange-alt"></i> Retrieve</button>
-          </div>
-        </div>
+  <!-- SELECTED RESULT -->
+  <div *ngIf="flightQueueSelectedResults">
+    <nb-card>
+      <nb-card-header>
+        <span>Selected Result</span>
+        <span class="float-right">
+          <button class="btn btn-sm btn-warning" (click)="resetSelected()"><i class="fas fa-times"></i> </button>
+        </span>
+      </nb-card-header>
+      <nb-card-body>
+        <ngx-datatable class="material" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="flightQueueSelectedResults">
+
+          <ngx-datatable-column name="Actions" sortable="false" prop="id">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
+          <ngx-datatable-column name="Pax Surname" sortable="true" prop="PaxSurname"></ngx-datatable-column>
+          <ngx-datatable-column name="Pnr Date" sortable="true" prop="PnrDate"></ngx-datatable-column>
+          <ngx-datatable-column name="Departure Date" sortable="true" prop="DepartureDate"></ngx-datatable-column>
+        </ngx-datatable>
       </nb-card-body>
     </nb-card>
+  </div>
+  <!-- END SELECTED RESULT -->
+
+  <!-- FLIGHT QUEUE LIST RESPONSE -->
+  <div *ngIf="jupiterFlightQueueListRs && jupiterFlightQueueListRs.Response && !flightQueueSelectedResults">
+
+    <div *ngIf="!jupiterFlightQueueListRs.Response.QueuePnrList || jupiterFlightQueueListRs.Response.QueuePnrList.length == 0" class="mt-5 text-center">
+      <h5 class="font-weight-bold">No Queue Entries</h5>
+    </div>
+
+    <div *ngIf="jupiterFlightQueueListRs.Response.QueuePnrList && jupiterFlightQueueListRs.Response.QueuePnrList.length > 0">
+      <ngx-datatable class="material" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="jupiterFlightQueueListRs.Response.QueuePnrList">
+
+        <ngx-datatable-column name="Actions" sortable="false" prop="id">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
+        <ngx-datatable-column name="Pax Surname" sortable="true" prop="PaxSurname"></ngx-datatable-column>
+        <ngx-datatable-column name="Pnr Date" sortable="true" prop="PnrDate"></ngx-datatable-column>
+        <ngx-datatable-column name="Departure Date" sortable="true" prop="DepartureDate"></ngx-datatable-column>
+      </ngx-datatable>
+    </div>
 
   </div>
   <!-- END FLIGHT QUEUE LIST RESPONSE -->
 
   <!-- FLIGHT PNR DELETE MESSAGES/DEBUG -->
   <div *ngIf="jupiterFlightPnrRetrieveRq">
-    <jupiter-api-messages-accordion Title="Flight Pnr Delete" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
-    <jupiter-api-debug-accordion Title="Flight Pnr Delete" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
+    <jupiter-api-messages-accordion Title="Flight Pnr Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Pnr Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
   </div>
   <!-- END FLIGHT PNR DELETE MESSAGES/DEBUG -->
 
