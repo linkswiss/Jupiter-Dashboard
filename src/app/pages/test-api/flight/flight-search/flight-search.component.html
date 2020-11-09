@@ -47,7 +47,7 @@
                 <nb-select #selectConnectors fullWidth id="connectors" placeholder="Search Connectors" [multiple]="true" [outline]="true" (selectedChange)="searchConnectorsChanged($event);selectConnectors.hide();"  [(selected)]="jupiterFlightAvailabilityRq.Request.ConnectorsSearch">
                   <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
                 </nb-select>
-                <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterFlightAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
+                <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterFlightAvailabilityRq.ConnectorsEnvironment" [FilterConnectors]="jupiterFlightAvailabilityRq.Request.ConnectorsSearch"></jupiter-connectors-environment>
               </div>
 
               <div class="form-group col-sm-4">

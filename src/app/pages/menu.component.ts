@@ -64,6 +64,11 @@ export class MenuComponent {
               icon: 'fa-passport',
               link: '/flight-pnr-retrieve',
             },
+            {
+              title: 'Flight Queue List',
+              icon: 'fa-list-alt',
+              link: '/flight-queue-list',
+            },
           ],
         });
       }

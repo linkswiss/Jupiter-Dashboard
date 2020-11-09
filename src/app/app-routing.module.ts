@@ -34,6 +34,7 @@ import {TrainAvailComponent} from "./pages/test-api/train/train-avail/train-avai
 import { AppPreferenciesComponent } from './pages/app-preferencies/app-preferencies.component';
 import { LayoutEmptyComponent } from './layout/layout-empty/layout-empty.component';
 import {RefreshTokenComponent} from "./pages/auth/refresh-token/refresh-token.component";
+import {FlightQueueListComponent} from "./pages/test-api/flight/flight-queue-list/flight-queue-list.component";
 
 const routes: Routes = [
   // { path: 'pages', component: LayoutComponent},
@@ -77,6 +78,10 @@ const routes: Routes = [
       {
         path: 'flight-pnr-retrieve',
         component: FlightPnrRetrieveComponent,
+      },
+      {
+        path: 'flight-queue-list',
+        component: FlightQueueListComponent,
       },
       {
         path: 'hotel-detail',

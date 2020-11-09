@@ -43,7 +43,7 @@
             <nb-select fullWidth id="connectors" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="searchConnectorsChanged($event)" [(selected)]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCode">
               <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
             </nb-select>
-            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelCalendarAvailabilityRq.ConnectorsEnvironment"></jupiter-connectors-environment>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelCalendarAvailabilityRq.ConnectorsEnvironment" [FilterConnectors]="jupiterHotelCalendarAvailabilityRq.Request.ConnectorCode"></jupiter-connectors-environment>
           </div>
 
           <div class="form-group col-sm-4">

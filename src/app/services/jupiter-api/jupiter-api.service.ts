@@ -41,7 +41,15 @@ import {
   JupiterFlightBookRS,
   JupiterTrainAvailabilityRQ,
   JupiterTrainAvailabilityRS,
-  TrainClient, JupiterFlightPnrDeleteRQ, JupiterFlightPnrDeleteRS,
+  TrainClient,
+  JupiterFlightPnrDeleteRQ,
+  JupiterFlightPnrDeleteRS,
+  JupiterFlightQueueListRQ,
+  JupiterFlightQueueListRS,
+  JupiterFlightQueuePlacePnrRQ,
+  JupiterFlightQueuePlacePnrRS,
+  JupiterFlightQueueRemovePnrRQ,
+  JupiterFlightQueueRemovePnrRS,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -274,6 +282,45 @@ export class JupiterApiService {
       let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
       flightClient.flightPnrDelete(jupiterFlightPnrDeleteRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueueList(jupiterFlightQueueListRQ: JupiterFlightQueueListRQ): Observable<JupiterFlightQueueListRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueueList(jupiterFlightQueueListRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueuePlacePnr(jupiterFlightQueuePlacePnrRQ: JupiterFlightQueuePlacePnrRQ): Observable<JupiterFlightQueuePlacePnrRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueuePlacePnr(jupiterFlightQueuePlacePnrRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueueRemovePnr(jupiterFlightQueueRemovePnrRQ: JupiterFlightQueueRemovePnrRQ): Observable<JupiterFlightQueueRemovePnrRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueueRemovePnr(jupiterFlightQueueRemovePnrRQ).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);

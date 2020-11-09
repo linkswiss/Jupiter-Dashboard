@@ -96,15 +96,6 @@ export class FlightPnrRetrieveComponent implements OnInit {
     this.jupiterFlightPnrDeleteRq = null;
     this.jupiterFlightPnrDeleteRs = null;
 
-    // this.JupiterFlightPnrDeleteRq = new JupiterFlightPnrRetrieveRQ({
-    //   ConnectorsEnvironment: this.connectorsEnvironment,
-    //   Request: new JupiterFlightPnrRetrieveInput({
-    //     PnrNumber: this.pnrNumber,
-    //     ConnectorCode: this.selectedConnector,
-    //     ConnectorsDebug: this.selectedConnectorsDebug
-    //   })
-    // });
-
     this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
       this.jupiterFlightPnrRetrieveRs = response;
       this.loading = false;

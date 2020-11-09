@@ -68,6 +68,7 @@ import { SegmentDisplayComponent } from './test-api/flight/components/segment-di
 import dayGridPlugin from '@fullcalendar/daygrid';
 import { RefreshTokenComponent } from './auth/refresh-token/refresh-token.component';
 import { FareDisplayComponent } from './test-api/flight/components/fare-display/fare-display.component';
+import { FlightQueueListComponent } from './test-api/flight/flight-queue-list/flight-queue-list.component';
 
 // import 'brace/ext/searchbox';
 
@@ -143,6 +144,7 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     SegmentDisplayComponent,
     RefreshTokenComponent,
     FareDisplayComponent,
+    FlightQueueListComponent,
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [
