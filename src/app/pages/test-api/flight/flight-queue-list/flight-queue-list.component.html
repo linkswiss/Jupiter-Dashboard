@@ -8,8 +8,8 @@
         <form>
           <div class="row">
             <div class="form-group col-sm-4">
-              <label for="pnrNumber" class="label">Queue Number</label>
-              <input nbInput fullWidth id="pnrNumber" name="pnrNumber" placeholder="Queue Number" [(ngModel)]="jupiterFlightQueueListRq.Request.QueueNumber">
+              <label for="queueNumber" class="label">Queue Number</label>
+              <input nbInput fullWidth id="queueNumber" name="queueNumber" placeholder="Queue Number" [(ngModel)]="jupiterFlightQueueListRq.Request.QueueNumber">
             </div>
 
             <div class="form-group col-sm-4">
@@ -64,7 +64,7 @@
   <div *ngIf="flightQueueSelectedResults">
     <nb-card>
       <nb-card-header>
-        <span>Selected Result</span>
+        <span>Selected Result in Queue {{jupiterFlightQueueListRs.Response.QueueNumber}}</span>
         <span class="float-right">
           <button class="btn btn-sm btn-warning" (click)="resetSelected()"><i class="fas fa-times"></i> </button>
         </span>
@@ -74,7 +74,12 @@
 
           <ngx-datatable-column name="Actions" sortable="false" prop="id">
             <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-              <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+              <div>
+                <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)" ngbTooltip="Retrieve the PNR" placement="top" container="body"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+              </div>
+              <div class="mt-1">
+                <button class="btn btn-sm btn-danger" (click)="queueRemovePnr(row)" ngbTooltip="Remove PNR from Queue" placement="top" container="body"><i class="fas fa-trash"></i> Remove</button>
+              </div>
             </ng-template>
           </ngx-datatable-column>
           <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
@@ -95,11 +100,14 @@
     </div>
 
     <div *ngIf="jupiterFlightQueueListRs.Response.QueuePnrList && jupiterFlightQueueListRs.Response.QueuePnrList.length > 0">
-      <ngx-datatable class="material" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="jupiterFlightQueueListRs.Response.QueuePnrList">
+      <h5 class="font-weight-bold">Queue {{jupiterFlightQueueListRs.Response.QueueNumber}} ({{jupiterFlightQueueListRs.Response.QueuePnrList.length}} PNRs)</h5>
+      <ngx-datatable class="material striped" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="jupiterFlightQueueListRs.Response.QueuePnrList" row>
 
         <ngx-datatable-column name="Actions" sortable="false" prop="id">
           <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
-            <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+            <div>
+              <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)" ngbTooltip="Retrieve the PNR" placement="top" container="body"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+            </div>
           </ng-template>
         </ngx-datatable-column>
         <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
@@ -112,16 +120,30 @@
   </div>
   <!-- END FLIGHT QUEUE LIST RESPONSE -->
 
-  <!-- FLIGHT PNR DELETE MESSAGES/DEBUG -->
-  <div *ngIf="jupiterFlightPnrRetrieveRq">
-    <jupiter-api-messages-accordion Title="Flight Pnr Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
-    <jupiter-api-debug-accordion Title="Flight Pnr Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
+  <!-- FLIGHT QUEUE REMOVE PNR MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightQueueRemovePnrRq">
+    <jupiter-api-messages-accordion Title="Flight Queue Remove PNR" [ApiRs]="jupiterFlightQueueRemovePnrRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Queue Remove PNR" [(ApiRq)]="jupiterFlightQueueRemovePnrRq" [ApiRs]="jupiterFlightQueueRemovePnrRs"></jupiter-api-debug-accordion>
   </div>
-  <!-- END FLIGHT PNR DELETE MESSAGES/DEBUG -->
+  <!-- END FLIGHT QUEUE REMOVE PNR MESSAGES/DEBUG -->
 
-  <!-- FLIGHT PNR DELETE RESPONSE -->
-  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
-    <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
+  <!-- FLIGHT PNR RETRIEVE -->
+  <div *ngIf="jupiterFlightPnrRetrieveRq">
+    <jupiter-flight-pnr-retrieve [jupiterFlightPnrRetrieveRq]="jupiterFlightPnrRetrieveRq"></jupiter-flight-pnr-retrieve>
   </div>
-  <!-- END FLIGHT PNR DELETE RESPONSE -->
+  <!-- END FLIGHT PNR RETRIEVE -->
+
+
+<!--  &lt;!&ndash; FLIGHT PNR RETRIEVE MESSAGES/DEBUG &ndash;&gt;-->
+<!--  <div *ngIf="jupiterFlightPnrRetrieveRq">-->
+<!--    <jupiter-api-messages-accordion Title="Flight Pnr Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>-->
+<!--    <jupiter-api-debug-accordion Title="Flight Pnr Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>-->
+<!--  </div>-->
+<!--  &lt;!&ndash; END FLIGHT PNR RETRIEVE MESSAGES/DEBUG &ndash;&gt;-->
+
+<!--  &lt;!&ndash; FLIGHT PNR RETRIEVE RESPONSE &ndash;&gt;-->
+<!--  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">-->
+<!--    <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>-->
+<!--  </div>-->
+<!--  &lt;!&ndash; END FLIGHT PNR RETRIEVE RESPONSE &ndash;&gt;-->
 </div>

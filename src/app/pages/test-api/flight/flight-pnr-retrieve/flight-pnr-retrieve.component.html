@@ -1,5 +1,5 @@
 <div [nbSpinner]="loading" nbSpinnerStatus="primary">
-  <nb-accordion class="mb-2">
+  <nb-accordion *ngIf="showRqForm" class="mb-2">
     <nb-accordion-item expanded="true">
       <nb-accordion-item-header class="font-weight-bold">PNR Retrieve
         <jupiter-api-response-status *ngIf="jupiterFlightPnrRetrieveRs" [status]="jupiterFlightPnrRetrieveRs.Status"></jupiter-api-response-status>
@@ -47,11 +47,33 @@
 
   <!-- FLIGHT PNR RETRIEVE RESPONSE -->
   <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
-    <div *ngIf="jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber" class="row m-1">
-      <div class="col-md-12 text-center">
-        <button class="btn btn-sm btn-danger center m-1" (click)="deletePnr()"><i class="fas fa-trash"></i> Delete PNR {{jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber}}</button>
-      </div>
+    <div *ngIf="jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber">
+      <nb-card class="mt-3 mb-1">
+        <nb-card-header>
+          Operation on PNR {{jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber}}
+        </nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-md-6 text-center">
+              <button class="btn btn-sm btn-danger center m-1" (click)="deletePnr()"><i class="fas fa-trash"></i> Delete PNR</button>
+            </div>
+            <div class="col-md-6 text-center border-left">
+              <div class="row">
+                <div class="col-sm-6">
+<!--                  <label for="queueNumber" class="label">Queue Number</label>-->
+                  <input nbInput fullWidth id="queueNumber" name="queueNumber" placeholder="Queue Number" [(ngModel)]="queueNumber">
+<!--                  <input *ngIf="jupiterFlightPnrRetrieveRs.Response.Pnr.ConnectorCode == EH2HConnectorCode.AMADEUS" nbInput fullWidth id="amadeusTargetOffice" name="amadeusTargetOffice" placeholder="Queue Number" [(ngModel)]="amadeusTargetOffice">-->
+                </div>
+                <div class="col-sm-6">
+                  <button class="btn btn-sm btn-warning center m-1" (click)="queuePlacePnr()"><i class="fas fa-list"></i> Place PNR On Queue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
     </div>
+
     <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr"></jupiter-flight-pnr-display>
   </div>
   <!-- END FLIGHT PNR RETRIEVE RESPONSE -->
@@ -68,4 +90,12 @@
     <jupiter-flight-pnr-display [title]="'Flight Delete'" [currentPnr]="jupiterFlightPnrDeleteRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
   </div>
   <!-- END FLIGHT PNR DELETE RESPONSE -->
+
+  <!-- FLIGHT QUEUE PLACE PNR MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightQueuePlacePnrRq">
+    <jupiter-api-messages-accordion Title="Flight Queue Place PNR" [ApiRs]="jupiterFlightQueuePlacePnrRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Queue Place PNR" [(ApiRq)]="jupiterFlightQueuePlacePnrRq" [ApiRs]="jupiterFlightQueuePlacePnrRs"></jupiter-api-debug-accordion>
+  </div>
+  <!-- END FLIGHT QUEUE PLACE PNR MESSAGES/DEBUG -->
+
 </div>

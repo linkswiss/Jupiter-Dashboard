@@ -162,6 +162,7 @@ export class FlightSearchComponent implements OnInit {
               IsExpertSearch: false,
               AccountCodes: [],
               EnableFareFamilies: true,
+              // EnableMinirule: false,
             }));
           }
           break;
@@ -515,59 +516,18 @@ export class FlightSearchComponent implements OnInit {
   }
 
   retrievePnr() {
-    this.loading = true;
+    // this.loading = true;
 
     this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
       ConnectorsEnvironment: this.jupiterFlightBookRq.ConnectorsEnvironment,
       Request: new JupiterFlightPnrRetrieveInput({
-        ConnectorsDebug: [],
+        ConnectorsDebug: this.jupiterFlightAvailabilityRq.Request.ConnectorsDebug,
         ConnectorCode: this.jupiterFlightBookRs.Response.Pnr.ConnectorCode,
         ConnectorCustomData: null,
         PnrNumber: this.jupiterFlightBookRs.Response.Pnr.PnrNumber,
       })
     });
 
-    this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
-      this.jupiterFlightPnrRetrieveRs = response;
-      this.loading = false;
-    }, error => {
-      console.error(error);
-      this.loading = false;
-      this.dialogService.open(DialogApiErrorComponent, {
-        context: {
-          title: 'flightPnrRetrieve Error',
-          error: error
-        },
-      });
-    });
-  }
-
-  deletePnr() {
-    this.loading = true;
-
-    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-      ConnectorsEnvironment: this.jupiterFlightBookRq.ConnectorsEnvironment,
-      Request: new JupiterFlightPnrRetrieveInput({
-        ConnectorsDebug: [],
-        ConnectorCode: this.jupiterFlightBookRs.Response.Pnr.ConnectorCode,
-        ConnectorCustomData: null,
-        PnrNumber: this.jupiterFlightBookRs.Response.Pnr.PnrNumber,
-      })
-    });
-
-    this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
-      this.jupiterFlightPnrRetrieveRs = response;
-      this.loading = false;
-    }, error => {
-      console.error(error);
-      this.loading = false;
-      this.dialogService.open(DialogApiErrorComponent, {
-        context: {
-          title: 'flightPnrRetrieve Error',
-          error: error
-        },
-      });
-    });
   }
 }
 

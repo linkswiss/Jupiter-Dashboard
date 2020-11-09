@@ -455,18 +455,11 @@
   </div>
   <!-- END FLIGHT BOOK RESPONSE -->
 
-  <!-- FLIGHT PNR RETRIEVE MESSAGES/DEBUG -->
+  <!-- FLIGHT PNR RETRIEVE -->
   <div *ngIf="jupiterFlightPnrRetrieveRq">
-    <jupiter-api-messages-accordion Title="Flight Book" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
-    <jupiter-api-debug-accordion Title="Flight Book" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
+    <jupiter-flight-pnr-retrieve [jupiterFlightPnrRetrieveRq]="jupiterFlightPnrRetrieveRq"></jupiter-flight-pnr-retrieve>
   </div>
-  <!-- END FLIGHT PNR RETRIEVE MESSAGES/DEBUG -->
-
-  <!-- FLIGHT PNR RETRIEVE RESPONSE -->
-  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
-    <jupiter-flight-pnr-display [title]="'Flight Retrieve'" [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
-  </div>
-  <!-- END PNR RETRIEVE RESPONSE -->
+  <!-- END FLIGHT PNR RETRIEVE -->
 
 </div>
 

@@ -2,9 +2,16 @@ import {Component, OnInit, TemplateRef, ViewChild} from '@angular/core';
 import {
   AmadeusFlightQueueListInputCustomData,
   ConnectorEnvironment,
-  EH2HConnectorCode, EH2HOperation, FlightQueuePnr, JupiterFlightPnrRetrieveInput,
+  EH2HConnectorCode,
+  EH2HOperation,
+  FlightQueuePnr,
+  JupiterFlightPnrRetrieveInput,
   JupiterFlightPnrRetrieveRQ,
-  JupiterFlightPnrRetrieveRS, JupiterFlightQueueListInput, JupiterFlightQueueListRQ, JupiterFlightQueueListRS
+  JupiterFlightPnrRetrieveRS,
+  JupiterFlightQueueListInput,
+  JupiterFlightQueueListRQ,
+  JupiterFlightQueueListRS, JupiterFlightQueueRemovePnrInput,
+  JupiterFlightQueueRemovePnrRQ, JupiterFlightQueueRemovePnrRS
 } from "../../../../services/jupiter-api/jupiter-api-client";
 import {JupiterApiService} from "../../../../services/jupiter-api/jupiter-api.service";
 import {AppConfigService} from "../../../../services/app-config/app-config.service";
@@ -20,6 +27,9 @@ export class FlightQueueListComponent implements OnInit {
 
   jupiterFlightQueueListRq: JupiterFlightQueueListRQ = null;
   jupiterFlightQueueListRs: JupiterFlightQueueListRS = null;
+
+  jupiterFlightQueueRemovePnrRq: JupiterFlightQueueRemovePnrRQ = null;
+  jupiterFlightQueueRemovePnrRs: JupiterFlightQueueRemovePnrRS = null;
 
   flightQueueSelectedResults: FlightQueuePnr[] = null;
 
@@ -77,8 +87,6 @@ export class FlightQueueListComponent implements OnInit {
 
     this.resetSelected();
 
-    this.jupiterFlightPnrRetrieveRq = null;
-
     this.jupiterApiService.flightQueueList(this.jupiterFlightQueueListRq).subscribe(response => {
       this.jupiterFlightQueueListRs = response;
       this.loading = false;
@@ -90,76 +98,59 @@ export class FlightQueueListComponent implements OnInit {
 
   resetSelected(){
     this.flightQueueSelectedResults = null;
+
     this.jupiterFlightPnrRetrieveRq = null;
     this.jupiterFlightPnrRetrieveRs = null;
+
+    this.jupiterFlightQueueRemovePnrRq = null;
+    this.jupiterFlightQueueRemovePnrRs = null;
   }
 
-  queuePlacePnr(pnrNumber: string, queueNumber: string) {
+  queueRemovePnr(flightQueuePnr: FlightQueuePnr) {
     this.loading = true;
 
-    // this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-    //   ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
-    //   Request: new JupiterFlightPnrRetrieveInput({
-    //     ConnectorsDebug: [],
-    //     ConnectorCode: this.jupiterFlightPnrRetrieveRs.Response.,
-    //     ConnectorCustomData: null,
-    //     PnrNumber: '',
-    //   })
-    // });
-    //
-    // this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
-    //   this.jupiterFlightPnrRetrieveRs = response;
-    //   this.loading = false;
-    // }, error => {
-    //   console.error(error);
-    //   this.loading = false;
-    // });
-  }
-
-  queueRemovePnr(pnrNumber: string, queueNumber: string) {
-    this.loading = true;
-
-    // this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-    //   ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
-    //   Request: new JupiterFlightPnrRetrieveInput({
-    //     ConnectorsDebug: [],
-    //     ConnectorCode: this.jupiterFlightPnrRetrieveRs.Response.,
-    //     ConnectorCustomData: null,
-    //     PnrNumber: '',
-    //   })
-    // });
-    //
-    // this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
-    //   this.jupiterFlightPnrRetrieveRs = response;
-    //   this.loading = false;
-    // }, error => {
-    //   console.error(error);
-    //   this.loading = false;
-    // });
-  }
-
-  retrievePnr(flightQueuePnr: FlightQueuePnr) {
-    this.loading = true;
-
-    this.flightQueueSelectedResults = [flightQueuePnr];
-
-    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-      ConnectorsEnvironment: this.jupiterFlightQueueListRq.ConnectorsEnvironment,
-      Request: new JupiterFlightPnrRetrieveInput({
-        ConnectorsDebug: [],
+    this.jupiterFlightQueueRemovePnrRq = new JupiterFlightQueueRemovePnrRQ({
+      ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
+      Request: new JupiterFlightQueueRemovePnrInput({
+        QueueNumber: this.jupiterFlightQueueListRs.Response.QueueNumber,
+        ConnectorsDebug: this.jupiterFlightQueueListRq.Request.ConnectorsDebug,
         ConnectorCode: this.jupiterFlightQueueListRs.Response.ConnectorCode,
         ConnectorCustomData: null,
         PnrNumber: flightQueuePnr.PnrNumber,
       })
     });
 
-    this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
-      this.jupiterFlightPnrRetrieveRs = response;
+    this.jupiterApiService.flightQueueRemovePnr(this.jupiterFlightQueueRemovePnrRq).subscribe(response => {
+      this.jupiterFlightQueueRemovePnrRs = response;
       this.loading = false;
     }, error => {
       console.error(error);
       this.loading = false;
     });
+  }
+
+  retrievePnr(flightQueuePnr: FlightQueuePnr) {
+    // this.loading = true;
+
+    this.flightQueueSelectedResults = [flightQueuePnr];
+
+    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+      ConnectorsEnvironment: this.jupiterFlightQueueListRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrRetrieveInput({
+        ConnectorsDebug: this.jupiterFlightQueueListRq.Request.ConnectorsDebug,
+        ConnectorCode: this.jupiterFlightQueueListRs.Response.ConnectorCode,
+        ConnectorCustomData: null,
+        PnrNumber: flightQueuePnr.PnrNumber,
+      })
+    });
+
+    // this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
+    //   this.jupiterFlightPnrRetrieveRs = response;
+    //   this.loading = false;
+    // }, error => {
+    //   console.error(error);
+    //   this.loading = false;
+    // });
   }
 
 }

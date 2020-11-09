@@ -27891,6 +27891,7 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
   AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
   /** Define if is an expert search or a normal search */
   IsExpertSearch?: boolean;
+  /** Enable Fare Families and Upsells */
   EnableFareFamilies?: boolean;
 
   constructor(data?: IAmadeusFlightAvailabilityInputCustomData) {
@@ -27931,6 +27932,7 @@ export interface IAmadeusFlightAvailabilityInputCustomData extends IFlightAvaila
   AmadeusSession?: AmadeusGdsSessionCustomData | undefined;
   /** Define if is an expert search or a normal search */
   IsExpertSearch?: boolean;
+  /** Enable Fare Families and Upsells */
   EnableFareFamilies?: boolean;
 }
 
@@ -34415,6 +34417,8 @@ export interface IFlightQueueListInputCustomData {
 }
 
 export class AmadeusFlightQueueListInputCustomData extends FlightQueueListInputCustomData implements IAmadeusFlightQueueListInputCustomData {
+  /** If specified it will add the TargetOffice as specified */
+  TargetOffice?: string | undefined;
   /** Queue Category if needed */
   Category?: string | undefined;
 
@@ -34426,6 +34430,7 @@ export class AmadeusFlightQueueListInputCustomData extends FlightQueueListInputC
   init(_data?: any) {
     super.init(_data);
     if (_data) {
+      this.TargetOffice = _data["TargetOffice"];
       this.Category = _data["Category"];
     }
   }
@@ -34439,6 +34444,7 @@ export class AmadeusFlightQueueListInputCustomData extends FlightQueueListInputC
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
+    data["TargetOffice"] = this.TargetOffice;
     data["Category"] = this.Category;
     super.toJSON(data);
     return data;
@@ -34446,6 +34452,8 @@ export class AmadeusFlightQueueListInputCustomData extends FlightQueueListInputC
 }
 
 export interface IAmadeusFlightQueueListInputCustomData extends IFlightQueueListInputCustomData {
+  /** If specified it will add the TargetOffice as specified */
+  TargetOffice?: string | undefined;
   /** Queue Category if needed */
   Category?: string | undefined;
 }
@@ -34518,8 +34526,8 @@ export interface IJupiterFlightQueuePlacePnrRS extends IBaseRS {
 }
 
 export class JupiterFlightQueuePlacePnrOutput extends BaseOutput implements IJupiterFlightQueuePlacePnrOutput {
-  /** Pnr Numbers in queue */
-  PnrNumberList?: string[] | undefined;
+  /** Pnr Number in queue */
+  PnrNumber?: string | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightQueuePlacePnrOutputCustomData | undefined;
 
@@ -34530,11 +34538,7 @@ export class JupiterFlightQueuePlacePnrOutput extends BaseOutput implements IJup
   init(_data?: any) {
     super.init(_data);
     if (_data) {
-      if (Array.isArray(_data["PnrNumberList"])) {
-        this.PnrNumberList = [] as any;
-        for (let item of _data["PnrNumberList"])
-          this.PnrNumberList!.push(item);
-      }
+      this.PnrNumber = _data["PnrNumber"];
       this.ConnectorCustomData = _data["ConnectorCustomData"] ? FlightQueuePlacePnrOutputCustomData.fromJS(_data["ConnectorCustomData"]) : <any>undefined;
     }
   }
@@ -34548,11 +34552,7 @@ export class JupiterFlightQueuePlacePnrOutput extends BaseOutput implements IJup
 
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
-    if (Array.isArray(this.PnrNumberList)) {
-      data["PnrNumberList"] = [];
-      for (let item of this.PnrNumberList)
-        data["PnrNumberList"].push(item);
-    }
+    data["PnrNumber"] = this.PnrNumber;
     data["ConnectorCustomData"] = this.ConnectorCustomData ? this.ConnectorCustomData.toJSON() : <any>undefined;
     super.toJSON(data);
     return data;
@@ -34560,8 +34560,8 @@ export class JupiterFlightQueuePlacePnrOutput extends BaseOutput implements IJup
 }
 
 export interface IJupiterFlightQueuePlacePnrOutput extends IBaseOutput {
-  /** Pnr Numbers in queue */
-  PnrNumberList?: string[] | undefined;
+  /** Pnr Number in queue */
+  PnrNumber?: string | undefined;
   /** Connector Custom Data */
   ConnectorCustomData?: FlightQueuePlacePnrOutputCustomData | undefined;
 }
@@ -34745,6 +34745,11 @@ export abstract class FlightQueuePlacePnrInputCustomData implements IFlightQueue
 
   static fromJS(data: any): FlightQueuePlacePnrInputCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightQueuePlacePnrInputCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'FlightQueuePlacePnrInputCustomData' cannot be instantiated.");
   }
 
@@ -34756,6 +34761,50 @@ export abstract class FlightQueuePlacePnrInputCustomData implements IFlightQueue
 }
 
 export interface IFlightQueuePlacePnrInputCustomData {
+}
+
+export class AmadeusFlightQueuePlacePnrInputCustomData extends FlightQueuePlacePnrInputCustomData implements IAmadeusFlightQueuePlacePnrInputCustomData {
+  /** TargetOffice as specified
+   Errors if not passed is a mandatory element on Amadeus */
+  TargetOffice?: string | undefined;
+  /** Queue Category if needed */
+  Category?: string | undefined;
+
+  constructor(data?: IAmadeusFlightQueuePlacePnrInputCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.TargetOffice = _data["TargetOffice"];
+      this.Category = _data["Category"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightQueuePlacePnrInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightQueuePlacePnrInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["TargetOffice"] = this.TargetOffice;
+    data["Category"] = this.Category;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightQueuePlacePnrInputCustomData extends IFlightQueuePlacePnrInputCustomData {
+  /** TargetOffice as specified
+   Errors if not passed is a mandatory element on Amadeus */
+  TargetOffice?: string | undefined;
+  /** Queue Category if needed */
+  Category?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterFlightQueuePlacePnrInput implements ICustomerCustomDataOfJupiterFlightQueuePlacePnrInput {
@@ -35053,6 +35102,11 @@ export abstract class FlightQueueRemovePnrInputCustomData implements IFlightQueu
 
   static fromJS(data: any): FlightQueueRemovePnrInputCustomData {
     data = typeof data === 'object' ? data : {};
+    if (data["CustomDataConnectorCode"] === "AMADEUS") {
+      let result = new AmadeusFlightQueueRemovePnrInputCustomData();
+      result.init(data);
+      return result;
+    }
     throw new Error("The abstract class 'FlightQueueRemovePnrInputCustomData' cannot be instantiated.");
   }
 
@@ -35064,6 +35118,48 @@ export abstract class FlightQueueRemovePnrInputCustomData implements IFlightQueu
 }
 
 export interface IFlightQueueRemovePnrInputCustomData {
+}
+
+export class AmadeusFlightQueueRemovePnrInputCustomData extends FlightQueueRemovePnrInputCustomData implements IAmadeusFlightQueueRemovePnrInputCustomData {
+  /** If specified it will add the TargetOffice as specified */
+  TargetOffice?: string | undefined;
+  /** Queue Category if needed */
+  Category?: string | undefined;
+
+  constructor(data?: IAmadeusFlightQueueRemovePnrInputCustomData) {
+    super(data);
+    this._discriminator = "AMADEUS";
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.TargetOffice = _data["TargetOffice"];
+      this.Category = _data["Category"];
+    }
+  }
+
+  static fromJS(data: any): AmadeusFlightQueueRemovePnrInputCustomData {
+    data = typeof data === 'object' ? data : {};
+    let result = new AmadeusFlightQueueRemovePnrInputCustomData();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["TargetOffice"] = this.TargetOffice;
+    data["Category"] = this.Category;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IAmadeusFlightQueueRemovePnrInputCustomData extends IFlightQueueRemovePnrInputCustomData {
+  /** If specified it will add the TargetOffice as specified */
+  TargetOffice?: string | undefined;
+  /** Queue Category if needed */
+  Category?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterFlightQueueRemovePnrInput implements ICustomerCustomDataOfJupiterFlightQueueRemovePnrInput {
