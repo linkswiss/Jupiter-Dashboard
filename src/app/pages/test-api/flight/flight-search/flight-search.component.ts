@@ -11,6 +11,7 @@ import {
   AvailabilityInputCustomData,
   CreditCardInfo,
   ECreditCardType,
+  EDocumentType,
   EFlightCabin,
   EH2HConnectorCode,
   EH2HOperation,
@@ -27,7 +28,11 @@ import {
   JupiterFlightBookRS,
   JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, JupiterFlightPnrRetrieveInput, JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS,
+  JupiterFlightDetailRS,
+  JupiterFlightPnrRetrieveInput,
+  JupiterFlightPnrRetrieveRQ,
+  JupiterFlightPnrRetrieveRS,
+  PaxDocument,
   PnrTravelCompany,
   SabreFlightAvailabilityInputCustomData,
   SabreFlightStepRequestCustomData,
@@ -491,6 +496,19 @@ export class FlightSearchComponent implements OnInit {
         CreditCardCvv: '999',
         ExpireDate: '01/23'
       });
+
+      //Fake Document for DOCS
+      this.jupiterFlightBookRq.Request.Pnr.Paxes[0].Documents = [
+        new PaxDocument({
+          Type: EDocumentType.PASSPORT,
+          Number: 'PP0021332211',
+          IssueIsoCode: 'IT',
+          NationalityIsoCode: 'IT',
+          FirstName: 'John',
+          LastName: 'Doe',
+          ExpirationDate: '2026-04-12',
+        })
+      ];
 
       //Add Travel Agency
       this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
