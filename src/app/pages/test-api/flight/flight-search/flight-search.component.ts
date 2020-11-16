@@ -492,9 +492,9 @@ export class FlightSearchComponent implements OnInit {
         CardHolderLastName: 'Doe',
         // CreditCardType: ECreditCardType.MASTERCARD,
         CreditCardType: ECreditCardType.VISA,
-        CreditCardNumber: '4111111111111111',
+        CreditCardNumber: '4212349999991232',
         CreditCardCvv: '999',
-        ExpireDate: '01/23'
+        ExpireDate: '10/21'
       });
 
       //Fake Document for DOCS
