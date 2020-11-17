@@ -167,7 +167,7 @@ export class FlightSearchComponent implements OnInit {
               IsExpertSearch: false,
               AccountCodes: [],
               EnableFareFamilies: true,
-              // EnableMinirule: false,
+              EnableMiniRule: false,
             }));
           }
           break;

@@ -27893,6 +27893,8 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
   IsExpertSearch?: boolean;
   /** Enable Fare Families and Upsells */
   EnableFareFamilies?: boolean;
+  /** Search with Pricing Options for Minirule */
+  EnableMiniRule?: boolean;
 
   constructor(data?: IAmadeusFlightAvailabilityInputCustomData) {
     super(data);
@@ -27905,6 +27907,7 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
       this.AmadeusSession = _data["AmadeusSession"] ? AmadeusGdsSessionCustomData.fromJS(_data["AmadeusSession"]) : <any>undefined;
       this.IsExpertSearch = _data["IsExpertSearch"];
       this.EnableFareFamilies = _data["EnableFareFamilies"];
+      this.EnableMiniRule = _data["EnableMiniRule"];
     }
   }
 
@@ -27920,6 +27923,7 @@ export class AmadeusFlightAvailabilityInputCustomData extends FlightAvailability
     data["AmadeusSession"] = this.AmadeusSession ? this.AmadeusSession.toJSON() : <any>undefined;
     data["IsExpertSearch"] = this.IsExpertSearch;
     data["EnableFareFamilies"] = this.EnableFareFamilies;
+    data["EnableMiniRule"] = this.EnableMiniRule;
     super.toJSON(data);
     return data;
   }
@@ -27934,6 +27938,8 @@ export interface IAmadeusFlightAvailabilityInputCustomData extends IFlightAvaila
   IsExpertSearch?: boolean;
   /** Enable Fare Families and Upsells */
   EnableFareFamilies?: boolean;
+  /** Search with Pricing Options for Minirule */
+  EnableMiniRule?: boolean;
 }
 
 export class SabreFlightAvailabilityInputCustomData extends FlightAvailabilityInputCustomData implements ISabreFlightAvailabilityInputCustomData {
