@@ -27,39 +27,30 @@
                      [status]="crypticForm.controls.Command.dirty && crypticForm.controls.Command.invalid ? 'danger' : ''">
 
               <div class="input-group-append">
-                <button  type="submit" id="sendcryptic" class="btn btn-sm btn-primary" [disabled]="crypticForm.invalid"><i class="fas fa-exchange-alt"></i> Send</button>
+                <button type="submit" id="sendcryptic" class="btn btn-sm btn-primary" [disabled]="crypticForm.invalid"><i class="fas fa-exchange-alt"></i> Send</button>
               </div>
               <!--<jupiter-form-input-error [control]="crypticForm.controls.Command"></jupiter-form-input-error>-->
             </div>
           </div>
         </form>
       </div>
-      <div class="col-sm-6">
-        <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment" (ConnectorsEnvironmentChange)="changeConnectorsEnvironment()"></jupiter-connectors-environment>
+      <div class="col-sm-2">
+        <button id="retrieve" class="btn btn-sm btn-primary" [disabled]="!crypticSession" (click)="retrieveFromSession()"><i class="fas fa-exchange-alt"></i> Retrieve From Session</button>
+      </div>
+      <div class="col-sm-4">
+        <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment" [FilterConnectors]="[EH2HConnectorCode.AMADEUS]" (ConnectorsEnvironmentChange)="changeConnectorsEnvironment()"></jupiter-connectors-environment>
       </div>
     </div>
   </nb-card-footer>
 </nb-card>
 
-<nb-accordion>
-  <nb-accordion-item>
-    <nb-accordion-item-header>Debug</nb-accordion-item-header>
-    <nb-accordion-item-body>
-      <nb-card>
-        <nb-card-header>Debug</nb-card-header>
-        <nb-card-body>
-          <div class="row">
-            <div class="col-sm-6">
-              <h6>JSON Response:</h6>
-              <pre>{{apiCallRS | json}}</pre>
-            </div>
-            <div class="col-sm-6">
-              <h6>Session:</h6>
-              <pre>{{crypticSession | json}}</pre>
-            </div>
-          </div>
-        </nb-card-body>
-      </nb-card>
-    </nb-accordion-item-body>
-  </nb-accordion-item>
-</nb-accordion>
+<!-- FLIGHT AVAIL MESSAGES/DEBUG -->
+<div>
+  <jupiter-api-messages-accordion Title="Cryptic" [ApiRs]="jupiterCrypticRs"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Cryptic" [(ApiRq)]="jupiterCrypticRq" [ApiRs]="jupiterCrypticRs"></jupiter-api-debug-accordion>
+</div>
+<!-- END FLIGHT AVAIL MESSAGES/DEBUG -->
+
+<div *ngIf="jupiterFlightPnrRetrieveRq">
+  <jupiter-flight-pnr-retrieve [jupiterFlightPnrRetrieveRq]="jupiterFlightPnrRetrieveRq"></jupiter-flight-pnr-retrieve>
+</div>

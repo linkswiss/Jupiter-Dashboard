@@ -1585,6 +1585,61 @@ export class SessionAndCrypticClient extends ApiClientBase {
   }
 }
 
+export class AmadeusClient extends ApiClientBase {
+  private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+  private baseUrl: string;
+  protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+  constructor(configuration: ApiConfig, baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+    super(configuration);
+    this.http = http ? http : <any>window;
+    this.baseUrl = baseUrl ? baseUrl : "https://localhost:5001";
+  }
+
+  /**
+   * Pnr Transfer Ownership Method
+   */
+  pnrTransferOwnership(request: JupiterAmadeusPnrTransferOwnershipRQ): Promise<JupiterAmadeusPnrTransferOwnershipRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Amadeus/transfer-ownership";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processPnrTransferOwnership(_response);
+    });
+  }
+
+  protected processPnrTransferOwnership(response: Response): Promise<JupiterAmadeusPnrTransferOwnershipRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = JupiterAmadeusPnrTransferOwnershipRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<JupiterAmadeusPnrTransferOwnershipRS>(<any>null);
+  }
+}
+
 export class SabreClient extends ApiClientBase {
   private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
   private baseUrl: string;
@@ -31526,6 +31581,8 @@ export class PnrOsiSsr implements IPnrOsiSsr {
   Code?: string | undefined;
   /** GDS OSI/SSR Type */
   Type?: string | undefined;
+  /** OSI/SSR Date */
+  Date?: string | undefined;
   /** GDS OSI/SSR Text */
   Text?: string | undefined;
   /** The Flight Segment Id Reference */
@@ -31550,6 +31607,7 @@ export class PnrOsiSsr implements IPnrOsiSsr {
       this.Id = _data["Id"];
       this.Code = _data["Code"];
       this.Type = _data["Type"];
+      this.Date = _data["Date"];
       this.Text = _data["Text"];
       this.FlightSegmentRefId = _data["FlightSegmentRefId"];
       this.AirlineIataCode = _data["AirlineIataCode"];
@@ -31570,6 +31628,7 @@ export class PnrOsiSsr implements IPnrOsiSsr {
     data["Id"] = this.Id;
     data["Code"] = this.Code;
     data["Type"] = this.Type;
+    data["Date"] = this.Date;
     data["Text"] = this.Text;
     data["FlightSegmentRefId"] = this.FlightSegmentRefId;
     data["AirlineIataCode"] = this.AirlineIataCode;
@@ -31589,6 +31648,8 @@ export interface IPnrOsiSsr {
   Code?: string | undefined;
   /** GDS OSI/SSR Type */
   Type?: string | undefined;
+  /** OSI/SSR Date */
+  Date?: string | undefined;
   /** GDS OSI/SSR Text */
   Text?: string | undefined;
   /** The Flight Segment Id Reference */
@@ -36388,6 +36449,216 @@ export abstract class CustomerCustomDataOfJupiterIgnoreTransactionInput implemen
 }
 
 export interface ICustomerCustomDataOfJupiterIgnoreTransactionInput {
+}
+
+export class JupiterConnectorCustomRSOfPnrTransferOwnershipOutput extends BaseRS implements IJupiterConnectorCustomRSOfPnrTransferOwnershipOutput {
+  Response?: PnrTransferOwnershipOutput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRSOfPnrTransferOwnershipOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Response = _data["Response"] ? PnrTransferOwnershipOutput.fromJS(_data["Response"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRSOfPnrTransferOwnershipOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRSOfPnrTransferOwnershipOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Response"] = this.Response ? this.Response.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRSOfPnrTransferOwnershipOutput extends IBaseRS {
+  Response?: PnrTransferOwnershipOutput | undefined;
+}
+
+export class JupiterAmadeusPnrTransferOwnershipRS extends JupiterConnectorCustomRSOfPnrTransferOwnershipOutput implements IJupiterAmadeusPnrTransferOwnershipRS {
+
+  constructor(data?: IJupiterAmadeusPnrTransferOwnershipRS) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+  }
+
+  static fromJS(data: any): JupiterAmadeusPnrTransferOwnershipRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterAmadeusPnrTransferOwnershipRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterAmadeusPnrTransferOwnershipRS extends IJupiterConnectorCustomRSOfPnrTransferOwnershipOutput {
+}
+
+export class PnrTransferOwnershipOutput extends BaseOutput implements IPnrTransferOwnershipOutput {
+  TargetOffice?: string | undefined;
+  Pnr?: string | undefined;
+
+  constructor(data?: IPnrTransferOwnershipOutput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.TargetOffice = _data["TargetOffice"];
+      this.Pnr = _data["Pnr"];
+    }
+  }
+
+  static fromJS(data: any): PnrTransferOwnershipOutput {
+    data = typeof data === 'object' ? data : {};
+    let result = new PnrTransferOwnershipOutput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["TargetOffice"] = this.TargetOffice;
+    data["Pnr"] = this.Pnr;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IPnrTransferOwnershipOutput extends IBaseOutput {
+  TargetOffice?: string | undefined;
+  Pnr?: string | undefined;
+}
+
+export class JupiterConnectorCustomRQOfPnrTransferOwnershipInput extends BaseRQ implements IJupiterConnectorCustomRQOfPnrTransferOwnershipInput {
+  Request?: PnrTransferOwnershipInput | undefined;
+
+  constructor(data?: IJupiterConnectorCustomRQOfPnrTransferOwnershipInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.Request = _data["Request"] ? PnrTransferOwnershipInput.fromJS(_data["Request"]) : <any>undefined;
+    }
+  }
+
+  static fromJS(data: any): JupiterConnectorCustomRQOfPnrTransferOwnershipInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterConnectorCustomRQOfPnrTransferOwnershipInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request ? this.Request.toJSON() : <any>undefined;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterConnectorCustomRQOfPnrTransferOwnershipInput extends IBaseRQ {
+  Request?: PnrTransferOwnershipInput | undefined;
+}
+
+export class JupiterAmadeusPnrTransferOwnershipRQ extends JupiterConnectorCustomRQOfPnrTransferOwnershipInput implements IJupiterAmadeusPnrTransferOwnershipRQ {
+
+  constructor(data?: IJupiterAmadeusPnrTransferOwnershipRQ) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+  }
+
+  static fromJS(data: any): JupiterAmadeusPnrTransferOwnershipRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new JupiterAmadeusPnrTransferOwnershipRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IJupiterAmadeusPnrTransferOwnershipRQ extends IJupiterConnectorCustomRQOfPnrTransferOwnershipInput {
+}
+
+export class PnrTransferOwnershipInput extends BaseInput implements IPnrTransferOwnershipInput {
+  TargetOffice?: string | undefined;
+  PnrNumber?: string | undefined;
+  SpecificChanges?: string[] | undefined;
+  ReceivedFrom?: string | undefined;
+
+  constructor(data?: IPnrTransferOwnershipInput) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.TargetOffice = _data["TargetOffice"];
+      this.PnrNumber = _data["PnrNumber"];
+      if (Array.isArray(_data["SpecificChanges"])) {
+        this.SpecificChanges = [] as any;
+        for (let item of _data["SpecificChanges"])
+          this.SpecificChanges!.push(item);
+      }
+      this.ReceivedFrom = _data["ReceivedFrom"];
+    }
+  }
+
+  static fromJS(data: any): PnrTransferOwnershipInput {
+    data = typeof data === 'object' ? data : {};
+    let result = new PnrTransferOwnershipInput();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["TargetOffice"] = this.TargetOffice;
+    data["PnrNumber"] = this.PnrNumber;
+    if (Array.isArray(this.SpecificChanges)) {
+      data["SpecificChanges"] = [];
+      for (let item of this.SpecificChanges)
+        data["SpecificChanges"].push(item);
+    }
+    data["ReceivedFrom"] = this.ReceivedFrom;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface IPnrTransferOwnershipInput extends IBaseInput {
+  TargetOffice?: string | undefined;
+  PnrNumber?: string | undefined;
+  SpecificChanges?: string[] | undefined;
+  ReceivedFrom?: string | undefined;
 }
 
 export class JupiterConnectorCustomRSOfEncodeDecodeOutput extends BaseRS implements IJupiterConnectorCustomRSOfEncodeDecodeOutput {
