@@ -10,7 +10,7 @@
       <h5 class="font-weight-bold">No Sessions Entries</h5>
     </div>
 
-    <ngx-datatable *ngIf="sabreGdsSessionsData && sabreGdsSessionsData.length > 0" class="material" [columnMode]="'force'" loadingIndicator="true" [rowHeight]="'auto'" [rows]="sabreGdsSessionsData" [columns]="sabreGdsSessionsColumns" [sorts]="sabreGdsSessionsDefaultSort"></ngx-datatable>
+    <ngx-datatable *ngIf="sabreGdsSessionsData && sabreGdsSessionsData.length > 0" class="material" [columnMode]="'force'" [rowHeight]="'auto'" [rows]="sabreGdsSessionsData" [columns]="sabreGdsSessionsColumns" [sorts]="sabreGdsSessionsDefaultSort"></ngx-datatable>
 
     <ng-template #sabreSessionActionsTpl let-row="row" let-value="value">
       <button class="btn btn-sm btn-danger" (click)="sabreDeleteSession(row)" ngbTooltip="Delete This Session Item" placement="top" container="body"><i class="fas fa-trash"></i></button>

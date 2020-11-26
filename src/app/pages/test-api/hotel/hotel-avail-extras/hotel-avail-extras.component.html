@@ -22,7 +22,7 @@
             <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCode">
               <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
             </nb-select>
-            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelAvailabilityExtrasRQ.ConnectorsEnvironment"></jupiter-connectors-environment>
+            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterHotelAvailabilityExtrasRQ.ConnectorsEnvironment" [FilterConnectors]="jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCode"></jupiter-connectors-environment>
           </div>
 
           <div class="form-group col-sm-4">

@@ -1,6 +1,6 @@
 <!--<div class="form-group">-->
 <!--  <label for="connectors" class="label">Connectors Environments</label>-->
-  <nb-select #selectEnv fullWidth id="connectors" placeholder="Connectors Environments" [multiple]="true" [outline]="true" (selectedChange)="connectorEnvChanged($event);selectEnv.hide();" [(ngModel)]="selectedConnectors">
+  <nb-select #selectEnv fullWidth id="connectors" placeholder="Connectors Environments" [multiple]="true" [outline]="true" (selectedChange)="connectorEnvChanged($event);selectEnv.hide();" [(ngModel)]="selectedConnectorsEnv">
     <nb-option *ngFor="let connector of connectors; let connIndex = index" [value]="connIndex">{{connector.ConnectorCode}} {{connector.Environment}}</nb-option>
   </nb-select>
 <!--</div>-->

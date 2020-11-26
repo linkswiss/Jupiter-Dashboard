@@ -1,18 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {
+  AmadeusFlightQueuePlacePnrInputCustomData,
   ConnectorEnvironment,
-  EFlightCabin,
-  EH2HConnectorCode, EH2HOperation, FlightFareGroupResult, JupiterFlightAvailabilityInput,
-  JupiterFlightAvailabilityRQ,
-  JupiterFlightAvailabilityRS, JupiterFlightDetailInput,
-  JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, JupiterFlightPnrRetrieveInput,
-  JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS, SabreFlightPnrCustomData, SabreFlightRetrievePnrCustomData,
-  SingleFlightAvailResult
+  EH2HConnectorCode,
+  EH2HOperation,
+  JupiterFlightPnrDeleteInput,
+  JupiterFlightPnrDeleteRQ,
+  JupiterFlightPnrDeleteRS,
+  JupiterFlightPnrRetrieveInput,
+  JupiterFlightPnrRetrieveRQ,
+  JupiterFlightPnrRetrieveRS,
+  JupiterFlightQueuePlacePnrInput,
+  JupiterFlightQueuePlacePnrRQ,
+  JupiterFlightQueuePlacePnrRS
 } from '../../../../services/jupiter-api/jupiter-api-client';
-import * as moment from 'moment';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
-import {FlightStepRequestFormModel} from '../flight-search/flight-search.component';
 import {AppConfigService} from '../../../../services/app-config/app-config.service';
 
 @Component({
@@ -20,11 +22,22 @@ import {AppConfigService} from '../../../../services/app-config/app-config.servi
   templateUrl: './flight-pnr-retrieve.component.html',
   styleUrls: ['./flight-pnr-retrieve.component.scss']
 })
-export class FlightPnrRetrieveComponent implements OnInit {
+export class FlightPnrRetrieveComponent implements OnInit, OnChanges {
+  @Input() jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
+
+  showRqForm = true;
   loading = false;
 
-  jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
+  // jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
   jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
+
+  jupiterFlightPnrDeleteRq: JupiterFlightPnrDeleteRQ = null;
+  jupiterFlightPnrDeleteRs: JupiterFlightPnrDeleteRS = null;
+
+  jupiterFlightQueuePlacePnrRq: JupiterFlightQueuePlacePnrRQ = null;
+  jupiterFlightQueuePlacePnrRs: JupiterFlightQueuePlacePnrRS = null;
+
+  queueNumber = '';
 
   pnrNumber = '';
 
@@ -32,6 +45,7 @@ export class FlightPnrRetrieveComponent implements OnInit {
   selectedConnectorsDebug: EH2HConnectorCode[] = [];
   connectors: EH2HConnectorCode[] = null;
   connectorsEnvironment: ConnectorEnvironment[] = [];
+  EH2HConnectorCode = EH2HConnectorCode;
 
   constructor(private jupiterApiService: JupiterApiService, public appConfigService: AppConfigService) {
 
@@ -40,7 +54,6 @@ export class FlightPnrRetrieveComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.FLIGHT_PNR_RETRIEVE);
-
     this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
       ConnectorsEnvironment: this.connectorsEnvironment,
       Request: new JupiterFlightPnrRetrieveInput({
@@ -50,12 +63,25 @@ export class FlightPnrRetrieveComponent implements OnInit {
         PnrNumber: '',
       })
     });
-
-    // Sample SABRE CERT
-    // TRWXLH
-    // CWHVAV
   }
 
+  ngOnChanges() {
+    if(!this.jupiterFlightPnrRetrieveRq){
+      this.showRqForm = true;
+      this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+        ConnectorsEnvironment: this.connectorsEnvironment,
+        Request: new JupiterFlightPnrRetrieveInput({
+          ConnectorsDebug: [],
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          PnrNumber: '',
+        })
+      });
+    }else{
+      this.showRqForm = false;
+      this.retrievePnr();
+    }
+  }
   /**
    * Callback Changed the main Connector -> Add Custom data
    * @param connector
@@ -79,29 +105,11 @@ export class FlightPnrRetrieveComponent implements OnInit {
   retrievePnr() {
     this.loading = true;
 
-    // this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-    //   ConnectorsEnvironment: this.connectorsEnvironment,
-    //   Request: new JupiterFlightPnrRetrieveInput({
-    //     PnrNumber: this.pnrNumber,
-    //     ConnectorCode: this.selectedConnector,
-    //     ConnectorsDebug: this.selectedConnectorsDebug
-    //   })
-    // });
+    this.jupiterFlightPnrDeleteRq = null;
+    this.jupiterFlightPnrDeleteRs = null;
 
     this.jupiterApiService.flightPnrRetrieve(this.jupiterFlightPnrRetrieveRq).subscribe(response => {
       this.jupiterFlightPnrRetrieveRs = response;
-
-      // Prettify Debug Data
-      if (response && response.ConnectorsResponseDetails && response.ConnectorsResponseDetails.length > 0) {
-        for (let debug of response.ConnectorsResponseDetails) {
-          if (debug.ConnectorDebugData) {
-            // Format it
-            debug.ConnectorDebugData.Request = this.prettifyXml(debug.ConnectorDebugData.Request);
-            debug.ConnectorDebugData.Response = this.prettifyXml(debug.ConnectorDebugData.Response);
-          }
-        }
-      }
-
       this.loading = false;
     }, error => {
       console.error(error);
@@ -110,30 +118,56 @@ export class FlightPnrRetrieveComponent implements OnInit {
 
   }
 
-  getJson(object): string {
-    return JSON.stringify(object, null, 2);
+  queuePlacePnr() {
+    this.loading = true;
+
+    this.jupiterFlightQueuePlacePnrRq = new JupiterFlightQueuePlacePnrRQ({
+      ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
+      Request: new JupiterFlightQueuePlacePnrInput({
+        ConnectorsDebug: this.jupiterFlightPnrRetrieveRq.Request.ConnectorsDebug,
+        ConnectorCode: this.jupiterFlightPnrRetrieveRs.Response.Pnr.ConnectorCode,
+        ConnectorCustomData: null,
+        PnrNumber: this.jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber,
+        QueueNumber: this.queueNumber,
+      })
+    });
+
+    // // If AMADEUS Add ConnectorCustomData with the targetOffice Required
+    // if(this.jupiterFlightQueuePlacePnrRq.Request.ConnectorCode == EH2HConnectorCode.AMADEUS){
+    //   this.jupiterFlightQueuePlacePnrRq.Request.ConnectorCustomData = new AmadeusFlightQueuePlacePnrInputCustomData({
+    //     TargetOffice: '',
+    //     Category: ''
+    //   });
+    // }
+
+    this.jupiterApiService.flightQueuePlacePnr(this.jupiterFlightQueuePlacePnrRq).subscribe(response => {
+      this.jupiterFlightQueuePlacePnrRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+    });
   }
 
-  prettifyXml(sourceXml): string {
-    let xmlDoc = new DOMParser().parseFromString(sourceXml, 'application/xml');
-    let xsltDoc = new DOMParser().parseFromString([
-      // describes how we want to modify the XML - indent everything
-      '<xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform">',
-      '  <xsl:strip-space elements="*"/>',
-      '  <xsl:template match="para[content-style][not(text())]">', // change to just text() to strip space in text nodes
-      '    <xsl:value-of select="normalize-space(.)"/>',
-      '  </xsl:template>',
-      '  <xsl:template match="node()|@*">',
-      '    <xsl:copy><xsl:apply-templates select="node()|@*"/></xsl:copy>',
-      '  </xsl:template>',
-      '  <xsl:output indent="yes"/>',
-      '</xsl:stylesheet>',
-    ].join('\n'), 'application/xml');
+  deletePnr(){
+    this.loading = true;
 
-    let xsltProcessor = new XSLTProcessor();
-    xsltProcessor.importStylesheet(xsltDoc);
-    let resultDoc = xsltProcessor.transformToDocument(xmlDoc);
-    let resultXml = new XMLSerializer().serializeToString(resultDoc);
-    return resultXml;
+    this.jupiterFlightPnrDeleteRq = new JupiterFlightPnrDeleteRQ({
+      ConnectorsEnvironment: this.jupiterFlightPnrRetrieveRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrDeleteInput({
+        PnrNumber: this.jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber,
+        ConnectorCode: this.jupiterFlightPnrRetrieveRs.Response.Pnr.ConnectorCode,
+        ConnectorsDebug: this.jupiterFlightPnrRetrieveRq.Request.ConnectorsDebug
+      })
+    });
+
+    this.jupiterApiService.flightPnrDelete(this.jupiterFlightPnrDeleteRq).subscribe(response => {
+      this.jupiterFlightPnrDeleteRs = response;
+      this.loading = false;
+    }, error => {
+      console.error(error);
+      this.loading = false;
+    });
+
   }
 }

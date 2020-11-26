@@ -20,6 +20,16 @@
       <div>Company:
         <pre *ngIf="pax.Company" class="border-box bg-light">{{pax.Company | json}}</pre>
       </div>
+
+      <div *ngIf="pax['ConnectorCustomData']">
+        <div>Connector Custom Data:</div>
+        <pre class="border-box bg-light">{{pax['ConnectorCustomData'] | json}}</pre>
+      </div>
+      <div *ngIf="pax['CustomerCustomData']">
+        <div>Customer Custom Data:</div>
+        <pre class="border-box bg-light">{{pax['CustomerCustomData'] | json}}</pre>
+      </div>
+
     </div>
   </nb-card-body>
   <nb-card-body *ngIf="!paxes">
