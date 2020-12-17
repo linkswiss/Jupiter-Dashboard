@@ -34,7 +34,7 @@ import {
   JupiterFlightPnrRetrieveRS,
   PaxDocument,
   PnrTravelCompany,
-  SabreFlightAvailabilityInputCustomData,
+  SabreFlightAvailabilityInputCustomData, SabreFlightBookPnrCustomData, SabreFlightPnrCustomData,
   SabreFlightStepRequestCustomData,
   SingleFlightAvailResult,
   TravelFusionFlightStepRequestCustomData,
@@ -476,44 +476,58 @@ export class FlightSearchComponent implements OnInit {
       })
     });
 
+    switch (bookPnr.ConnectorCode){
+      case EH2HConnectorCode.AMADEUS:
+        // Add Firm
+        this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
+          PnrCustomData: new AmadeusFlightPnrCustomData({
+            ReceivedFrom: 'John Agent',
+            TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
+          })
+        });
+
+        //TODO Remove this to not provide the FOP Call
+        //Add fake CC
+        this.jupiterFlightBookRq.Request.Pnr.CreditCardPayment = new CreditCardInfo({
+          CardHolderFirstName: 'John',
+          CardHolderLastName: 'Doe',
+          // CreditCardType: ECreditCardType.MASTERCARD,
+          CreditCardType: ECreditCardType.VISA,
+          CreditCardNumber: '4212349999991232',
+          CreditCardCvv: '999',
+          ExpireDate: '10/21'
+        });
+
+        //Fake Document for DOCS
+        this.jupiterFlightBookRq.Request.Pnr.Paxes[0].Documents = [
+          new PaxDocument({
+            Type: EDocumentType.PASSPORT,
+            Number: 'PP0021332211',
+            IssueIsoCode: 'IT',
+            NationalityIsoCode: 'IT',
+            FirstName: 'John',
+            LastName: 'Doe',
+            ExpirationDate: '2026-04-12',
+          })
+        ];
+
+        //Add Travel Agency
+        this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
+          Name: 'My Travel Agency 123123123'
+        });
+
+        break;
+      case EH2HConnectorCode.SABRE:
+        this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new SabreFlightBookPnrCustomData({
+          PnrCustomData: new SabreFlightPnrCustomData({
+            ReceivedFrom: 'John Agent',
+          })
+        });
+        break;
+    }
+
     if (bookPnr.ConnectorCode === EH2HConnectorCode.AMADEUS) {
-      // Add Firm
-      this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
-        PnrCustomData: new AmadeusFlightPnrCustomData({
-          ReceivedFrom: 'John Agent',
-          TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
-        })
-      });
 
-      //TODO Remove this to not provide the FOP Call
-      //Add fake CC
-      this.jupiterFlightBookRq.Request.Pnr.CreditCardPayment = new CreditCardInfo({
-        CardHolderFirstName: 'John',
-        CardHolderLastName: 'Doe',
-        // CreditCardType: ECreditCardType.MASTERCARD,
-        CreditCardType: ECreditCardType.VISA,
-        CreditCardNumber: '4212349999991232',
-        CreditCardCvv: '999',
-        ExpireDate: '10/21'
-      });
-
-      //Fake Document for DOCS
-      this.jupiterFlightBookRq.Request.Pnr.Paxes[0].Documents = [
-        new PaxDocument({
-          Type: EDocumentType.PASSPORT,
-          Number: 'PP0021332211',
-          IssueIsoCode: 'IT',
-          NationalityIsoCode: 'IT',
-          FirstName: 'John',
-          LastName: 'Doe',
-          ExpirationDate: '2026-04-12',
-        })
-      ];
-
-      //Add Travel Agency
-      this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
-        Name: 'My Travel Agency 123123123'
-      });
     }
 
     this.jupiterApiService.flightBook(this.jupiterFlightBookRq).subscribe(response => {

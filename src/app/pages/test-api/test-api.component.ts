@@ -69,6 +69,11 @@ export class TestApiComponent implements OnInit {
     }
   }
 
+  routeHasParams(route: PublishedRoute): boolean{
+    let routePath = route.PathTemplate.replace('jupiter-api/{version:apiVersion}/', '')
+    return routePath.indexOf("{") >= 0;
+  }
+
   processConnectorsEnvironment(){
     console.log("ChangeConnectors");
     let parsed = JSON.parse(this.requestJson);

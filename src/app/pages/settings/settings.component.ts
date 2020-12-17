@@ -4,7 +4,7 @@ import {$e} from 'codelyzer/angular/styles/chars';
 import {AppConfigService} from '../../services/app-config/app-config.service';
 import {DashboardApiService} from '../../services/dashboard-api/dashboard-api.service';
 import {UserService} from '../../services/user/user.service';
-import {CacheEntry, PublishedRoute} from "../../services/dashboard-api/dashboard-api-client";
+import {CacheEntry, PublishedRoute, SingleCacheItem} from "../../services/dashboard-api/dashboard-api-client";
 import {DialogApiErrorComponent} from "../test-api/common/components/dialog-api-error/dialog-api-error.component";
 import {JupiterApiService} from "../../services/jupiter-api/jupiter-api.service";
 import {NbDialogService} from "@nebular/theme";
@@ -30,6 +30,7 @@ export class SettingsComponent implements OnInit {
   cacheEntriesColumns = [];
   cacheEntriesData: Array<CacheEntry> = [];
   cacheEntriesDefaultSort = [];
+  cacheResult: SingleCacheItem = null;
 
   loadingTypescript = false;
   loadingCSharp = false;
@@ -128,6 +129,19 @@ export class SettingsComponent implements OnInit {
   clearCache() {
     this.dashboardApiService.clearCache().subscribe(cacheEntries => {
       this.cacheEntriesData = cacheEntries;
+    }, error => {
+      console.error(error);
+    });
+  }
+
+  getSingleCacheItem(cacheEntry: CacheEntry) {
+    this.dashboardApiService.getSingleCacheItem(cacheEntry.CachedItemKey).subscribe(cacheItem => {
+      this.cacheResult = cacheItem;
+      //Format the data
+      if(this.cacheResult.CacheItemJson){
+        let parsed = JSON.parse(this.cacheResult.CacheItemJson);
+        this.cacheResult.CacheItemJson = JSON.stringify(parsed, null, 2);
+      }
     }, error => {
       console.error(error);
     });

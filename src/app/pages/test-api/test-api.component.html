@@ -97,6 +97,10 @@
 
               </nb-card-body>
             </nb-card>
+            <div *ngIf="selectedRoute.Method === 'GET' && routeHasParams(selectedRoute)">
+              <label for="PathTemplate">Query String</label>
+              <input id="PathTemplate" nbInput fullWidth autofocus type="text" [(ngModel)]="selectedRoute.PathTemplate" class="form-control" placeholder="Query String">
+            </div>
             <ace *ngIf="selectedRoute.Method !== 'GET'" [mode]="'json'" [theme]="'monokai'" [(value)]="requestJson" style="height: 650px; width:100%; overflow: scroll;"></ace>
           </nb-card-body>
         </nb-card>
