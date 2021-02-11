@@ -427,10 +427,24 @@
 
   <!-- FLIGHT DETAILS RESPONSE -->
   <div *ngIf="jupiterFlightDetailRs && jupiterFlightDetailRs.Response && jupiterFlightDetailRs.Response.Pnr">
-    <div class="row m-1">
-      <div class="col-md-12 text-center">
-        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(false)"><i class="fas fa-passport"></i> Book Flights NOPNR</button>
-        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(true)"><i class="fas fa-passport"></i> Book Flights AND CLOSE PNR</button>
+    <div class="row m-1" style="position: absolute; right: 30px">
+      <div class="col-md-6 mt-0">
+        <div>
+          <nb-checkbox fullWidth name="bookParamClosePNR" [(ngModel)]="bookParamClosePNR">Close PNR</nb-checkbox>
+        </div>
+        <div>
+          <nb-checkbox fullWidth name="bookParamSendCC" [(ngModel)]="bookParamSendCC">Send CC</nb-checkbox>
+        </div>
+        <div>
+          <nb-checkbox fullWidth name="bookParamSendDOC" [(ngModel)]="bookParamSendDOC">Send DOC</nb-checkbox>
+        </div>
+      </div>
+      <div class="col-md-6 text-center mt-3">
+        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook()"><i class="fas fa-passport"></i> Book Flights</button>
+<!--        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(false, false)"><i class="fas fa-passport"></i> Book NOPNR No CC</button>-->
+<!--        <button class="btn btn-sm btn-primary center m-1" (click)="flightBook(false, true)"><i class="fas fa-passport"></i> Book NOPNR With CC</button>-->
+<!--        <button class="btn btn-sm btn-secondary center m-1" (click)="flightBook(true, false)"><i class="fas fa-passport"></i> Book AND CLOSE PNR No CC</button>-->
+<!--        <button class="btn btn-sm btn-secondary center m-1" (click)="flightBook(true, true)"><i class="fas fa-passport"></i> Book AND CLOSE PNR With CC</button>-->
       </div>
     </div>
     <jupiter-flight-pnr-display [title]="'Flight Details'" [currentPnr]="jupiterFlightDetailRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
