@@ -62,7 +62,7 @@ export class DashboardApiService {
     return new Observable(obs => {
       let usersClient = new UsersClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
-      usersClient.getUser(user.Id).then(result => {
+      usersClient.createJupiterApiToken(user.Id).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);
