@@ -35,6 +35,7 @@ import { AppPreferenciesComponent } from './pages/app-preferencies/app-preferenc
 import { LayoutEmptyComponent } from './layout/layout-empty/layout-empty.component';
 import {RefreshTokenComponent} from "./pages/auth/refresh-token/refresh-token.component";
 import {FlightQueueListComponent} from "./pages/test-api/flight/flight-queue-list/flight-queue-list.component";
+import { CarAvailComponent } from './pages/test-api/car/car-avail/car-avail.component';
 
 const routes: Routes = [
   // { path: 'pages', component: LayoutComponent},
@@ -122,6 +123,10 @@ const routes: Routes = [
       {
         path: 'train-avail',
         component: TrainAvailComponent,
+      },
+      {
+        path: 'car-avail',
+        component: CarAvailComponent,
       },
       {
         path: 'not-found',

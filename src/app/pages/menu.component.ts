@@ -143,6 +143,35 @@ export class MenuComponent {
         );
       }
 
+      if (this.appConfigService.isAnyCarConnectorEnabled()) {
+        this.menu.push({
+          title: 'Cars',
+          icon: 'fa-car',
+          children: [
+            {
+              title: 'Cars Avail',
+              icon: 'fa-car',
+              link: '/car-avail',
+            },
+            // {
+            //   title: 'Car Book',
+            //   icon: 'fa-clipboard-check',
+            //   link: '/hotel-book',
+            // },
+            // {
+            //   title: 'Car Book Detail',
+            //   icon: 'fa-id-card',
+            //   link: '/hotel-book-detail',
+            // },
+            // {
+            //   title: 'Car Book Cancel',
+            //   icon: 'fa-trash',
+            //   link: '/hotel-book-detail',
+            // },
+          ],
+        });
+      }
+
       if (this.appConfigService.isAnyCrypticConnectorEnabled()) {
         this.menu.push(
           {

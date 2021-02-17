@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
   BaseRQ,
   BaseRS,
@@ -21,14 +21,14 @@ import {
 // import * as JupiterApi from '../../../../../services/jupiter-api/jupiter-api-client';
 
 import Utils from '../../../../../utility/utils';
-import {AppConfigService} from '../../../../../services/app-config/app-config.service';
-import {UserService} from '../../../../../services/user/user.service';
-import {JupiterApiService} from '../../../../../services/jupiter-api/jupiter-api.service';
-import {DashboardApiService} from '../../../../../services/dashboard-api/dashboard-api.service';
+import { AppConfigService } from '../../../../../services/app-config/app-config.service';
+import { UserService } from '../../../../../services/user/user.service';
+import { JupiterApiService } from '../../../../../services/jupiter-api/jupiter-api.service';
+import { DashboardApiService } from '../../../../../services/dashboard-api/dashboard-api.service';
 import * as moment from 'moment';
-import {DialogApiErrorComponent} from '../dialog-api-error/dialog-api-error.component';
-import {NbDialogService} from '@nebular/theme';
-import {SampleRequest} from "../../../../../services/dashboard-api/dashboard-api-client";
+import { DialogApiErrorComponent } from '../dialog-api-error/dialog-api-error.component';
+import { NbDialogService } from '@nebular/theme';
+import { SampleRequest } from "../../../../../services/dashboard-api/dashboard-api-client";
 
 @Component({
   selector: 'jupiter-api-debug-accordion',
@@ -152,6 +152,20 @@ export class ApiDebugAccordionComponent implements OnInit {
             start: fromDate4,
             end: toDate4
           };
+          break;
+        case 'JupiterCarAvailabilityRQ':
+          let departureDate = moment(parsedRq.Request.CarRequest.DepartureDate);
+          let depHour = departureDate.hours();
+          let depMinute = departureDate.minutes();
+          let arrivalDate = moment(parsedRq.Request.CarRequest.ArrivalDate);
+          let arrHour = arrivalDate.hours();
+          let arrMinute = arrivalDate.minutes();
+
+          parsedRq.Request.CarRequest['_DepartureDateMoment'] = departureDate;
+          parsedRq.Request.CarRequest['_DepartureTimeMoment'] = (depHour < 10 ? '0' + depHour : depHour) + ':' + (depMinute < 10 ? '0' + depMinute : depMinute);
+          parsedRq.Request.CarRequest['_ArrivalDateMoment'] = arrivalDate;
+          parsedRq.Request.CarRequest['_ArrivalTimeMoment'] = (arrHour < 10 ? '0' + arrHour : arrHour) + ':' + (arrMinute < 10 ? '0' + arrMinute : arrMinute);
+          
           break;
       }
 

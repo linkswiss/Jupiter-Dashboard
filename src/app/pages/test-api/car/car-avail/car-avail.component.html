@@ -1,0 +1,306 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Car Avail RQ
+      <jupiter-api-response-status *ngIf="jupiterCarAvailabilityRs" [status]="jupiterCarAvailabilityRs.Status">
+      </jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form *ngIf="jupiterCarAvailabilityRq.Request">
+
+        <!-- MAIN INPUT -->
+        <div>
+          <div class="row">
+            <div class="form-group col-sm-4">
+              <label for="connectors" class="label">Search Connectors</label>
+              <nb-select #selectConnectors fullWidth id="connectors" placeholder="Search Connectors" [multiple]="true"
+                [outline]="true" (selectedChange)="searchConnectorsChanged($event);selectConnectors.hide();"
+                [(selected)]="jupiterCarAvailabilityRq.Request.ConnectorsSearchOnly">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+              <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterCarAvailabilityRq.ConnectorsEnvironment"
+                [FilterConnectors]="jupiterCarAvailabilityRq.Request.ConnectorsSearchOnly">
+              </jupiter-connectors-environment>
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="debugConnectors" class="label">Debug Connectors</label>
+              <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors"
+                [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();"
+                [(selected)]="jupiterCarAvailabilityRq.Request.ConnectorsDebug">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+            <div class="form-group col-sm-4">
+              <nb-checkbox fullWidth name="ForceNotCachedResponse"
+                [(ngModel)]="jupiterCarAvailabilityRq.ForceNotCachedResponse">Force Not Cached Response</nb-checkbox>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-sm-4">
+              <label for="PreferredCurrency" class="label">Preferred Currency</label>
+              <input nbInput fullWidth id="PreferredCurrency" name="PreferredCurrency" placeholder="Preferred Currency"
+                [(ngModel)]="jupiterCarAvailabilityRq.Request.PreferredCurrency">
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="DriverAge" class="label">Driver Age</label>
+              <input nbInput fullWidth id="DriverAge" name="DriverAge" placeholder="Driver Age"
+                [(ngModel)]="jupiterCarAvailabilityRq.Request.DriverAge">
+            </div>
+          </div>
+        </div>
+        <!-- END MAIN INPUT -->
+
+        <!-- INPUT CUSTOM DATA -->
+        <div
+          *ngIf="jupiterCarAvailabilityRq.Request.ConnectorCustomData && jupiterCarAvailabilityRq.Request.ConnectorCustomData.length > 0">
+          <nb-accordion class="shadow-none border-box">
+            <nb-accordion-item
+              *ngFor="let connectorCustomData of jupiterCarAvailabilityRq.Request.ConnectorCustomData; let customDataIndex = index;"
+              [expanded]="true">
+              <nb-accordion-item-header>
+                <span class="badge badge-pill badge-primary">{{connectorCustomData['_discriminator']}}</span><span
+                  class="ml-1">Custom Data</span>
+                <div class="ml-1">
+                  <button nbButton size="tiny" status="danger" (click)="deleteCustomData(customDataIndex)"
+                    ngbTooltip="Delete Custom Data" placement="top" container="body"><i
+                      class="fas fa-trash"></i></button>
+                </div>
+              </nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <jupiter-custom-data-inputs
+                  [(CustomData)]="jupiterCarAvailabilityRq.Request.ConnectorCustomData[customDataIndex]">
+                </jupiter-custom-data-inputs>
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+          </nb-accordion>
+        </div>
+        <!-- END INPUT CUSTOM DATA -->
+
+        <!-- CAR REQUEST -->
+        <div *ngIf="jupiterCarAvailabilityRq.Request.CarRequest">
+          <h6>Car Request</h6>
+          <div class="border-box">
+            <div class="row m-1">
+              <div class="form-group col-sm-4">
+                <label class="label">Departure Date</label>
+                <input nbInput id="DepartureDate" name="DepartureDate" fullWidth [nbDatepicker]="departureDate"
+                  [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest['_DepartureDateMoment']">
+                <nb-datepicker #departureDate format="DD/MM/YYYY" (dateChange)="handleDepartureDate($event)"></nb-datepicker>
+              </div>
+              <div class="form-group col-sm-4">
+                <label class="label">Departure Time (hh:mm)</label>
+                <input nbInput fullWidth id="DepartureTime" name="DepartureTime" placeholder="Departure Time" (change)="handleDepartureTime($event)"
+                  class="iata-input" [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest['_DepartureTimeMoment']">
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="DepartureLocation" class="label">Departure Location</label>
+                <input nbInput fullWidth id="DepartureLocation" name="DepartureLocation" placeholder="Departure IATA"
+                  class="iata-input" [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest.DepartureLocation">
+              </div>
+            </div>
+            <div class="row m-1">
+              <div class="form-group col-sm-4">
+                <label class="label">Arrival Date</label>
+                <input nbInput id="ArrivalDate" name="ArrivalDate" fullWidth [nbDatepicker]="arrivalDate"
+                  [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest['_ArrivalDateMoment']">
+                <nb-datepicker #arrivalDate format="DD/MM/YYYY" (dateChange)="handleArrivalDate($event)"></nb-datepicker>
+              </div>
+              <div class="form-group col-sm-4">
+                <label class="label">Arrival Time (hh:mm)</label>
+                <input nbInput fullWidth id="ArrivalTime" name="ArrivalTime" placeholder="Arrival Time" (change)="handleArrivalTime($event)"
+                  class="iata-input" [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest['_ArrivalTimeMoment']">
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="ArrivalLocation" class="label">Arrival Location</label>
+                <input nbInput fullWidth id="ArrivalLocation" name="ArrivalLocation" placeholder="Arrival IATA"
+                  class="iata-input" [(ngModel)]="jupiterCarAvailabilityRq.Request.CarRequest.ArrivalLocation">
+              </div>
+            </div>
+
+            <!-- CAR REQUEST CUSTOM DATA -->
+            <div>Car Request Custom Data</div>
+            <hr>
+            <div class="row">
+              <div class="form-group col-sm-6">
+                <label for="carConnectors" class="label">Car Request Custom Data</label>
+                <nb-select #selectCarConnectors fullWidth id="carConnectors" placeholder="Connectors" [multiple]="true"
+                  [outline]="true" (selectedChange)="carRequestConnectorsChanged($event);selectCarConnectors.hide();">
+                  <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+                </nb-select>
+              </div>
+
+              <div class="col-sm-6">
+                <div
+                  *ngIf="jupiterCarAvailabilityRq.Request.CarRequest.ConnectorCustomData && jupiterCarAvailabilityRq.Request.CarRequest.ConnectorCustomData.length > 0">
+                  <nb-accordion class="shadow-none border-box">
+                    <nb-accordion-item
+                      *ngFor="let carConnectorCustomData of jupiterCarAvailabilityRq.Request.CarRequest.ConnectorCustomData; let carCustomDataIndex = index;"
+                      [expanded]="true">
+                      <nb-accordion-item-header>
+                        <span
+                          class="badge badge-pill badge-primary">{{carConnectorCustomData['_discriminator']}}</span><span
+                          class="ml-1">Custom Data</span>
+                        <div class="ml-1">
+                          <button nbButton size="tiny" status="danger" (click)="deleteCarCustomData(carCustomDataIndex)"
+                            ngbTooltip="Delete Custom Data" placement="top" container="body"><i
+                              class="fas fa-trash"></i></button>
+                        </div>
+                      </nb-accordion-item-header>
+                      <nb-accordion-item-body>
+                        <jupiter-custom-data-inputs
+                          [(CustomData)]="jupiterCarAvailabilityRq.Request.CarRequest.ConnectorCustomData[carCustomDataIndex]">
+                        </jupiter-custom-data-inputs>
+                      </nb-accordion-item-body>
+                    </nb-accordion-item>
+                  </nb-accordion>
+                </div>
+              </div>
+
+
+            </div>
+            <!-- END CAR REQUEST CUSTOM DATA -->
+          </div>
+        </div>
+        <!-- END CAR REQUEST -->
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="searchCarAvailability()"><i
+              class="fas fa-exchange-alt"></i>&nbsp;Search</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+
+<jupiter-api-messages-accordion Title="Car Avail" [ApiRs]="jupiterCarAvailabilityRs"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Car Avail" [(ApiRq)]="jupiterCarAvailabilityRq" [ApiRs]="jupiterCarAvailabilityRs">
+</jupiter-api-debug-accordion>
+
+<div class="mt-4"
+  *ngIf="jupiterCarAvailabilityRs && jupiterCarAvailabilityRs.Response && jupiterCarAvailabilityRs.Response.CarResults">
+  <div class="row">
+    <div class="col-md-12">
+      <nb-card>
+        <nb-card-body>
+          <nb-checkbox class="float-right" [(ngModel)]="showPricePerDay">Show price per day</nb-checkbox>
+          <h6>Results: {{jupiterCarAvailabilityRs.Response.CarResults.length}} Cars</h6>
+        </nb-card-body>
+      </nb-card>
+
+      <div *ngFor="let carResult of jupiterCarAvailabilityRs.Response.CarResults; let carIndex = index;">
+        <nb-card>
+          <nb-card-header>
+            {{carResult.CarSegment.Car.Name}} <span class="pt-1 pl-1 cursor-pointer"
+              (click)="carResult['_Debug'] = !carResult['_Debug'];"><i
+                class="fas fa-bug font-size-small text-black-50"></i></span>
+
+            <div *ngIf="carResult.FareList && carResult.FareList[0].Amount" class="float-right">
+              <span class="mr-1 text-secondary">from</span>
+              <span class="mr-1 font-weight-bold h5" *ngIf="showPricePerDay">{{(carResult.FareList[0].Amount.Amount /
+                daysCount | number)}}/day</span>
+              <span class="mr-1 font-weight-bold h5" *ngIf="!showPricePerDay">{{carResult.FareList[0].Amount.Amount |
+                number}}</span>
+              <span>{{carResult.FareList[0].Amount.Currency}}</span>
+            </div>
+
+          </nb-card-header>
+          <nb-card-body>
+
+            <!-- CAR DETAILS -->
+            <jupiter-car-segment-result [carSegment]="carResult.CarSegment" [openDetails]="false"
+              [debug]="carResult['_Debug']"></jupiter-car-segment-result>
+
+            <!-- FARE LIST -->
+            <nb-accordion multi class="shadow-none border-box p-0">
+              <nb-accordion-item>
+                <nb-accordion-item-header><div>Fare List: {{carResult.FareList.length}}</div></nb-accordion-item-header>
+                <nb-accordion-item-body>
+                  <div *ngFor="let fare of carResult.FareList" class="border-box">
+                    <div class="row">
+                      <div class="col-sm-8">
+                        <div class="font-weight-bold">{{fare.FareDetail?.FareName}} <span class="pt-1 pl-1 cursor-pointer"
+                          (click)="fare['_Debug'] = !fare['_Debug'];"><i class="fas fa-bug font-size-small text-black-50"></i></span></div>
+                        <div *ngIf="carResult.CarSegment?.DepartureDate || carResult.CarSegment?.ArrivalDate"
+                          class="border-box">
+                          <div>Reservation From Date: {{carResult.CarSegment?.DepartureDate | amDateFormat:'DD/MM/YYYY
+                            hh:mm'}}
+                          </div>
+                          <div>Reservation To Date: {{carResult.CarSegment?.ArrivalDate | amDateFormat: 'DD/MM/YYYY hh:mm'}}
+                          </div>
+                        </div>
+      
+                        <div>Fare Id: {{fare.Id}}</div>
+                        <div>Solution Code: <span class="badge badge-pill badge-success">{{fare.SolutionCode}}</span></div>
+                        <div>Payment Type: {{fare.FareDetail?.PaymentType}}</div>
+      
+                        <!-- FARE DISTANCE ALLOWANCE-->
+                        <div class="mt-1">Distance Allowance Terms:
+                          <span *ngIf="fare.FareDetail && fare.FareDetail.DistanceAllowance">
+                            <span *ngIf="fare.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-success">Unlimited</span>
+                            <span *ngIf="!fare.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-warning">Limited</span>
+                            <span *ngIf="!fare.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="pt-1 pl-1 cursor-pointer">
+                              <i class="fas fa-info-circle info-icon"></i> Extra Amount:
+                              {{fare.FareDetail.DistanceAllowance.ExtraDistanceAmount?.Currency}}
+                              {{fare.FareDetail.DistanceAllowance.ExtraDistanceAmount?.Amount | number}} |
+                              Unit: {{fare.FareDetail.DistanceAllowance.Unit}}
+                            </span>
+                          </span>
+                        </div>
+
+                        <hr>
+                        <div>Equipments: 
+                          <div *ngFor="let equip of fare.FareDetail?.Equipments">
+                            <span class="badge badge-info text-white p-2 m-1" ngbTooltip="{{equip.Name}}" placement="left" container="body" >{{equip.Code}}</span>
+                            <span>Amount : {{equip.Amount?.Currency}} {{equip.Amount?.Amount | number}}</span>
+                          </div>
+                        </div>
+                        
+                      </div>
+                      <!--FARE AMOUNT-->
+                      <div class="col-sm-4 text-right">
+                        <span class="mr-1 font-weight-bold h6" *ngIf="showPricePerDay">{{(fare.Amount.Amount/daysCount | number)}}/day</span>
+                        <span class="mr-1 font-weight-bold h6" *ngIf="!showPricePerDay">{{fare.Amount.Amount | number}}</span>
+                        <span>{{fare.Amount.Currency}}</span>
+                        <div class="mt-1">Taxes
+                          <div *ngIf="fare.Amount.Taxes && rate.Amount.Taxes.TaxList">
+                            <div *ngFor="let tax of fare.Amount.Taxes.TaxList">
+                              <span class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{tax.Description}}" placement="left"
+                                container="body"> <i class="fas fa-info-circle info-icon"></i> {{tax.Code}} - {{tax.Currency}} {{tax.Amount | number}}</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <!-- Rate Debug & Custom Data -->
+                    <nb-accordion multi class="shadow-none border-box p-0">
+                      <nb-accordion-item *ngIf="fare.ConnectorCustomData">
+                        <nb-accordion-item-header>Custom Data</nb-accordion-item-header>
+                        <nb-accordion-item-body>
+                          <pre class="border-box bg-light">{{fare.ConnectorCustomData | json}}</pre>
+                        </nb-accordion-item-body>
+                      </nb-accordion-item>
+                      <nb-accordion-item *ngIf="fare['_Debug']">
+                        <nb-accordion-item-header>Fare Debug Json</nb-accordion-item-header>
+                        <nb-accordion-item-body>
+                          <ace [mode]="'json'" [theme]="'monokai'" [value]="fare | json" style="height: 650px; width:100%; overflow: scroll;"></ace>
+                        </nb-accordion-item-body>
+                      </nb-accordion-item>
+                    </nb-accordion>
+      
+                  </div>
+                </nb-accordion-item-body>
+              </nb-accordion-item>
+            </nb-accordion>
+
+          </nb-card-body>
+        </nb-card>
+      </div>
+
+    </div>
+  </div>
+</div>

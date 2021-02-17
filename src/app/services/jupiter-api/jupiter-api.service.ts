@@ -50,6 +50,9 @@ import {
   JupiterFlightQueuePlacePnrRS,
   JupiterFlightQueueRemovePnrRQ,
   JupiterFlightQueueRemovePnrRS,
+  JupiterCarAvailabilityRQ,
+  JupiterCarAvailabilityRS,
+  CarClient,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -479,4 +482,18 @@ export class JupiterApiService {
       //   });
     });
   }
+
+  carAvailability(jupiterCarAvailabilityRq: JupiterCarAvailabilityRQ): Observable<JupiterCarAvailabilityRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.avail(jupiterCarAvailabilityRq).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
 }
