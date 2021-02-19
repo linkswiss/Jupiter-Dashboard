@@ -158,16 +158,11 @@ export class MenuComponent {
             //   icon: 'fa-clipboard-check',
             //   link: '/hotel-book',
             // },
-            // {
-            //   title: 'Car Book Detail',
-            //   icon: 'fa-id-card',
-            //   link: '/hotel-book-detail',
-            // },
-            // {
-            //   title: 'Car Book Cancel',
-            //   icon: 'fa-trash',
-            //   link: '/hotel-book-detail',
-            // },
+            {
+              title: 'Car Book Detail',
+              icon: 'fa-id-card',
+              link: '/car-book-detail',
+            },
           ],
         });
       }

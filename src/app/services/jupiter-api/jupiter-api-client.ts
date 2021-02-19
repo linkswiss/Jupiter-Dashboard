@@ -8214,11 +8214,6 @@ export abstract class AvailabilityInputCustomData implements IAvailabilityInputC
             result.init(data);
             return result;
         }
-        if (data["CustomDataConnectorCode"] === "ARABIAN") {
-            let result = new ArabianHotelAvailabilityInputCustomData();
-            result.init(data);
-            return result;
-        }
         throw new Error("The abstract class 'AvailabilityInputCustomData' cannot be instantiated.");
     }
 
@@ -9742,34 +9737,6 @@ For all products in that city leave it blank. */
             If it is not specified, the default country for the API will be used (US)
              */
     Nationality?: string | undefined;
-}
-
-export class ArabianHotelAvailabilityInputCustomData extends AvailabilityInputCustomData implements IArabianHotelAvailabilityInputCustomData {
-
-    constructor(data?: IArabianHotelAvailabilityInputCustomData) {
-        super(data);
-        this._discriminator = "ARABIAN";
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-    }
-
-    static fromJS(data: any): ArabianHotelAvailabilityInputCustomData {
-        data = typeof data === 'object' ? data : {};
-        let result = new ArabianHotelAvailabilityInputCustomData();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IArabianHotelAvailabilityInputCustomData extends IAvailabilityInputCustomData {
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelAvailabilityInput implements ICustomerCustomDataOfJupiterHotelAvailabilityInput {
@@ -16303,6 +16270,11 @@ export abstract class HotelBookInputCustomData implements IHotelBookInputCustomD
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "AMERICA_4_YOU") {
+            let result = new America4YouHotelBookInputCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'HotelBookInputCustomData' cannot be instantiated.");
     }
 
@@ -17739,6 +17711,40 @@ export interface ITeamAmericaHotelBookInputCustomData extends IHotelBookInputCus
     AgentEmail?: string | undefined;
     /** Language to be used for the booking. */
     Language?: string | undefined;
+}
+
+export class America4YouHotelBookInputCustomData extends HotelBookInputCustomData implements IAmerica4YouHotelBookInputCustomData {
+    BookingCode?: string | undefined;
+
+    constructor(data?: IAmerica4YouHotelBookInputCustomData) {
+        super(data);
+        this._discriminator = "AMERICA_4_YOU";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.BookingCode = _data["BookingCode"];
+        }
+    }
+
+    static fromJS(data: any): America4YouHotelBookInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new America4YouHotelBookInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["BookingCode"] = this.BookingCode;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IAmerica4YouHotelBookInputCustomData extends IHotelBookInputCustomData {
+    BookingCode?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelBookInput implements ICustomerCustomDataOfJupiterHotelBookInput {
@@ -27739,11 +27745,6 @@ export abstract class ActivityBookOutputCustomData implements IActivityBookOutpu
             result.init(data);
             return result;
         }
-        if (data["CustomDataConnectorCode"] === "AMERICA_4_YOU") {
-            let result = new America4YouActivityBookOutputCustomData();
-            result.init(data);
-            return result;
-        }
         throw new Error("The abstract class 'ActivityBookOutputCustomData' cannot be instantiated.");
     }
 
@@ -27783,94 +27784,6 @@ export class HotelbedsActivityBookOutputCustomData extends ActivityBookOutputCus
 }
 
 export interface IHotelbedsActivityBookOutputCustomData extends IActivityBookOutputCustomData {
-}
-
-export class America4YouActivityBookOutputCustomData extends ActivityBookOutputCustomData implements IAmerica4YouActivityBookOutputCustomData {
-    /** It contains the code and status of each activity booked. */
-    ActivitiesInfo?: America4YouActivityBooked[] | undefined;
-
-    constructor(data?: IAmerica4YouActivityBookOutputCustomData) {
-        super(data);
-        this._discriminator = "AMERICA_4_YOU";
-    }
-
-    init(_data?: any) {
-        super.init(_data);
-        if (_data) {
-            if (Array.isArray(_data["ActivitiesInfo"])) {
-                this.ActivitiesInfo = [] as any;
-                for (let item of _data["ActivitiesInfo"])
-                    this.ActivitiesInfo!.push(America4YouActivityBooked.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): America4YouActivityBookOutputCustomData {
-        data = typeof data === 'object' ? data : {};
-        let result = new America4YouActivityBookOutputCustomData();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.ActivitiesInfo)) {
-            data["ActivitiesInfo"] = [];
-            for (let item of this.ActivitiesInfo)
-                data["ActivitiesInfo"].push(item.toJSON());
-        }
-        super.toJSON(data);
-        return data; 
-    }
-}
-
-export interface IAmerica4YouActivityBookOutputCustomData extends IActivityBookOutputCustomData {
-    /** It contains the code and status of each activity booked. */
-    ActivitiesInfo?: America4YouActivityBooked[] | undefined;
-}
-
-export class America4YouActivityBooked implements IAmerica4YouActivityBooked {
-    /** The activity booking code returned. */
-    BookingCode?: string | undefined;
-    /** The activity booking status. */
-    BookingStatus?: EBookingStatus;
-
-    constructor(data?: IAmerica4YouActivityBooked) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.BookingCode = _data["BookingCode"];
-            this.BookingStatus = _data["BookingStatus"];
-        }
-    }
-
-    static fromJS(data: any): America4YouActivityBooked {
-        data = typeof data === 'object' ? data : {};
-        let result = new America4YouActivityBooked();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["BookingCode"] = this.BookingCode;
-        data["BookingStatus"] = this.BookingStatus;
-        return data; 
-    }
-}
-
-export interface IAmerica4YouActivityBooked {
-    /** The activity booking code returned. */
-    BookingCode?: string | undefined;
-    /** The activity booking status. */
-    BookingStatus?: EBookingStatus;
 }
 
 export abstract class CustomerCustomDataOfJupiterActivityBookOutput implements ICustomerCustomDataOfJupiterActivityBookOutput {
@@ -28560,6 +28473,11 @@ export abstract class ActivityBookInputCustomData implements IActivityBookInputC
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "AMERICA_4_YOU") {
+            let result = new America4YouActivityBookInputCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'ActivityBookInputCustomData' cannot be instantiated.");
     }
 
@@ -28712,6 +28630,40 @@ export class TekuraActivityBookInputCustomData extends ActivityBookInputCustomDa
 }
 
 export interface ITekuraActivityBookInputCustomData extends IActivityBookInputCustomData {
+    BookingCode?: string | undefined;
+}
+
+export class America4YouActivityBookInputCustomData extends ActivityBookInputCustomData implements IAmerica4YouActivityBookInputCustomData {
+    BookingCode?: string | undefined;
+
+    constructor(data?: IAmerica4YouActivityBookInputCustomData) {
+        super(data);
+        this._discriminator = "AMERICA_4_YOU";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.BookingCode = _data["BookingCode"];
+        }
+    }
+
+    static fromJS(data: any): America4YouActivityBookInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new America4YouActivityBookInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["BookingCode"] = this.BookingCode;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IAmerica4YouActivityBookInputCustomData extends IActivityBookInputCustomData {
     BookingCode?: string | undefined;
 }
 
@@ -30822,6 +30774,8 @@ export interface ICarSegmentResultCustomData {
 export class HertzCarSegmentResultCustomData extends CarSegmentResultCustomData implements IHertzCarSegmentResultCustomData {
     /** Car Group. */
     CarGroup?: string | undefined;
+    /** Car Vendor. */
+    Vendor?: EVendorType;
 
     constructor(data?: IHertzCarSegmentResultCustomData) {
         super(data);
@@ -30832,6 +30786,7 @@ export class HertzCarSegmentResultCustomData extends CarSegmentResultCustomData 
         super.init(_data);
         if (_data) {
             this.CarGroup = _data["CarGroup"];
+            this.Vendor = _data["Vendor"];
         }
     }
 
@@ -30845,6 +30800,7 @@ export class HertzCarSegmentResultCustomData extends CarSegmentResultCustomData 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["CarGroup"] = this.CarGroup;
+        data["Vendor"] = this.Vendor;
         super.toJSON(data);
         return data; 
     }
@@ -30853,6 +30809,16 @@ export class HertzCarSegmentResultCustomData extends CarSegmentResultCustomData 
 export interface IHertzCarSegmentResultCustomData extends ICarSegmentResultCustomData {
     /** Car Group. */
     CarGroup?: string | undefined;
+    /** Car Vendor. */
+    Vendor?: EVendorType;
+}
+
+export enum EVendorType {
+    HERTZ = "HERTZ",
+    DOLLAR = "DOLLAR",
+    FIREFLY = "FIREFLY",
+    THRIFTY = "THRIFTY",
+    ACE = "ACE",
 }
 
 export abstract class CustomerCustomDataOfCarSegmentResult implements ICustomerCustomDataOfCarSegmentResult {
@@ -31154,6 +31120,8 @@ export class CarSegmentFare implements ICarSegmentFare {
     SolutionCode?: string | undefined;
     /** Fare Amount and Taxes */
     Amount?: Total | undefined;
+    /** Drop Off Amount */
+    DropOffAmount?: Total | undefined;
     /** Fare Detail Information */
     FareDetail?: CarFareDetail | undefined;
 
@@ -31171,6 +31139,7 @@ export class CarSegmentFare implements ICarSegmentFare {
             this.Id = _data["Id"];
             this.SolutionCode = _data["SolutionCode"];
             this.Amount = _data["Amount"] ? Total.fromJS(_data["Amount"]) : <any>undefined;
+            this.DropOffAmount = _data["DropOffAmount"] ? Total.fromJS(_data["DropOffAmount"]) : <any>undefined;
             this.FareDetail = _data["FareDetail"] ? CarFareDetail.fromJS(_data["FareDetail"]) : <any>undefined;
         }
     }
@@ -31187,6 +31156,7 @@ export class CarSegmentFare implements ICarSegmentFare {
         data["Id"] = this.Id;
         data["SolutionCode"] = this.SolutionCode;
         data["Amount"] = this.Amount ? this.Amount.toJSON() : <any>undefined;
+        data["DropOffAmount"] = this.DropOffAmount ? this.DropOffAmount.toJSON() : <any>undefined;
         data["FareDetail"] = this.FareDetail ? this.FareDetail.toJSON() : <any>undefined;
         return data; 
     }
@@ -31199,6 +31169,8 @@ export interface ICarSegmentFare {
     SolutionCode?: string | undefined;
     /** Fare Amount and Taxes */
     Amount?: Total | undefined;
+    /** Drop Off Amount */
+    DropOffAmount?: Total | undefined;
     /** Fare Detail Information */
     FareDetail?: CarFareDetail | undefined;
 }
@@ -32061,14 +32033,6 @@ export interface IHertzCarAvailabilityInputCustomData extends ICarAvailabilityIn
 The allowed companies have been indicated by Global GSA according to the deals.
 Searching with different settings than the one given may produce wrong or not valid results. */
     Vendors: EVendorType[];
-}
-
-export enum EVendorType {
-    ZE = "ZE",
-    ZR = "ZR",
-    FF = "FF",
-    ZT = "ZT",
-    AC = "AC",
 }
 
 export abstract class CustomerCustomDataOfJupiterCarAvailabilityInput implements ICustomerCustomDataOfJupiterCarAvailabilityInput {
@@ -33131,6 +33095,8 @@ export interface ICarBookResultCustomData {
 export class HertzCarBookResultCustomData extends CarBookResultCustomData implements IHertzCarBookResultCustomData {
     /** Car Group. */
     CarGroup?: string | undefined;
+    /** Car Vendor. */
+    Vendor?: EVendorType;
 
     constructor(data?: IHertzCarBookResultCustomData) {
         super(data);
@@ -33141,6 +33107,7 @@ export class HertzCarBookResultCustomData extends CarBookResultCustomData implem
         super.init(_data);
         if (_data) {
             this.CarGroup = _data["CarGroup"];
+            this.Vendor = _data["Vendor"];
         }
     }
 
@@ -33154,6 +33121,7 @@ export class HertzCarBookResultCustomData extends CarBookResultCustomData implem
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["CarGroup"] = this.CarGroup;
+        data["Vendor"] = this.Vendor;
         super.toJSON(data);
         return data; 
     }
@@ -33162,6 +33130,8 @@ export class HertzCarBookResultCustomData extends CarBookResultCustomData implem
 export interface IHertzCarBookResultCustomData extends ICarBookResultCustomData {
     /** Car Group. */
     CarGroup?: string | undefined;
+    /** Car Vendor. */
+    Vendor?: EVendorType;
 }
 
 export abstract class CustomerCustomDataOfCarBookResult implements ICustomerCustomDataOfCarBookResult {

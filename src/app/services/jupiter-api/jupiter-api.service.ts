@@ -53,6 +53,10 @@ import {
   JupiterCarAvailabilityRQ,
   JupiterCarAvailabilityRS,
   CarClient,
+  JupiterCarBookDetailRQ,
+  JupiterCarBookDetailRS,
+  JupiterCarBookCancelRQ,
+  JupiterCarBookCancelRS,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -496,4 +500,29 @@ export class JupiterApiService {
     });
   }
 
+  carBookDetails(jupiterCarBookDetailRQ: JupiterCarBookDetailRQ): Observable<JupiterCarBookDetailRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.bookDetail(jupiterCarBookDetailRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  carBookCancel(jupiterCarBookCancelRQ: JupiterCarBookCancelRQ): Observable<JupiterCarBookCancelRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.bookCancel(jupiterCarBookCancelRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
 }

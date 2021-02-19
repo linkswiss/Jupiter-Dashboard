@@ -251,14 +251,21 @@
                           </span>
                         </div>
 
-                        <hr>
+                        <!-- FARE DROPOFF AMOUNT-->
+                        <div class="mt-1">Drop Off Amount:
+                          <span *ngIf="fare.DropOffAmount">
+                            <span class="badge badge-pill badge-warning">Total: {{fare.DropOffAmount?.Currency}} {{fare.DropOffAmount?.Amount | number}}</span>
+                            <span class="badge badge-pill badge-warning">Net: {{fare.DropOffAmount?.Currency}} {{fare.DropOffAmount?.AmountWithoutTax | number}}</span>
+                          </span>
+                        </div>
+                                                
                         <div>Equipments: 
                           <div *ngFor="let equip of fare.FareDetail?.Equipments">
                             <span class="badge badge-info text-white p-2 m-1" ngbTooltip="{{equip.Name}}" placement="left" container="body" >{{equip.Code}}</span>
                             <span>Amount : {{equip.Amount?.Currency}} {{equip.Amount?.Amount | number}}</span>
                           </div>
                         </div>
-                        
+                        <hr>
                       </div>
                       <!--FARE AMOUNT-->
                       <div class="col-sm-4 text-right">

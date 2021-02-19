@@ -99,7 +99,7 @@ export class CarAvailComponent implements OnInit {
               return c['_discriminator'] === EH2HConnectorCode.HERTZ;
             })) {
               this.jupiterCarAvailabilityRq.Request.ConnectorCustomData.push(new HertzCarAvailabilityInputCustomData({
-                Vendors: [EVendorType.ZE, EVendorType.ZR]
+                Vendors: [EVendorType.HERTZ, EVendorType.DOLLAR]
               }));
             }
             break;
