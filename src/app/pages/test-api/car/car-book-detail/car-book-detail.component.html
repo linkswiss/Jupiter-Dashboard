@@ -1,0 +1,243 @@
+<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
+  <nb-accordion-item #accordionItemBookDetailRq expanded="true">
+    <nb-accordion-item-header class="font-weight-bold">Car Book Detail RQ
+      <jupiter-api-response-status *ngIf="jupiterCarBookDetailRs" [status]="jupiterCarBookDetailRs.Status">
+      </jupiter-api-response-status>
+    </nb-accordion-item-header>
+    <nb-accordion-item-body>
+      <form *ngIf="jupiterCarBookDetailRq.Request">
+
+        <!-- MAIN INPUT -->
+        <div>
+          <div class="row">
+            <div class="form-group col-sm-4">
+              <label for="pnrNumber" class="label">PNR Number</label>
+              <input nbInput fullWidth id="pnrNumber" name="pnrNumber" placeholder="PNR Number" [(ngModel)]="jupiterCarBookDetailRq.Request.PnrNumber">
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="connectorsDetail" class="label">Connector</label>
+              <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterCarBookDetailRq.Request.ConnectorCode">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+              <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterCarBookDetailRq.ConnectorsEnvironment" [FilterConnectors]="jupiterCarBookDetailRq.Request.ConnectorCode"></jupiter-connectors-environment>
+            </div>
+            <div class="form-group col-sm-4">
+              <label for="debugConnectors" class="label">Debug Connectors</label>
+              <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterCarBookDetailRq.Request.ConnectorsDebug">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+          </div>
+        </div>
+        <!-- END MAIN INPUT -->
+
+        <!-- INPUT CUSTOM DATA -->
+        <div
+          *ngIf="jupiterCarBookDetailRq.Request.ConnectorCustomData">
+          <nb-accordion class="shadow-none border-box">
+            <nb-accordion-item [expanded]="true">
+              <nb-accordion-item-header>
+                <span class="badge badge-pill badge-primary">{{connectorCustomData['_discriminator']}}</span><span class="ml-1">Custom Data</span>
+                <div class="ml-1">
+                  <button nbButton size="tiny" status="danger" (click)="deleteCustomData()"
+                    ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
+                </div>
+              </nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <jupiter-custom-data-inputs
+                  [(CustomData)]="jupiterCarBookDetailRq.Request.ConnectorCustomData">
+                </jupiter-custom-data-inputs>
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+          </nb-accordion>
+        </div>
+        <!-- END INPUT CUSTOM DATA -->
+
+      </form>
+
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <hr>
+          <button nbButton size="small" (click)="doBookDetail()"><i
+              class="fas fa-exchange-alt"></i>&nbsp;Retrieve</button>
+        </div>
+      </div>
+
+    </nb-accordion-item-body>
+  </nb-accordion-item>
+</nb-accordion>
+
+<jupiter-api-messages-accordion Title="Car Book Detail" [ApiRs]="jupiterCarBookDetailRs"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Car Book Detail" [(ApiRq)]="jupiterCarBookDetailRq" [ApiRs]="jupiterCarBookDetailRs">
+</jupiter-api-debug-accordion>
+
+<nb-card *ngIf="jupiterCarBookDetailRs && jupiterCarBookDetailRs.Response">
+  <nb-card-header>Car Book Detail RS</nb-card-header>
+  <nb-card-body>
+
+    <!-- Book Details -->
+    <div>
+      <!-- Book Detail Table -->
+      <div class="mt-3">
+        <h5>Book Detail Table</h5>
+        <table width="100%" class="table table-bordered table-striped">
+          <tr>
+            <th>Connector</th>
+            <th>Status</th>
+            <th>PNR Number</th>
+            <th>Cancel Date</th>
+            <th>Total</th>
+            <th>Actions</th>
+          </tr>
+          <tr>
+            <td>
+              <span class="badge badge-pill badge-primary">{{jupiterCarBookDetailRs.Response.ConnectorCode}}</span>
+            </td>
+            <td>
+              <jupiter-booking-status [status]="jupiterCarBookDetailRs.Response.BookingStatus"></jupiter-booking-status>
+            </td>
+            <td>
+              {{jupiterCarBookDetailRs.Response.Pnr}}
+            </td>
+            <td>
+              {{jupiterCarBookDetailRs.Response.CancelDate | amDateFormat:'DD/MM/YYYY HH:mm'}}
+            </td>
+            <td>
+              <span class="mr-1 font-weight-bold h5">{{jupiterCarBookDetailRs.Response.FareBooked?.Amount?.Amount | number}}</span>
+              <span>{{jupiterCarBookDetailRs.Response.FareBooked?.Amount?.Currency}}</span>
+            </td>
+            <td>
+              <div *ngIf="jupiterCarBookDetailRs.Response.BookingStatus !== EBookingStatus.DELETED && jupiterCarBookDetailRs.Response.BookingStatus !== EBookingStatus.ERROR">
+                <button nbButton status="danger" size="small" (click)="deleteBookFromDetail(jupiterCarBookDetailRs.Response)"><i class="fas fa-trash"></i> Delete Book</button>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- Fare Details and Driver -->
+      <div class="row">
+        <!--FARE BOOK INFOS-->
+        <div class="col-sm-6">
+          <nb-card class="shadow-none">
+            <nb-card-header>Fare Booked Infos</nb-card-header>
+            <nb-card-body>
+              <div class="border-box">
+                <div class="mt-1">Amout Without Tax:
+                  <span>{{jupiterCarBookDetailRs.Response.FareBooked?.Amount?.AmountWithoutTax | number}}</span>
+                  <span>{{jupiterCarBookDetailRs.Response.FareBooked?.Amount?.Currency}}</span>
+                </div>
+                <div class="mt-1">Taxes
+                  <div *ngIf="jupiterCarBookDetailRs.Response.FareBooked.Amount && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes.TaxList">
+                    <div *ngFor="let tax of jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes.TaxList">
+                      <span class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{tax.Description}}" placement="left" container="body"> <i class="fas fa-info-circle info-icon"></i> {{tax.Code}} - {{tax.Currency}} {{tax.Amount | number}}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div *ngIf="jupiterCarBookDetailRs.Response.CarBooked?.DepartureDate || jupiterCarBookDetailRs.Response.CarBooked?.ArrivalDate"
+                class="border-box">
+                <div>Reservation From Date: {{jupiterCarBookDetailRs.Response.CarBooked?.DepartureDate | amDateFormat:'DD/MM/YYYY
+                  hh:mm'}}
+                </div>
+                <div>Reservation To Date: {{jupiterCarBookDetailRs.Response.CarBooked?.ArrivalDate | amDateFormat: 'DD/MM/YYYY hh:mm'}}
+                </div>
+              </div>
+              <div>Fare Name: {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.FareName}}</div>
+              <div>Fare Id: {{jupiterCarBookDetailRs.Response.FareBooked.Id}}</div>
+              <div>Payment Type: {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.PaymentType}}</div>
+
+              <!-- FARE DISTANCE ALLOWANCE-->
+              <div class="mt-1">Distance Allowance Terms:
+                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.FareDetail && jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance">
+                  <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-success">Unlimited</span>
+                  <span *ngIf="!jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-warning">Limited</span>
+                  <span *ngIf="!jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="pt-1 pl-1 cursor-pointer">
+                    <i class="fas fa-info-circle info-icon"></i> Extra Amount:
+                    {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.ExtraDistanceAmount?.Currency}}
+                    {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.ExtraDistanceAmount?.Amount | number}} |
+                    Unit: {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.Unit}}
+                  </span>
+                </span>
+              </div>
+
+              <!-- FARE DROPOFF AMOUNT-->
+              <div class="mt-1">Drop Off Amount:
+                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount">
+                  <span class="badge badge-pill badge-warning">Total: {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Currency}} {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Amount | number}}</span>
+                  <span class="badge badge-pill badge-warning">Net: {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Currency}} {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.AmountWithoutTax | number}}</span>
+                </span>
+              </div>
+                                      
+              <div>Equipments: 
+                <div *ngFor="let equip of jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.Equipments">
+                  <span class="badge badge-info text-white p-2 m-1" ngbTooltip="{{equip.Name}}" placement="left" container="body" >{{equip.Code}}</span>
+                  <span>Amount : {{equip.Amount?.Currency}} {{equip.Amount?.Amount | number}}</span>
+                </div>
+              </div>
+
+              <div>Custom Data:</div>
+              <pre class="border-box bg-light">{{jupiterCarBookDetailRs.Response.FareBooked.ConnectorCustomData | json}}</pre>
+
+            </nb-card-body>
+          </nb-card>
+
+        </div>
+        <!--DRIVER INFO-->
+        <div class="col-sm-6">
+          <nb-card class="shadow-none">
+            <nb-card-header>Driver Details</nb-card-header>
+            <nb-card-body *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver">
+              <div>
+                <div>Title: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.PaxTitle}}</div>
+                <div>FirstName: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.FirstName}}</div>
+                <div>Middle: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.MiddleName}}</div>
+                <div>LastName: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.LastName}}</div>
+                <div>Birth Date: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.BirthDate | amDateFormat:'DD/MM/YYYY'}}</div>
+                <div>Emails: <span *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.Emails"><span *ngFor="let email of jupiterCarBookDetailRs.Response.CarBooked.Driver.Emails">{{email.Title}} {{email.Value}}</span></span></div>
+                <div>Phone Numbers: <span *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.PhoneNumbers"><span *ngFor="let phone of jupiterCarBookDetailRs.Response.CarBooked.Driver.PhoneNumbers">{{phone.Title}} {{phone.Value}}</span></span></div>
+                <div>Address: <span *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.Address">{{jupiterCarBookDetailRs.Response.CarBooked.Driver.Address.Street}} {{jupiterCarBookDetailRs.Response.CarBooked.Driver.Address.Zip}} - {{jupiterCarBookDetailRs.Response.CarBooked.Driver.Address.City}} {{jupiterCarBookDetailRs.Response.CarBooked.Driver.Address.Country}}</span></div>
+                <div>Loyalty Cards: <span *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.LoyaltyCards"><span *ngFor="let loyalty of jupiterCarBookDetailRs.Response.CarBooked.Driver.LoyaltyCards">{{loyalty.MembershipId}} {{loyalty.CardExpirationDate}}</span></span></div>
+                <div>Documents:
+                  <pre *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.Documents" class="border-box bg-light">{{jupiterCarBookDetailRs.Response.CarBooked.Driver.Documents | json}}</pre>
+                </div>
+                <div>Company:
+                  <pre *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver.Company" class="border-box bg-light">{{jupiterCarBookDetailRs.Response.CarBooked.Driver.Company | json}}</pre>
+                </div>
+          
+                <div *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver['ConnectorCustomData']">
+                  <div>Connector Custom Data:</div>
+                  <pre class="border-box bg-light">{{jupiterCarBookDetailRs.Response.CarBooked.Driver['ConnectorCustomData'] | json}}</pre>
+                </div>
+                <div *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver['CustomerCustomData']">
+                  <div>Customer Custom Data:</div>
+                  <pre class="border-box bg-light">{{jupiterCarBookDetailRs.Response.CarBooked.Driver['CustomerCustomData'] | json}}</pre>
+                </div>
+          
+              </div>
+            </nb-card-body>
+            <nb-card-body *ngIf="!jupiterCarBookDetailRs.Response.CarBooked.Driver">
+              Missing Infos
+            </nb-card-body>
+          </nb-card>
+        </div>
+      </div>
+
+      <!-- CAR DETAILS -->
+      <nb-card>
+        <nb-card-header>Car Details</nb-card-header>
+        <nb-card-body *ngIf="jupiterCarBookDetailRs.Response.CarBooked">
+          <jupiter-car-segment-result [carSegment]="jupiterCarBookDetailRs.Response.CarBooked" [openDetails]="false"
+          [debug]="jupiterCarBookDetailRs.Response.CarBooked['_Debug']"></jupiter-car-segment-result>
+        </nb-card-body>
+      </nb-card>
+    </div>
+
+  </nb-card-body>
+</nb-card>
+
+<div *ngIf="jupiterCarBookDetailRs && jupiterCarBookDetailRs.Response && jupiterCarBookCancelRs">
+  <jupiter-api-messages-accordion Title="Car Book Cancel" [ApiRs]="jupiterCarBookCancelRs"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Car Book Cancel" [(ApiRq)]="jupiterCarBookCancelRq" [ApiRs]="jupiterCarBookCancelRs"></jupiter-api-debug-accordion>
+</div>

@@ -1,13 +1,17 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {
-  AmadeusGdsSessionCustomData, ConnectorEnvironment,
+  AmadeusGdsSessionCustomData,
+  ConnectorEnvironment,
   EAmadeusSessionStatus,
   EH2HConnectorCode,
   JupiterCrypticInput,
-  JupiterCrypticRQ,
+  JupiterCrypticRQ, JupiterCrypticRS,
+  JupiterFlightPnrRetrieveInput,
+  JupiterFlightPnrRetrieveRQ,
+  JupiterFlightPnrRetrieveRS,
 } from '../../../../services/jupiter-api/jupiter-api-client';
-import { JupiterApiService } from '../../../../services/jupiter-api/jupiter-api.service';
+import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
 
 @Component({
   selector: 'jupiter-amadeus-cryptic',
@@ -24,10 +28,15 @@ export class AmadeusCrypticComponent implements OnInit {
   crypticSession: any = null;
   crypticForm: FormGroup;
 
-  apiCallRS: any = null;
+  jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
+  jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
+
+  jupiterCrypticRq: JupiterCrypticRQ = null;
+  jupiterCrypticRs: JupiterCrypticRS = null;
 
   crypticCommand: string = null;
   connectorsEnvironment: ConnectorEnvironment[] = [];
+  EH2HConnectorCode = EH2HConnectorCode;
 
   constructor(private jupiterApiService: JupiterApiService) {
     this.crypticForm = new FormGroup({
@@ -36,6 +45,15 @@ export class AmadeusCrypticComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.jupiterCrypticRq = new JupiterCrypticRQ({
+      ConnectorsEnvironment: null,
+      Request: new JupiterCrypticInput({
+        // ConnectorsDebug: ['AMADEUS'],
+        ConnectorCode: EH2HConnectorCode.AMADEUS,
+        CrypticRequest: null,
+        SessionConnectorCustomData: null,
+      }),
+    });
   }
 
   changeConnectorsEnvironment() {
@@ -45,25 +63,16 @@ export class AmadeusCrypticComponent implements OnInit {
   sendCryptic() {
     this.loading = true;
 
-    let crypticCommand = this.crypticForm.value;
+    this.jupiterCrypticRq.ConnectorsEnvironment = this.connectorsEnvironment;
+    this.jupiterCrypticRq.Request.CrypticRequest = this.crypticForm.value.Command;
 
     const inputElem = <HTMLInputElement>this.sendCrypticInput.nativeElement;
     inputElem.select();
 
-    let jupiterCrypticRQ: JupiterCrypticRQ = new JupiterCrypticRQ({
-      ConnectorsEnvironment: this.connectorsEnvironment,
-      Request: new JupiterCrypticInput( {
-        // ConnectorsDebug: ['AMADEUS'],
-        ConnectorCode: EH2HConnectorCode.AMADEUS,
-        CrypticRequest: crypticCommand.Command,
-        SessionConnectorCustomData: null,
-      }),
-    });
-
     if (this.crypticSession) {
-      jupiterCrypticRQ.Request.SessionConnectorCustomData = this.crypticSession;
+      this.jupiterCrypticRq.Request.SessionConnectorCustomData = this.crypticSession;
     } else {
-      jupiterCrypticRQ.Request.SessionConnectorCustomData = new AmadeusGdsSessionCustomData({
+      this.jupiterCrypticRq.Request.SessionConnectorCustomData = new AmadeusGdsSessionCustomData({
         // customDataConnectorCode: 'AMADEUS',
         SessionId: '',
         SessionStatus: EAmadeusSessionStatus.START,
@@ -72,8 +81,8 @@ export class AmadeusCrypticComponent implements OnInit {
       });
     }
 
-    this.jupiterApiService.cryptic(jupiterCrypticRQ).subscribe(response => {
-      this.apiCallRS = response;
+    this.jupiterApiService.cryptic(this.jupiterCrypticRq).subscribe(response => {
+      this.jupiterCrypticRs = response;
       if (response && response.Response) {
         // this.crypticForm.patchValue({Command: ''});
         this.crypticResponse = response.Response.CrypticResponse;
@@ -85,6 +94,16 @@ export class AmadeusCrypticComponent implements OnInit {
     }, error => {
       console.error(error);
       this.loading = false;
+    });
+  }
+
+  retrieveFromSession() {
+    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+      ConnectorsEnvironment: this.connectorsEnvironment,
+      Request: new JupiterFlightPnrRetrieveInput({
+        ConnectorCode: EH2HConnectorCode.AMADEUS,
+        SessionConnectorCustomData: this.crypticSession
+      })
     });
   }
 }

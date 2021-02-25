@@ -42,6 +42,21 @@ import {
   JupiterTrainAvailabilityRQ,
   JupiterTrainAvailabilityRS,
   TrainClient,
+  JupiterFlightPnrDeleteRQ,
+  JupiterFlightPnrDeleteRS,
+  JupiterFlightQueueListRQ,
+  JupiterFlightQueueListRS,
+  JupiterFlightQueuePlacePnrRQ,
+  JupiterFlightQueuePlacePnrRS,
+  JupiterFlightQueueRemovePnrRQ,
+  JupiterFlightQueueRemovePnrRS,
+  JupiterCarAvailabilityRQ,
+  JupiterCarAvailabilityRS,
+  CarClient,
+  JupiterCarBookDetailRQ,
+  JupiterCarBookDetailRS,
+  JupiterCarBookCancelRQ,
+  JupiterCarBookCancelRS,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -269,6 +284,58 @@ export class JupiterApiService {
     });
   }
 
+  flightPnrDelete(jupiterFlightPnrDeleteRQ: JupiterFlightPnrDeleteRQ): Observable<JupiterFlightPnrDeleteRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightPnrDelete(jupiterFlightPnrDeleteRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueueList(jupiterFlightQueueListRQ: JupiterFlightQueueListRQ): Observable<JupiterFlightQueueListRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueueList(jupiterFlightQueueListRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueuePlacePnr(jupiterFlightQueuePlacePnrRQ: JupiterFlightQueuePlacePnrRQ): Observable<JupiterFlightQueuePlacePnrRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueuePlacePnr(jupiterFlightQueuePlacePnrRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  flightQueueRemovePnr(jupiterFlightQueueRemovePnrRQ: JupiterFlightQueueRemovePnrRQ): Observable<JupiterFlightQueueRemovePnrRS> {
+    return new Observable(obs => {
+      let flightClient = new FlightClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      flightClient.flightQueueRemovePnr(jupiterFlightQueueRemovePnrRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
   hotelAvailability(jupiterHotelAvailabilityRq: JupiterHotelAvailabilityRQ): Observable<JupiterHotelAvailabilityRS> {
     return new Observable(obs => {
       let hotelClient = new HotelClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
@@ -417,6 +484,45 @@ export class JupiterApiService {
       //     console.log(error);
       //     obs.error(error);
       //   });
+    });
+  }
+
+  carAvailability(jupiterCarAvailabilityRq: JupiterCarAvailabilityRQ): Observable<JupiterCarAvailabilityRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.avail(jupiterCarAvailabilityRq).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  carBookDetails(jupiterCarBookDetailRQ: JupiterCarBookDetailRQ): Observable<JupiterCarBookDetailRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.bookDetail(jupiterCarBookDetailRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  carBookCancel(jupiterCarBookCancelRQ: JupiterCarBookCancelRQ): Observable<JupiterCarBookCancelRS> {
+    return new Observable(obs => {
+      let carClient = new CarClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      carClient.bookCancel(jupiterCarBookCancelRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
     });
   }
 }

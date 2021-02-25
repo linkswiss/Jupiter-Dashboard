@@ -1,106 +1,101 @@
-<nb-accordion [nbSpinner]="loading" nbSpinnerStatus="primary" class="mb-2">
-  <nb-accordion-item expanded="true">
-    <nb-accordion-item-header class="font-weight-bold">PNR Retrieve
-      <jupiter-api-response-status *ngIf="jupiterFlightPnrRetrieveRs" [status]="jupiterFlightPnrRetrieveRs.Status"></jupiter-api-response-status>
-    </nb-accordion-item-header>
-    <nb-accordion-item-body>
-      <form>
+<div [nbSpinner]="loading" nbSpinnerStatus="primary">
+  <nb-accordion *ngIf="showRqForm" class="mb-2">
+    <nb-accordion-item expanded="true">
+      <nb-accordion-item-header class="font-weight-bold">PNR Retrieve
+        <jupiter-api-response-status *ngIf="jupiterFlightPnrRetrieveRs" [status]="jupiterFlightPnrRetrieveRs.Status"></jupiter-api-response-status>
+      </nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <form>
+          <div class="row">
+            <div class="form-group col-sm-4">
+              <label for="pnrNumber" class="label">PNR Number</label>
+              <input nbInput fullWidth id="pnrNumber" name="pnrNumber" placeholder="PNR Number" [(ngModel)]="jupiterFlightPnrRetrieveRq.Request.PnrNumber">
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="connectorsDetail" class="label">Connector</label>
+              <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterFlightPnrRetrieveRq.Request.ConnectorCode">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+              <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterFlightPnrRetrieveRq.ConnectorsEnvironment" [FilterConnectors]="jupiterFlightPnrRetrieveRq.Request.ConnectorCode"></jupiter-connectors-environment>
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="debugConnectors" class="label">Debug Connectors</label>
+              <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterFlightPnrRetrieveRq.Request.ConnectorsDebug">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+          </div>
+        </form>
+
         <div class="row">
-          <div class="form-group col-sm-4">
-            <label for="pnrNumber" class="label">PNR Number</label>
-            <input nbInput fullWidth id="pnrNumber" name="pnrNumber" placeholder="PNR Number" [(ngModel)]="jupiterFlightPnrRetrieveRq.Request.PnrNumber">
+          <div class="col-sm-12 text-center">
+            <button class="btn btn-sm btn-primary" (click)="retrievePnr()"><i class="fas fa-exchange-alt"></i> Retrieve</button>
           </div>
-
-          <div class="form-group col-sm-4">
-            <label for="connectorsDetail" class="label">Connector</label>
-            <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterFlightPnrRetrieveRq.Request.ConnectorCode">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-            <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterFlightPnrRetrieveRq.ConnectorsEnvironment"></jupiter-connectors-environment>
-          </div>
-
-          <div class="form-group col-sm-4">
-            <label for="debugConnectors" class="label">Debug Connectors</label>
-            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterFlightPnrRetrieveRq.Request.ConnectorsDebug">
-              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
-            </nb-select>
-          </div>
-
-<!--          <div class="form-group col-sm-4">-->
-<!--            <label for="connectors" class="label">Connector</label>-->
-<!--            <nb-select fullWidth id="connectors" placeholder="Search Connectors" [multiple]="false" [outline]="true" [(selected)]="selectedConnector">-->
-<!--              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>-->
-<!--            </nb-select>-->
-<!--            <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment"></jupiter-connectors-environment>-->
-<!--          </div>-->
-<!--          <div class="form-group col-sm-4">-->
-<!--            <label for="debugConnectors" class="label">Debug Connectors</label>-->
-<!--            <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="selectedConnectorsDebug">-->
-<!--              <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>-->
-<!--            </nb-select>-->
-<!--          </div>-->
         </div>
-      </form>
 
-      <div class="row">
-        <div class="col-sm-12 text-center">
-          <button class="btn btn-sm btn-primary" (click)="retrievePnr()"><i class="fas fa-exchange-alt"></i> Retrieve</button>
-        </div>
-      </div>
+      </nb-accordion-item-body>
+    </nb-accordion-item>
 
-    </nb-accordion-item-body>
-  </nb-accordion-item>
-<!--  <nb-accordion-item>-->
-<!--    <nb-accordion-item-header>Debug Retrieve</nb-accordion-item-header>-->
-<!--    <nb-accordion-item-body>-->
+  </nb-accordion>
 
-<!--      <nb-accordion class="mb-2">-->
-<!--        <nb-accordion-item>-->
-<!--          <nb-accordion-item-header>Json</nb-accordion-item-header>-->
-<!--          <nb-accordion-item-body>-->
-<!--            <div class="row">-->
-<!--              <div class="col-md-6">-->
-<!--                <h6>JSON Request:</h6>-->
-<!--                <ace [mode]="'json'" [theme]="'monokai'" value="{{jupiterFlightPnrRetrieveRq | json}}" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
-<!--              </div>-->
-<!--              <div class="col-sm-6">-->
-<!--                <h6>JSON Response:</h6>-->
-<!--                <ace [mode]="'json'" [theme]="'monokai'" value="{{jupiterFlightPnrRetrieveRs | json}}" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
-<!--              </div>-->
-<!--            </div>-->
-<!--          </nb-accordion-item-body>-->
-<!--        </nb-accordion-item>-->
-<!--        <nb-accordion-item>-->
-<!--          <nb-accordion-item-header>Connectors Debug</nb-accordion-item-header>-->
-<!--          <nb-accordion-item-body>-->
-<!--            <nb-tabset *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.ConnectorsResponseDetails">-->
-<!--              <nb-tab *ngFor="let connector of jupiterFlightPnrRetrieveRs.ConnectorsResponseDetails" tabTitle="{{connector.ConnectorCode}}" class="pt-3">-->
-<!--                <div class="row" *ngIf="connector.ConnectorDebugData">-->
-<!--                  <div class="col-md-6">-->
-<!--                    <h6>Request:</h6>-->
-<!--                    <ace #aceConnectorRq [mode]="'xml'" [theme]="'monokai'" [value]="connector.ConnectorDebugData.Request" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
-<!--                  </div>-->
-<!--                  <div class="col-sm-6">-->
-<!--                    <h6>Response:</h6>-->
-<!--                    <ace #aceConnectorRs [mode]="'xml'" [theme]="'monokai'" [value]="connector.ConnectorDebugData.Response" style="height: 650px; width:100%; overflow: scroll;"></ace>-->
-<!--                  </div>-->
-<!--                </div>-->
-<!--              </nb-tab>-->
-<!--            </nb-tabset>-->
-<!--          </nb-accordion-item-body>-->
-<!--        </nb-accordion-item>-->
-<!--      </nb-accordion>-->
+  <!-- FLIGHT PNR RETRIEVE MESSAGES/DEBUG -->
+  <jupiter-api-messages-accordion Title="Flight PNR Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Flight PNR Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
+  <!-- END PNR RETRIEVE MESSAGES/DEBUG -->
 
-<!--    </nb-accordion-item-body>-->
-<!--  </nb-accordion-item>-->
+  <!-- FLIGHT PNR RETRIEVE RESPONSE -->
+  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
+    <div *ngIf="jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber">
+      <nb-card class="mt-3 mb-1">
+        <nb-card-header>
+          Operation on PNR {{jupiterFlightPnrRetrieveRs.Response.Pnr.PnrNumber}}
+        </nb-card-header>
+        <nb-card-body>
+          <div class="row">
+            <div class="col-md-6 text-center">
+              <button class="btn btn-sm btn-danger center m-1" (click)="deletePnr()"><i class="fas fa-trash"></i> Delete PNR</button>
+            </div>
+            <div class="col-md-6 text-center border-left">
+              <div class="row">
+                <div class="col-sm-6">
+<!--                  <label for="queueNumber" class="label">Queue Number</label>-->
+                  <input nbInput fullWidth id="queueNumber" name="queueNumber" placeholder="Queue Number" [(ngModel)]="queueNumber">
+<!--                  <input *ngIf="jupiterFlightPnrRetrieveRs.Response.Pnr.ConnectorCode == EH2HConnectorCode.AMADEUS" nbInput fullWidth id="amadeusTargetOffice" name="amadeusTargetOffice" placeholder="Queue Number" [(ngModel)]="amadeusTargetOffice">-->
+                </div>
+                <div class="col-sm-6">
+                  <button class="btn btn-sm btn-warning center m-1" (click)="queuePlacePnr()"><i class="fas fa-list"></i> Place PNR On Queue</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </nb-card-body>
+      </nb-card>
+    </div>
 
-</nb-accordion>
+    <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr"></jupiter-flight-pnr-display>
+  </div>
+  <!-- END FLIGHT PNR RETRIEVE RESPONSE -->
 
-<!-- FLIGHT Retrieve MESSAGES/DEBUG -->
-<jupiter-api-messages-accordion Title="Flight PNR Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>
-<jupiter-api-debug-accordion Title="Flight PNR Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>
-<!-- END FLIGHT AVAIL MESSAGES/DEBUG -->
+  <!-- FLIGHT PNR DELETE MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightPnrDeleteRq">
+    <jupiter-api-messages-accordion Title="Flight Pnr Delete" [ApiRs]="jupiterFlightPnrDeleteRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Pnr Delete" [(ApiRq)]="jupiterFlightPnrDeleteRq" [ApiRs]="jupiterFlightPnrDeleteRs"></jupiter-api-debug-accordion>
+  </div>
+  <!-- END FLIGHT PNR DELETE MESSAGES/DEBUG -->
 
-<div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">
-  <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr"></jupiter-flight-pnr-display>
+  <!-- FLIGHT PNR DELETE RESPONSE -->
+  <div *ngIf="jupiterFlightPnrDeleteRs && jupiterFlightPnrDeleteRs.Response && jupiterFlightPnrDeleteRs.Response.Pnr">
+    <jupiter-flight-pnr-display [title]="'Flight Delete'" [currentPnr]="jupiterFlightPnrDeleteRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>
+  </div>
+  <!-- END FLIGHT PNR DELETE RESPONSE -->
+
+  <!-- FLIGHT QUEUE PLACE PNR MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightQueuePlacePnrRq">
+    <jupiter-api-messages-accordion Title="Flight Queue Place PNR" [ApiRs]="jupiterFlightQueuePlacePnrRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Queue Place PNR" [(ApiRq)]="jupiterFlightQueuePlacePnrRq" [ApiRs]="jupiterFlightQueuePlacePnrRs"></jupiter-api-debug-accordion>
+  </div>
+  <!-- END FLIGHT QUEUE PLACE PNR MESSAGES/DEBUG -->
+
 </div>

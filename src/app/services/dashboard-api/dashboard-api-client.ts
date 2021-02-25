@@ -829,6 +829,48 @@ export class UtilityClient extends ApiClientBase {
   }
 
   /**
+   * Get a single Cache Item on the Cache Service
+   */
+  getSingleCacheItem(cacheKey: string | null): Promise<SingleCacheItem> {
+    let url_ = this.baseUrl + "/jupiter-dashboard-api/1-dashboard/Utility/cache-item/{cacheKey}";
+    if (cacheKey === undefined || cacheKey === null)
+      throw new Error("The parameter 'cacheKey' must be defined.");
+    url_ = url_.replace("{cacheKey}", encodeURIComponent("" + cacheKey));
+    url_ = url_.replace(/[?&]$/, "");
+
+    let options_ = <RequestInit>{
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGetSingleCacheItem(_response);
+    });
+  }
+
+  protected processGetSingleCacheItem(response: Response): Promise<SingleCacheItem> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = SingleCacheItem.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<SingleCacheItem>(<any>null);
+  }
+
+  /**
    * Clear the Cache Service and get all the Cache Entries -&gt; that should be empty
    */
   clearCache(): Promise<CacheEntry[]> {
@@ -2050,9 +2092,18 @@ export enum EH2HOperation {
   FLIGHT_PRICE_VERIFY = "FLIGHT_PRICE_VERIFY",
   FLIGHT_BOOK = "FLIGHT_BOOK",
   FLIGHT_PNR_RETRIEVE = "FLIGHT_PNR_RETRIEVE",
+  FLIGHT_PNR_DELETE = "FLIGHT_PNR_DELETE",
+  FLIGHT_QUEUE_LIST = "FLIGHT_QUEUE_LIST",
+  FLIGHT_QUEUE_PLACE_PNR = "FLIGHT_QUEUE_PLACE_PNR",
+  FLIGHT_QUEUE_REMOVE_PNR = "FLIGHT_QUEUE_REMOVE_PNR",
   TRAIN_AVAIL = "TRAIN_AVAIL",
   TRAIN_BOOK = "TRAIN_BOOK",
   DESTINATION_LIST = "DESTINATION_LIST",
+  ACTIVITY_AVAIL = "ACTIVITY_AVAIL",
+  ACTIVITY_AVAIL_SINGLE = "ACTIVITY_AVAIL_SINGLE",
+  ACTIVITY_BOOK = "ACTIVITY_BOOK",
+  ACTIVITY_BOOK_DETAIL = "ACTIVITY_BOOK_DETAIL",
+  ACTIVITY_BOOK_CANCEL = "ACTIVITY_BOOK_CANCEL",
   CONNECTOR_CUSTOM = "CONNECTOR_CUSTOM",
 }
 
@@ -2151,6 +2202,10 @@ export enum EH2HConnectorCode {
   HOTELBEDS = "HOTELBEDS",
   EMINDS = "EMINDS",
   EXPEDIA = "EXPEDIA",
+  TEKURA = "TEKURA",
+  AIC = "AIC",
+  ALLIED = "ALLIED",
+  JTB = "JTB",
   A_SAMPLE = "A_SAMPLE",
 }
 
@@ -2492,6 +2547,7 @@ export enum EH2HConnectorType {
   TRAIN = "TRAIN",
   FERRIES = "FERRIES",
   DESTINATION = "DESTINATION",
+  ACTIVITY = "ACTIVITY",
 }
 
 /** Cache Settings Class */
@@ -2596,6 +2652,8 @@ export interface IRedisSettings {
 export class RemoteVaultSettings implements IRemoteVaultSettings {
   /** RemoteVault Type */
   Type?: ERemoteVaultType;
+  /** If true override remote config with local properties */
+  LoadLocalAfterRemote?: boolean;
   /** Azure KeyVault Settings */
   AzureKeyVaultSettings?: AzureKeyVaultSettings | undefined;
   /** Gcp Secrets Settings */
@@ -2613,6 +2671,7 @@ export class RemoteVaultSettings implements IRemoteVaultSettings {
   init(_data?: any) {
     if (_data) {
       this.Type = _data["Type"];
+      this.LoadLocalAfterRemote = _data["LoadLocalAfterRemote"];
       this.AzureKeyVaultSettings = _data["AzureKeyVaultSettings"] ? AzureKeyVaultSettings.fromJS(_data["AzureKeyVaultSettings"]) : <any>undefined;
       this.GcpSecretsSettings = _data["GcpSecretsSettings"] ? GcpSecretsSettings.fromJS(_data["GcpSecretsSettings"]) : <any>undefined;
     }
@@ -2628,6 +2687,7 @@ export class RemoteVaultSettings implements IRemoteVaultSettings {
   toJSON(data?: any) {
     data = typeof data === 'object' ? data : {};
     data["Type"] = this.Type;
+    data["LoadLocalAfterRemote"] = this.LoadLocalAfterRemote;
     data["AzureKeyVaultSettings"] = this.AzureKeyVaultSettings ? this.AzureKeyVaultSettings.toJSON() : <any>undefined;
     data["GcpSecretsSettings"] = this.GcpSecretsSettings ? this.GcpSecretsSettings.toJSON() : <any>undefined;
     return data;
@@ -2638,6 +2698,8 @@ export class RemoteVaultSettings implements IRemoteVaultSettings {
 export interface IRemoteVaultSettings {
   /** RemoteVault Type */
   Type?: ERemoteVaultType;
+  /** If true override remote config with local properties */
+  LoadLocalAfterRemote?: boolean;
   /** Azure KeyVault Settings */
   AzureKeyVaultSettings?: AzureKeyVaultSettings | undefined;
   /** Gcp Secrets Settings */
@@ -3013,6 +3075,46 @@ export interface ICacheEntry {
   ExpirationTimeSpan?: string;
   /** Absolute Expiration DateTime */
   ExpirationAbsoluteDateTimeUtc?: string;
+}
+
+export class SingleCacheItem implements ISingleCacheItem {
+  CacheEntry?: CacheEntry | undefined;
+  CacheItemJson?: string | undefined;
+
+  constructor(data?: ISingleCacheItem) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.CacheEntry = _data["CacheEntry"] ? CacheEntry.fromJS(_data["CacheEntry"]) : <any>undefined;
+      this.CacheItemJson = _data["CacheItemJson"];
+    }
+  }
+
+  static fromJS(data: any): SingleCacheItem {
+    data = typeof data === 'object' ? data : {};
+    let result = new SingleCacheItem();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["CacheEntry"] = this.CacheEntry ? this.CacheEntry.toJSON() : <any>undefined;
+    data["CacheItemJson"] = this.CacheItemJson;
+    return data;
+  }
+}
+
+export interface ISingleCacheItem {
+  CacheEntry?: CacheEntry | undefined;
+  CacheItemJson?: string | undefined;
 }
 
 export interface FileResponse {

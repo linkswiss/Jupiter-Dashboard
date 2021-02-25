@@ -64,6 +64,11 @@ export class MenuComponent {
               icon: 'fa-passport',
               link: '/flight-pnr-retrieve',
             },
+            {
+              title: 'Flight Queue List',
+              icon: 'fa-list-alt',
+              link: '/flight-queue-list',
+            },
           ],
         });
       }
@@ -136,6 +141,30 @@ export class MenuComponent {
             ]
           },
         );
+      }
+
+      if (this.appConfigService.isAnyCarConnectorEnabled()) {
+        this.menu.push({
+          title: 'Cars',
+          icon: 'fa-car',
+          children: [
+            {
+              title: 'Cars Avail',
+              icon: 'fa-car',
+              link: '/car-avail',
+            },
+            // {
+            //   title: 'Car Book',
+            //   icon: 'fa-clipboard-check',
+            //   link: '/hotel-book',
+            // },
+            {
+              title: 'Car Book Detail',
+              icon: 'fa-id-card',
+              link: '/car-book-detail',
+            },
+          ],
+        });
       }
 
       if (this.appConfigService.isAnyCrypticConnectorEnabled()) {

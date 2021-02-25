@@ -6,7 +6,7 @@ import {
   CacheEntry,
   PublishedRoute,
   SabreClient, SabreGdsSessionCustomData,
-  SampleRequest, SampleRequestClient,
+  SampleRequest, SampleRequestClient, SingleCacheItem,
   User,
   UsersClient,
   UtilityClient
@@ -62,7 +62,7 @@ export class DashboardApiService {
     return new Observable(obs => {
       let usersClient = new UsersClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
-      usersClient.getUser(user.Id).then(result => {
+      usersClient.createJupiterApiToken(user.Id).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);
@@ -167,6 +167,19 @@ export class DashboardApiService {
       let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
 
       utilityClient.clearCache().then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
+    });
+  }
+
+  getSingleCacheItem(cacheKey: string): Observable<SingleCacheItem> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.getSingleCacheItem(cacheKey).then(result => {
         obs.next(result);
       }).catch(error => {
         console.log(error);

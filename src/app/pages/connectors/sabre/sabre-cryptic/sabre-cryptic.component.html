@@ -34,7 +34,7 @@
         </form>
       </div>
       <div class="col-sm-6">
-        <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment" (ConnectorsEnvironmentChange)="changeConnectorsEnvironment()"></jupiter-connectors-environment>
+        <jupiter-connectors-environment [(ConnectorsEnvironment)]="connectorsEnvironment" [FilterConnectors]="[EH2HConnectorCode.SABRE]" (ConnectorsEnvironmentChange)="changeConnectorsEnvironment()"></jupiter-connectors-environment>
       </div>
     </div>
   </nb-card-footer>

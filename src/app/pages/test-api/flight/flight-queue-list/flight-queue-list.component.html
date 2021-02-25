@@ -1,0 +1,149 @@
+<div [nbSpinner]="loading" nbSpinnerStatus="primary">
+  <nb-accordion class="mb-2">
+    <nb-accordion-item expanded="true">
+      <nb-accordion-item-header class="font-weight-bold">Queue List
+        <jupiter-api-response-status *ngIf="jupiterFlightQueueListRs" [status]="jupiterFlightQueueListRs.Status"></jupiter-api-response-status>
+      </nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <form>
+          <div class="row">
+            <div class="form-group col-sm-4">
+              <label for="queueNumber" class="label">Queue Number</label>
+              <input nbInput fullWidth id="queueNumber" name="queueNumber" placeholder="Queue Number" [(ngModel)]="jupiterFlightQueueListRq.Request.QueueNumber">
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="connectorsDetail" class="label">Connector</label>
+              <nb-select fullWidth id="connectorsDetail" placeholder="Connector" [multiple]="false" [outline]="true" (selectedChange)="handleConnectorsChanged($event)" [(selected)]="jupiterFlightQueueListRq.Request.ConnectorCode">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+              <jupiter-connectors-environment [(ConnectorsEnvironment)]="jupiterFlightQueueListRq.ConnectorsEnvironment" [FilterConnectors]="jupiterFlightQueueListRq.Request.ConnectorCode"></jupiter-connectors-environment>
+            </div>
+
+            <div class="form-group col-sm-4">
+              <label for="debugConnectors" class="label">Debug Connectors</label>
+              <nb-select #selectDebugConnectors fullWidth id="debugConnectors" placeholder="Debug Connectors" [multiple]="true" [outline]="true" (selectedChange)="selectDebugConnectors.hide();" [(selected)]="jupiterFlightQueueListRq.Request.ConnectorsDebug">
+                <nb-option *ngFor="let connector of connectors" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+          </div>
+
+          <!-- INPUT CUSTOM DATA -->
+          <div *ngIf="jupiterFlightQueueListRq.Request.ConnectorCustomData">
+            <nb-accordion class="shadow-none border-box">
+              <nb-accordion-item>
+                <nb-accordion-item-header>
+                  <span class="badge badge-pill badge-primary">{{jupiterFlightQueueListRq.Request.ConnectorCustomData['_discriminator']}}</span><span class="ml-1">Custom Data</span>
+                </nb-accordion-item-header>
+                <nb-accordion-item-body>
+                  <jupiter-custom-data-inputs [(CustomData)]="jupiterFlightQueueListRq.Request.ConnectorCustomData"></jupiter-custom-data-inputs>
+                </nb-accordion-item-body>
+              </nb-accordion-item>
+            </nb-accordion>
+          </div>
+          <!-- END INPUT CUSTOM DATA -->
+        </form>
+
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <button class="btn btn-sm btn-primary" (click)="queueList()"><i class="fas fa-exchange-alt"></i> Queue List</button>
+          </div>
+        </div>
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+
+  </nb-accordion>
+
+  <!-- FLIGHT QUEUE LIST MESSAGES/DEBUG -->
+  <jupiter-api-messages-accordion Title="Flight Queue List" [ApiRs]="jupiterFlightQueueListRs"></jupiter-api-messages-accordion>
+  <jupiter-api-debug-accordion Title="Flight Queue List" [(ApiRq)]="jupiterFlightQueueListRq" [ApiRs]="jupiterFlightQueueListRs"></jupiter-api-debug-accordion>
+  <!-- END QUEUE LIST MESSAGES/DEBUG -->
+
+  <!-- SELECTED RESULT -->
+  <div *ngIf="flightQueueSelectedResults">
+    <nb-card>
+      <nb-card-header>
+        <span>Selected Result in Queue {{jupiterFlightQueueListRs.Response.QueueNumber}}</span>
+        <span class="float-right">
+          <button class="btn btn-sm btn-warning" (click)="resetSelected()"><i class="fas fa-times"></i> </button>
+        </span>
+      </nb-card-header>
+      <nb-card-body>
+        <ngx-datatable class="material" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="flightQueueSelectedResults">
+
+          <ngx-datatable-column name="Actions" sortable="false" prop="id">
+            <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+              <div>
+                <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)" ngbTooltip="Retrieve the PNR" placement="top" container="body"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+              </div>
+              <div class="mt-1">
+                <button class="btn btn-sm btn-danger" (click)="queueRemovePnr(row)" ngbTooltip="Remove PNR from Queue" placement="top" container="body"><i class="fas fa-trash"></i> Remove</button>
+              </div>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
+          <ngx-datatable-column name="Pax Surname" sortable="true" prop="PaxSurname"></ngx-datatable-column>
+          <ngx-datatable-column name="Pnr Date" sortable="true" prop="PnrDate"></ngx-datatable-column>
+          <ngx-datatable-column name="Departure Date" sortable="true" prop="DepartureDate"></ngx-datatable-column>
+        </ngx-datatable>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <!-- END SELECTED RESULT -->
+
+  <!-- FLIGHT QUEUE LIST RESPONSE -->
+  <div *ngIf="jupiterFlightQueueListRs && jupiterFlightQueueListRs.Response && !flightQueueSelectedResults">
+
+    <div *ngIf="!jupiterFlightQueueListRs.Response.QueuePnrList || jupiterFlightQueueListRs.Response.QueuePnrList.length == 0" class="mt-5 text-center">
+      <h5 class="font-weight-bold">No Queue Entries</h5>
+    </div>
+
+    <div *ngIf="jupiterFlightQueueListRs.Response.QueuePnrList && jupiterFlightQueueListRs.Response.QueuePnrList.length > 0">
+      <h5 class="font-weight-bold">Queue {{jupiterFlightQueueListRs.Response.QueueNumber}} ({{jupiterFlightQueueListRs.Response.QueuePnrList.length}} PNRs)</h5>
+      <ngx-datatable class="material striped" [columnMode]="'force'" [loadingIndicator]="loading" [rowHeight]="'auto'" [rows]="jupiterFlightQueueListRs.Response.QueuePnrList" row>
+
+        <ngx-datatable-column name="Actions" sortable="false" prop="id">
+          <ng-template let-row="row" let-value="value" ngx-datatable-cell-template>
+            <div>
+              <button class="btn btn-sm btn-primary" (click)="retrievePnr(row)" ngbTooltip="Retrieve the PNR" placement="top" container="body"><i class="fas fa-exchange-alt"></i> Retrieve</button>
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="PNR" sortable="false" prop="PnrNumber"></ngx-datatable-column>
+        <ngx-datatable-column name="Pax Surname" sortable="true" prop="PaxSurname"></ngx-datatable-column>
+        <ngx-datatable-column name="Pnr Date" sortable="true" prop="PnrDate"></ngx-datatable-column>
+        <ngx-datatable-column name="Departure Date" sortable="true" prop="DepartureDate"></ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+
+  </div>
+  <!-- END FLIGHT QUEUE LIST RESPONSE -->
+
+  <!-- FLIGHT QUEUE REMOVE PNR MESSAGES/DEBUG -->
+  <div *ngIf="jupiterFlightQueueRemovePnrRq">
+    <jupiter-api-messages-accordion Title="Flight Queue Remove PNR" [ApiRs]="jupiterFlightQueueRemovePnrRs"></jupiter-api-messages-accordion>
+    <jupiter-api-debug-accordion Title="Flight Queue Remove PNR" [(ApiRq)]="jupiterFlightQueueRemovePnrRq" [ApiRs]="jupiterFlightQueueRemovePnrRs"></jupiter-api-debug-accordion>
+  </div>
+  <!-- END FLIGHT QUEUE REMOVE PNR MESSAGES/DEBUG -->
+
+  <!-- FLIGHT PNR RETRIEVE -->
+  <div *ngIf="jupiterFlightPnrRetrieveRq">
+    <jupiter-flight-pnr-retrieve [jupiterFlightPnrRetrieveRq]="jupiterFlightPnrRetrieveRq"></jupiter-flight-pnr-retrieve>
+  </div>
+  <!-- END FLIGHT PNR RETRIEVE -->
+
+
+<!--  &lt;!&ndash; FLIGHT PNR RETRIEVE MESSAGES/DEBUG &ndash;&gt;-->
+<!--  <div *ngIf="jupiterFlightPnrRetrieveRq">-->
+<!--    <jupiter-api-messages-accordion Title="Flight Pnr Retrieve" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-messages-accordion>-->
+<!--    <jupiter-api-debug-accordion Title="Flight Pnr Retrieve" [(ApiRq)]="jupiterFlightPnrRetrieveRq" [ApiRs]="jupiterFlightPnrRetrieveRs"></jupiter-api-debug-accordion>-->
+<!--  </div>-->
+<!--  &lt;!&ndash; END FLIGHT PNR RETRIEVE MESSAGES/DEBUG &ndash;&gt;-->
+
+<!--  &lt;!&ndash; FLIGHT PNR RETRIEVE RESPONSE &ndash;&gt;-->
+<!--  <div *ngIf="jupiterFlightPnrRetrieveRs && jupiterFlightPnrRetrieveRs.Response && jupiterFlightPnrRetrieveRs.Response.Pnr">-->
+<!--    <jupiter-flight-pnr-display [currentPnr]="jupiterFlightPnrRetrieveRs.Response.Pnr" class="border-danger"></jupiter-flight-pnr-display>-->
+<!--  </div>-->
+<!--  &lt;!&ndash; END FLIGHT PNR RETRIEVE RESPONSE &ndash;&gt;-->
+</div>

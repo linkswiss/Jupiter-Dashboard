@@ -136,6 +136,27 @@
       </nb-tab>
       <nb-tab tabTitle="Remote Cache">
 
+        <nb-card *ngIf="cacheResult">
+          <nb-card-header>
+            <span class="h4">Cached Result</span>
+            <span class="float-right">
+                <button class="btn btn-sm btn-warning" (click)="cacheResult = null;"><i class="fas fa-times"></i> </button>
+            </span>
+          </nb-card-header>
+          <nb-card-body>
+            <div class="row">
+              <div class="col-sm-6">
+                <strong>Cache Entry</strong>
+                <ace [mode]="'json'" [theme]="'monokai'" value="{{cacheResult.CacheEntry | json}}" style="height: 650px; width:100%; overflow: scroll;"></ace>
+              </div>
+              <div class="col-sm-6">
+                <strong>Cache Item</strong>
+                <ace [mode]="'json'" [theme]="'monokai'" value="{{cacheResult.CacheItemJson}}" style="height: 650px; width:100%; overflow: scroll;"></ace>
+              </div>
+            </div>
+          </nb-card-body>
+        </nb-card>
+
         <div class="mb-2">
           <button class="btn btn-sm btn-primary" (click)="getCacheEntries()"><i class="fas fa-sync-alt"></i> Refresh List</button>
           <button class="float-right btn btn-sm btn-danger" (click)="clearCache()" ngbTooltip="Delete All Cache Entries" placement="top" container="body"><i class="fas fa-trash"></i> Clear Remote Cache</button>
@@ -145,9 +166,10 @@
           <h5 class="font-weight-bold">No Cached Entries</h5>
         </div>
 
-        <ngx-datatable *ngIf="cacheEntriesData && cacheEntriesData.length > 0" class="material" [columnMode]="'force'" loadingIndicator="true" [rowHeight]="'auto'" [rows]="cacheEntriesData" [columns]="cacheEntriesColumns" [sorts]="cacheEntriesDefaultSort"></ngx-datatable>
+        <ngx-datatable *ngIf="cacheEntriesData && cacheEntriesData.length > 0" class="material" [columnMode]="'force'" [rowHeight]="'auto'" [rows]="cacheEntriesData" [columns]="cacheEntriesColumns" [sorts]="cacheEntriesDefaultSort"></ngx-datatable>
 
         <ng-template #cacheActionsTpl let-row="row" let-value="value">
+          <button class="btn btn-sm btn-primary mr-1" (click)="getSingleCacheItem(row)" ngbTooltip="Inspect Cache Item" placement="top" container="body"><i class="fas fa-search"></i></button>
           <button class="btn btn-sm btn-danger" (click)="clearSingleCacheItem(row)" ngbTooltip="Delete This Cache Item" placement="top" container="body"><i class="fas fa-trash"></i></button>
         </ng-template>
 

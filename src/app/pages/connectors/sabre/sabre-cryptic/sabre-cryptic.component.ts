@@ -28,6 +28,7 @@ export class SabreCrypticComponent implements OnInit {
 
   crypticCommand: string = null;
   connectorsEnvironment: ConnectorEnvironment[] = [];
+  EH2HConnectorCode = EH2HConnectorCode;
 
   constructor(private jupiterApiService: JupiterApiService) {
     this.crypticForm = new FormGroup({

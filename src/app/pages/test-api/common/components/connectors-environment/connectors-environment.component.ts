@@ -11,11 +11,12 @@ import {Moment} from 'moment';
   styleUrls: ['./connectors-environment.component.scss']
 })
 export class ConnectorsEnvironmentComponent implements OnInit, OnChanges {
+  @Input() FilterConnectors: EH2HConnectorCode[];
   @Input() ConnectorsEnvironment: ConnectorEnvironment[];
   @Output() ConnectorsEnvironmentChange = new EventEmitter();
 
   public connectors: ConnectorEnvironment[] = [];
-  public selectedConnectors: number[] = [];
+  public selectedConnectorsEnv: number[] = [];
 
   constructor(public appConfigService: AppConfigService) {
   }
@@ -23,7 +24,9 @@ export class ConnectorsEnvironmentComponent implements OnInit, OnChanges {
   ngOnInit() {
     let enabledConnectors = _.filter(this.appConfigService.jupiterRemoteAppSettings.Connectors.ConnectorSettings, (m) => {
       if (_.includes(this.appConfigService.jupiterRemoteAppSettings.Connectors.EnabledConnectors, m.ConnectorCode)) {
-        return m;
+        if(!this.FilterConnectors || this.FilterConnectors.length == 0 || _.includes(this.FilterConnectors, m.ConnectorCode)){
+          return m;
+        }
       }
     });
 
@@ -38,7 +41,7 @@ export class ConnectorsEnvironmentComponent implements OnInit, OnChanges {
   }
 
   setSelected() {
-    this.selectedConnectors = [];
+    this.selectedConnectorsEnv = [];
     if (this.ConnectorsEnvironment && this.ConnectorsEnvironment.length > 0) {
       for (let i = 0; i < this.connectors.length; i++) {
         let connector = this.connectors[i];
@@ -46,13 +49,28 @@ export class ConnectorsEnvironmentComponent implements OnInit, OnChanges {
           return c.ConnectorCode === connector.ConnectorCode && c.Environment === connector.Environment;
         });
         if (findConnector) {
-          this.selectedConnectors.push(i);
+          this.selectedConnectorsEnv.push(i);
         }
       }
     }
   }
 
   ngOnChanges() {
+    let enabledConnectors = _.filter(this.appConfigService.jupiterRemoteAppSettings.Connectors.ConnectorSettings, (m) => {
+      if (_.includes(this.appConfigService.jupiterRemoteAppSettings.Connectors.EnabledConnectors, m.ConnectorCode)) {
+        if(!this.FilterConnectors || this.FilterConnectors.length == 0 || _.includes(this.FilterConnectors, m.ConnectorCode)){
+          return m;
+        }
+      }
+    });
+
+    this.connectors = _.map(enabledConnectors, function (c) {
+      return new ConnectorEnvironment({
+        ConnectorCode: c.ConnectorCode,
+        Environment: c.Environment
+      });
+    });
+
     this.setSelected();
   }
 

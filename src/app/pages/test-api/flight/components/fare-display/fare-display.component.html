@@ -1,0 +1,135 @@
+
+<!-- Fare Rules -->
+<div *ngIf="paxFareIndex == 0">
+  <div>
+    <span class="font-weight-bold mr-1">Fare Rules:</span>
+    <div *ngIf="fareRules">
+      <nb-accordion class="shadow-none border-box p-0">
+        <nb-accordion-item expanded="false" *ngFor="let fareRule of fareRules">
+          <nb-accordion-item-header class="font-weight-bold">{{fareRule.Title}}</nb-accordion-item-header>
+          <nb-accordion-item-body>
+            <div><span class="text-black-50 mr-1">Title:</span> <span>{{fareRule.Title}}</span></div>
+            <div><span class="text-black-50 mr-1">Application:</span> <span>{{fareRule.Application}}</span></div>
+            <div><span class="text-black-50 mr-1">Description:</span> <span>{{fareRule.Description}}</span></div>
+          </nb-accordion-item-body>
+        </nb-accordion-item>
+      </nb-accordion>
+
+      <!--            <div *ngFor="let fareRule of fareRules">-->
+      <!--              <div class="border-box">-->
+      <!--                <div><span class="text-black-50 mr-1">Title:</span> <span>{{fareRule.Title}}</span></div>-->
+      <!--                <div><span class="text-black-50 mr-1">Application:</span> <span>{{fareRule.Application}}</span></div>-->
+      <!--                <div><span class="text-black-50 mr-1">Description:</span> <span>{{fareRule.Description}}</span></div>-->
+      <!--              </div>-->
+      <!--            </div>-->
+    </div>
+  </div>
+</div>
+
+<div> <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);"> </div>
+<div class="row">
+  <nb-card class="shadow-none col-sm-6">
+    <nb-card-header>Fare Infos</nb-card-header>
+    <nb-card-body>
+      <div><span class="text-black-50 mr-1">Id:</span> {{fare.Id}}</div>
+      <div><span class="text-black-50 mr-1">Pax:</span> {{fare.PaxCount}} {{fare.PaxType}}</div>
+      <div><span class="text-black-50 mr-1">Refundable:</span> {{fare.Refundable}}</div>
+      <div><span class="text-black-50 mr-1">LastTicket Date:</span> {{fare.LastTicketDate | amDateFormat:'DD/MM/YYYY HH:mm:ss'}}</div>
+
+      <div><span class="text-black-50 mr-1">Amount:</span> <span class="font-weight-bold">{{fare.Amount.Amount}}</span> {{fare.Amount.Currency}}</div>
+      <div><span class="text-black-50 mr-1">Amount No Tax:</span> {{fare.Amount.AmountWithoutTax}} {{fare.Amount.Currency}}</div>
+      <div><span class="text-black-50 mr-1">Tax:</span> {{fare.Amount.Taxes?.Amount}} {{fare.Amount.Taxes?.Currency}}</div>
+      <div><span class="text-black-50 mr-1">Tax List:</span>
+        <div *ngIf="fare.Amount.Taxes && fare.Amount.Taxes.TaxList" class="row">
+          <div *ngFor="let tax of fare.Amount.Taxes.TaxList" class="col-sm-4" >
+            <jupiter-obj-display [Data]="tax" [StyleClass]="'border-box'"></jupiter-obj-display>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border-top: 3px solid rgba(0, 0, 0, 0.1);">
+      <div><span class="font-weight-bold mr-1">Fare Penalties:</span>
+        <div *ngIf="fare.FarePenalties">
+          <div>
+            <span class="text-black-50 mr-1">Exchange Before:</span>
+            <div class="border-box">
+              <div><span class="text-black-50 mr-1">Applicable:</span> <span>{{fare.FarePenalties.ExchangeBefore?.IsApplicable}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Amount:</span> <span>{{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Amount}} {{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Currency}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Conditions:</span>
+                <div *ngIf="fare.FarePenalties.ExchangeBefore && fare.FarePenalties.ExchangeBefore.PenaltyConditions">
+                  <div *ngFor="let condition of fare.FarePenalties.ExchangeBefore.PenaltyConditions">
+                    {{condition}}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+<!--            <jupiter-obj-display [Data]="fare.FarePenalties.ExchangeBefore" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+<!--            Applicable {{fare.FarePenalties.ExchangeBefore?.IsApplicable}} - {{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Amount}} {{fare.FarePenalties.ExchangeBefore?.PenaltyAmount?.Currency}}-->
+<!--            {{}}-->
+          </div>
+          <div>
+            <span class="text-black-50 mr-1">Exchange After:</span>
+<!--            <jupiter-obj-display [Data]="fare.FarePenalties.ExchangeAfter" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+            <div class="border-box">
+              <div><span class="text-black-50 mr-1">Applicable:</span> <span>{{fare.FarePenalties.ExchangeAfter?.IsApplicable}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Amount:</span> <span>{{fare.FarePenalties.ExchangeAfter?.PenaltyAmount?.Amount}} {{fare.FarePenalties.ExchangeAfter?.PenaltyAmount?.Currency}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Conditions:</span>
+                <div *ngIf="fare.FarePenalties.ExchangeAfter && fare.FarePenalties.ExchangeAfter.PenaltyConditions">
+                  <div *ngFor="let condition of fare.FarePenalties.ExchangeAfter.PenaltyConditions">
+                    {{condition}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <span class="text-black-50 mr-1">Refund Before:</span>
+            <div class="border-box">
+              <div><span class="text-black-50 mr-1">Applicable:</span> <span>{{fare.FarePenalties.RefundBefore?.IsApplicable}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Amount:</span> <span>{{fare.FarePenalties.RefundBefore?.PenaltyAmount?.Amount}} {{fare.FarePenalties.RefundBefore?.PenaltyAmount?.Currency}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Conditions:</span>
+                <div *ngIf="fare.FarePenalties.RefundBefore && fare.FarePenalties.RefundBefore.PenaltyConditions">
+                  <div *ngFor="let condition of fare.FarePenalties.RefundBefore.PenaltyConditions">
+                    {{condition}}
+                  </div>
+                </div>
+              </div>
+            </div>
+<!--            <jupiter-obj-display [Data]="fare.FarePenalties.RefundBefore" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+          </div>
+          <div>
+            <span class="text-black-50 mr-1">Refund After:</span>
+<!--            <jupiter-obj-display [Data]="fare.FarePenalties.RefundAfter" [StyleClass]="'border-box'"></jupiter-obj-display>-->
+            <div class="border-box">
+              <div><span class="text-black-50 mr-1">Applicable:</span> <span>{{fare.FarePenalties.RefundAfter?.IsApplicable}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Amount:</span> <span>{{fare.FarePenalties.RefundAfter?.PenaltyAmount?.Amount}} {{fare.FarePenalties.RefundAfter?.PenaltyAmount?.Currency}}</span></div>
+              <div><span class="text-black-50 mr-1">Penalty Conditions:</span>
+                <div *ngIf="fare.FarePenalties.RefundAfter && fare.FarePenalties.RefundAfter.PenaltyConditions">
+                  <div *ngFor="let condition of fare.FarePenalties.RefundAfter.PenaltyConditions">
+                    {{condition}}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </nb-card-body>
+  </nb-card>
+
+  <nb-card class="shadow-none col-sm-6">
+    <nb-card-header>Fare Segments</nb-card-header>
+    <nb-card-body>
+      <div>
+        <!--                    <span class="text-black-50 mr-1">Segments:</span>-->
+        <div *ngIf="fare.FlightSegmentDetails" class="row">
+          <div *ngFor="let segmentDetail of fare.FlightSegmentDetails" class="col-sm-6">
+            <jupiter-obj-display [Data]="segmentDetail" [StyleClass]="'border-box'"></jupiter-obj-display>
+          </div>
+        </div>
+      </div>
+    </nb-card-body>
+  </nb-card>
+</div>

@@ -5,9 +5,13 @@ import {Moment} from 'moment';
 import {
   AmadeusFlightAvailabilityInputCustomData,
   AmadeusFlightBookPnrCustomData,
+  AmadeusFlightDetailInputCustomData,
   AmadeusFlightPnrCustomData,
   AmadeusFlightStepRequestCustomData,
   AvailabilityInputCustomData,
+  CreditCardInfo,
+  ECreditCardType,
+  EDocumentType,
   EFlightCabin,
   EH2HConnectorCode,
   EH2HOperation,
@@ -24,8 +28,13 @@ import {
   JupiterFlightBookRS,
   JupiterFlightDetailInput,
   JupiterFlightDetailRQ,
-  JupiterFlightDetailRS, PnrTravelCompany,
-  SabreFlightAvailabilityInputCustomData,
+  JupiterFlightDetailRS,
+  JupiterFlightPnrRetrieveInput,
+  JupiterFlightPnrRetrieveRQ,
+  JupiterFlightPnrRetrieveRS,
+  PaxDocument,
+  PnrTravelCompany,
+  SabreFlightAvailabilityInputCustomData, SabreFlightBookPnrCustomData, SabreFlightPnrCustomData,
   SabreFlightStepRequestCustomData,
   SingleFlightAvailResult,
   TravelFusionFlightStepRequestCustomData,
@@ -47,15 +56,24 @@ export class FlightSearchComponent implements OnInit {
 
   utils = Utils;
   loading = false;
+  showFilters = false;
 
   jupiterFlightAvailabilityRq: JupiterFlightAvailabilityRQ = null;
   jupiterFlightAvailabilityRs: JupiterFlightAvailabilityRS = null;
+
+  selectedResult: SingleFlightAvailResult = null;
 
   jupiterFlightDetailRq: JupiterFlightDetailRQ = null;
   jupiterFlightDetailRs: JupiterFlightDetailRS = null;
 
   jupiterFlightBookRq: JupiterFlightBookRQ = null;
   jupiterFlightBookRs: JupiterFlightBookRS = null;
+  bookParamClosePNR: boolean = false;
+  bookParamSendCC: boolean = false;
+  bookParamSendDOC: boolean = false;
+
+  jupiterFlightPnrRetrieveRq: JupiterFlightPnrRetrieveRQ = null;
+  jupiterFlightPnrRetrieveRs: JupiterFlightPnrRetrieveRS = null;
 
   EFlightCabin = EFlightCabin;
   EFlightCabinList = Object.keys(EFlightCabin);
@@ -152,6 +170,7 @@ export class FlightSearchComponent implements OnInit {
               IsExpertSearch: false,
               AccountCodes: [],
               EnableFareFamilies: true,
+              EnableMiniRule: false,
             }));
           }
           break;
@@ -320,6 +339,17 @@ export class FlightSearchComponent implements OnInit {
     step['_ConnectorCustomDataConnectors'].splice(index, 1);
   }
 
+  resetSelected(){
+    this.jupiterFlightDetailRq = null;
+    this.jupiterFlightDetailRs = null;
+    this.jupiterFlightBookRq = null;
+    this.jupiterFlightBookRs = null;
+    this.jupiterFlightPnrRetrieveRq = null;
+    this.jupiterFlightPnrRetrieveRs = null;
+
+    this.selectedResult = null;
+  }
+
   /**
    * Execute the flight search
    */
@@ -328,7 +358,14 @@ export class FlightSearchComponent implements OnInit {
 
     this.jupiterFlightDetailRq = null;
     this.jupiterFlightDetailRs = null;
+    this.jupiterFlightBookRq = null;
+    this.jupiterFlightBookRs = null;
+    this.jupiterFlightPnrRetrieveRq = null;
+    this.jupiterFlightPnrRetrieveRs = null;
+
     this.jupiterFlightAvailabilityRs = null;
+
+    this.selectedResult = null;
 
     this.jupiterApiService.flightAvailability(this.jupiterFlightAvailabilityRq).subscribe(response => {
       this.jupiterFlightAvailabilityRs = response;
@@ -351,10 +388,17 @@ export class FlightSearchComponent implements OnInit {
    * @param singleFlightAvailResult
    * @param flightFareGroupResult
    */
-  flightDetails(singleFlightAvailResult: SingleFlightAvailResult, flightFareGroupResult: FlightFareGroupResult) {
+  flightDetails(singleFlightAvailResult: SingleFlightAvailResult, flightFareGroupResult: FlightFareGroupResult, isBestPrice = false) {
     this.loading = true;
 
-    singleFlightAvailResult.FareList = _.filter(singleFlightAvailResult.FareList, function (f: FlightFareGroupResult) {
+    //Set Current selected
+    if(!this.selectedResult || this.selectedResult.Id !== singleFlightAvailResult.Id){
+      this.selectedResult = singleFlightAvailResult;
+    }
+
+    //Copy and get the single fare selected
+    let resultCopy = SingleFlightAvailResult.fromJS(JSON.parse(JSON.stringify(singleFlightAvailResult)));
+    resultCopy.FareList = _.filter(singleFlightAvailResult.FareList, function (f: FlightFareGroupResult) {
       return f.Id === flightFareGroupResult.Id;
     });
 
@@ -362,10 +406,18 @@ export class FlightSearchComponent implements OnInit {
       ConnectorsEnvironment: this.jupiterFlightAvailabilityRq.ConnectorsEnvironment,
       Request: new JupiterFlightDetailInput({
         ConnectorCode: flightFareGroupResult.ConnectorCode,
-        SelectedFlightAvail: singleFlightAvailResult,
+        SelectedFlightAvail: resultCopy,
         ConnectorsDebug: this.jupiterFlightAvailabilityRq.Request.ConnectorsDebug,
       })
     });
+
+    //If Amadeus and isBestPrice force the FareInformativeBestPrice
+    if(flightFareGroupResult.ConnectorCode === EH2HConnectorCode.AMADEUS && isBestPrice)
+    {
+      this.jupiterFlightDetailRq.Request.ConnectorCustomData = new AmadeusFlightDetailInputCustomData({
+        FareInformativeBestPrice: true
+      });
+    }
 
     this.jupiterApiService.flightDetails(this.jupiterFlightDetailRq).subscribe(response => {
       this.jupiterFlightDetailRs = response;
@@ -389,6 +441,7 @@ export class FlightSearchComponent implements OnInit {
    * Execute the flight book
    */
   flightBook() {
+  // flightBook(closePnr: boolean, sendCC: boolean) {
     this.loading = true;
 
     let pnrString = JSON.stringify(this.jupiterFlightDetailRs.Response.Pnr);
@@ -415,6 +468,9 @@ export class FlightSearchComponent implements OnInit {
       TravelCompany: this.jupiterFlightDetailRs.Response.Pnr.TravelCompany
     });
 
+    //Close the PNR
+    bookPnr.ClosePnr = this.bookParamClosePNR;
+
     // Book the same of detail
     this.jupiterFlightBookRq = new JupiterFlightBookRQ({
       ConnectorsEnvironment: this.jupiterFlightAvailabilityRq.ConnectorsEnvironment,
@@ -424,20 +480,58 @@ export class FlightSearchComponent implements OnInit {
       })
     });
 
-    if (bookPnr.ConnectorCode === EH2HConnectorCode.AMADEUS) {
-      // Add Firm
-      this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
-        PnrCustomData: new AmadeusFlightPnrCustomData({
-          ReceivedFrom: 'Andrea',
-          TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
-        })
-      });
+    switch (bookPnr.ConnectorCode){
+      case EH2HConnectorCode.AMADEUS:
+        // Add Firm
+        this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new AmadeusFlightBookPnrCustomData({
+          PnrCustomData: new AmadeusFlightPnrCustomData({
+            ReceivedFrom: 'John Agent',
+            TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
+          })
+        });
 
-      this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
-        Name: 'NAAR TOUR OPERATOR 024855851'
-      });
+        //Send CC make the FOP Call
+        if(this.bookParamSendCC){
+          //Add fake CC
+          this.jupiterFlightBookRq.Request.Pnr.CreditCardPayment = new CreditCardInfo({
+            CardHolderFirstName: 'John',
+            CardHolderLastName: 'Doe',
+            // CreditCardType: ECreditCardType.MASTERCARD,
+            CreditCardType: ECreditCardType.VISA,
+            CreditCardNumber: '4212349999991232',
+            CreditCardCvv: '999',
+            ExpireDate: '10/21'
+          });
+        }
 
+        if(this.bookParamSendDOC){
+          //Fake Document for DOCS
+          this.jupiterFlightBookRq.Request.Pnr.Paxes[0].Documents = [
+            new PaxDocument({
+              Type: EDocumentType.PASSPORT,
+              Number: 'PP0021332211',
+              IssueIsoCode: 'IT',
+              NationalityIsoCode: 'IT',
+              FirstName: 'John',
+              LastName: 'Doe',
+              ExpirationDate: '2026-04-12',
+            })
+          ];
+        }
 
+        //Add Travel Agency
+        this.jupiterFlightBookRq.Request.Pnr.TravelCompany = new PnrTravelCompany({
+          Name: 'My Travel Agency 123123123'
+        });
+
+        break;
+      case EH2HConnectorCode.SABRE:
+        this.jupiterFlightBookRq.Request.Pnr.ConnectorCustomData = new SabreFlightBookPnrCustomData({
+          PnrCustomData: new SabreFlightPnrCustomData({
+            ReceivedFrom: 'John Agent',
+          })
+        });
+        break;
     }
 
     this.jupiterApiService.flightBook(this.jupiterFlightBookRq).subscribe(response => {
@@ -455,6 +549,21 @@ export class FlightSearchComponent implements OnInit {
     });
 
     // flightFareGroupResult
+  }
+
+  retrievePnr() {
+    // this.loading = true;
+
+    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+      ConnectorsEnvironment: this.jupiterFlightBookRq.ConnectorsEnvironment,
+      Request: new JupiterFlightPnrRetrieveInput({
+        ConnectorsDebug: this.jupiterFlightAvailabilityRq.Request.ConnectorsDebug,
+        ConnectorCode: this.jupiterFlightBookRs.Response.Pnr.ConnectorCode,
+        ConnectorCustomData: null,
+        PnrNumber: this.jupiterFlightBookRs.Response.Pnr.PnrNumber,
+      })
+    });
+
   }
 }
 
