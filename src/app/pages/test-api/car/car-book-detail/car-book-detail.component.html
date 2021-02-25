@@ -37,7 +37,7 @@
           <nb-accordion class="shadow-none border-box">
             <nb-accordion-item [expanded]="true">
               <nb-accordion-item-header>
-                <span class="badge badge-pill badge-primary">{{connectorCustomData['_discriminator']}}</span><span class="ml-1">Custom Data</span>
+                <span class="badge badge-pill badge-primary">{{jupiterCarBookDetailRq.Request.ConnectorCustomData['_discriminator']}}</span><span class="ml-1">Custom Data</span>
                 <div class="ml-1">
                   <button nbButton size="tiny" status="danger" (click)="deleteCustomData()"
                     ngbTooltip="Delete Custom Data" placement="top" container="body"><i class="fas fa-trash"></i></button>
