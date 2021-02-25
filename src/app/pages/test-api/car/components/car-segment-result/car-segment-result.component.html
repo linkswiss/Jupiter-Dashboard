@@ -1,0 +1,89 @@
+<div *ngIf="carSegment && carSegment.Car">
+    <div class="row mb-1">
+        <div class="col-sm-3">
+            <img *ngIf="carSegment.Car.Images" class="car-image" [src]="carSegment.Car.Images[0].OriginalUrl">
+            <img *ngIf="!carSegment.Car.Images" class="car-image" src="https://via.placeholder.com/250">
+        </div>
+
+        <div class="col-sm-9">
+
+            <!-- MAIN INFOS -->
+
+            <div class="font-weight-bold">{{carSegment.Car.Name}}</div>
+            <div><span>Id:</span><span class="ml-1">{{carSegment.Id}}</span></div>
+
+            <div>Connectors Match:
+                <div *ngFor="let match of carSegment.Car.ConnectorsMatch">
+                    <span class="badge badge-info text-white p-2 m-1">{{match.ConnectorCode}} {{match.RefId}}</span>
+                </div>
+            </div>
+
+            <div>Rent Duration: <span *ngIf="carSegment.Duration"
+                    class="badge badge-pill badge-secondary">{{carSegment.Duration}} days</span></div>
+
+            <div>Departute Location: <span *ngIf="carSegment.DepartureLocation"
+                    class="badge badge-pill badge-secondary">Code: {{carSegment.DepartureLocation?.Code}} Lat:
+                    {{carSegment.DepartureLocation?.Location?.Lat}} Lng:
+                    {{carSegment.DepartureLocation?.Location?.Lng}}</span></div>
+
+            <div>Arrival Location: <span *ngIf="carSegment.ArrivalLocation"
+                    class="badge badge-pill badge-secondary">Code: {{carSegment.ArrivalLocation?.Code}} Lat:
+                    {{carSegment.ArrivalLocation?.Location?.Lat}} Lng:
+                    {{carSegment.ArrivalLocation?.Location?.Lng}}</span></div>
+        </div>
+
+    </div>
+    <nb-accordion class="shadow-none border-box p-0" multi>
+        <!-- CAR SEGMENT DETAILS-->
+        <nb-accordion-item [expanded]="openDetails">
+            <nb-accordion-item-header>Car Segment Details</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <div class="mb-1">Segment Key: <span *ngIf="carSegment.SegmentKey"
+                        class="badge badge-pill badge-warning">{{carSegment.SegmentKey}}</span></div>
+                <div class="mb-1">ACRISS Code: <span *ngIf="carSegment.Car.AcrissCode"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.AcrissCode}}</span></div>
+                <div class="mb-1">Category: <span *ngIf="carSegment.Car.Category"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.Category}}</span></div>
+                <div class="mb-1">Car Type: <span *ngIf="carSegment.Car.CarType"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.CarType}}</span></div>
+                <div class="mb-1">Transmission: <span *ngIf="carSegment.Car.Transmission"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.Transmission}}</span></div>
+                <div class="mb-1">Special Feature: <span *ngIf="carSegment.Car.SpecialFeature"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.SpecialFeature}}</span></div>
+                <hr>
+
+                <div class="mb-1">Paxes: <span *ngIf="carSegment.Car.Paxes"
+                        class="badge badge-pill badge-warning">{{carSegment.Car.Paxes}}</span></div>
+                <div class="mb-1">Bags: <span *ngIf="carSegment.Car.Bags"
+                        class="badge badge-pill badge-primary">{{carSegment.Car.Bags}}</span></div>
+
+                <!-- IMAGES -->
+                <hr>
+                <div>Images:
+                    <div *ngIf="carSegment.Car.Images" class="row">
+                        <div class="col-sm-3" *ngFor="let image of carSegment.Car.Images">
+                            <img class="car-image" [src]="image.OriginalUrl">
+                        </div>
+                    </div>
+                </div>
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+
+        <!-- CAR SEGMENT CUSTOM DATA-->
+        <nb-accordion-item *ngIf="carSegment.ConnectorCustomData">
+            <nb-accordion-item-header>Car Segment Custom Data</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <pre class="border-box bg-light">{{carSegment.ConnectorCustomData | json}}</pre>
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+
+        <!-- CAR SEGMENT DEBUG-->
+        <nb-accordion-item *ngIf="debug">
+            <nb-accordion-item-header>Car Segment Debug Json</nb-accordion-item-header>
+            <nb-accordion-item-body>
+                <ace [mode]="'json'" [theme]="'monokai'" [value]="carSegment | json"
+                    style="height: 650px; width:100%; overflow: scroll;"></ace>
+            </nb-accordion-item-body>
+        </nb-accordion-item>
+    </nb-accordion>
+</div>

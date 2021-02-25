@@ -69,6 +69,9 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import { RefreshTokenComponent } from './auth/refresh-token/refresh-token.component';
 import { FareDisplayComponent } from './test-api/flight/components/fare-display/fare-display.component';
 import { FlightQueueListComponent } from './test-api/flight/flight-queue-list/flight-queue-list.component';
+import { CarAvailComponent } from './test-api/car/car-avail/car-avail.component';
+import { CarSegmentResultComponent } from './test-api/car/components/car-segment-result/car-segment-result.component';
+import { CarBookDetailComponent } from './test-api/car/car-book-detail/car-book-detail.component';
 
 // import 'brace/ext/searchbox';
 
@@ -145,6 +148,9 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     RefreshTokenComponent,
     FareDisplayComponent,
     FlightQueueListComponent,
+    CarAvailComponent,
+    CarSegmentResultComponent,
+    CarBookDetailComponent
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [
