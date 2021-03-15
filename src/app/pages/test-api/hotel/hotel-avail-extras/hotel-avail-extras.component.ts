@@ -4,7 +4,8 @@ import Utils from '../../../../utility/utils';
 import {
   EH2HConnectorCode,
   EH2HOperation,
-  EPaxType, IHGRoomRequestCustomData,
+  EPaxType, ERequestStatus, IHGRoomRequestCustomData,
+  JonviewAvailabilityExtrasInputCustomData,
   JupiterHotelAvailabilityExtrasInput,
   JupiterHotelAvailabilityExtrasRQ,
   JupiterHotelAvailabilityExtrasRS,
@@ -14,7 +15,8 @@ import {
   JupiterHotelDetailRS, OkkamiExtraAvailCustomData, OkkamiRoomRequestCustomData,
   PaxRequest,
   RoomRequest, SabreSynXisAvailabilityExtrasInputCustomData, SabreSynXisRoomRequestCustomData,
-  SingleHotelAvailResult
+  SingleHotelAvailResult,
+  TekuraAvailabilityExtrasInputCustomData
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {HotelPagesService} from '../../common/services/hotel-pages.service';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
@@ -136,6 +138,27 @@ export class HotelAvailExtrasComponent implements OnInit {
         // '000-000-0054' //Maxwell
         // ];
 
+        break;
+      case EH2HConnectorCode.JONVIEW:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.HotelRefId = 'YTODI';
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new JonviewAvailabilityExtrasInputCustomData({
+          DisplayName: false,
+          DisplayAvail: true,
+          DisplayRestriction: false,
+          DisplayPolicy: false,
+          DisplayDynamicRates: false,
+          DisplayGeoCode: false,
+          Status: ERequestStatus.AVAILABLE
+        });
+
+        break;
+      case EH2HConnectorCode.TEKURA:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredCurrency = "USD";
+        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage = "EN",
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new TekuraAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'BOBACMPOBTI',
+          RoomType: 'SG'
+        });
         break;
     }
   }
