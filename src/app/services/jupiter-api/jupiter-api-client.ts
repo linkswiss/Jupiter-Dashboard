@@ -2819,6 +2819,8 @@ export enum EH2HConnectorCode {
     AMERICA_4_YOU = "AMERICA_4_YOU",
     TEAM_AMERICA = "TEAM_AMERICA",
     ARABIAN = "ARABIAN",
+    JONVIEW = "JONVIEW",
+    MECA = "MECA",
     A_SAMPLE = "A_SAMPLE",
 }
 
@@ -4384,6 +4386,11 @@ export abstract class RoomRatePlanCustomData implements IRoomRatePlanCustomData 
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewRoomRatePlanCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'RoomRatePlanCustomData' cannot be instantiated.");
     }
 
@@ -5716,6 +5723,96 @@ export interface ITeamAmericaRoomRatePlanCustomData extends IRoomRatePlanCustomD
     ChildAge?: number;
     /** It is the type of occupancy to be used for the booking. */
     OccupancyToBook?: string | undefined;
+}
+
+export class JonviewRoomRatePlanCustomData extends RoomRatePlanCustomData implements IJonviewRoomRatePlanCustomData {
+    /** Returns Daily Tariff Pricing per room, i.e. (100.00/100.00/100.00) Price Before Discounts
+Note: Does not apply to Dynamic Rate products
+             */
+    DayTariffPrice?: string | undefined;
+    /** Supplier Information about the dynamic product regarding inclusions, features, etc. (displayed only if displaydynamicrates set to Y in request) */
+    DynamicInfo?: string | undefined;
+    /** The element will appear if the request call include displaydynamicrates set to Y. Indicates whether the product has dynamic rates or not.
+Y: This product is a dynamic rate product
+N: This product is a static rate product */
+    DynamicRateProduct?: boolean;
+    /** The element will appear if the displayroomconf and displaynamedetails are set to Y in request call
+Y: Additional fees must be paid at the property
+N: All fees included in price */
+    AdditionalFeetAtProperty?: boolean | undefined;
+    /** Returns the description of the fee(s) to be paid directly to the property (displayed if displayroomconf and additionalfeeatproperty are both set to Y in Request call) */
+    AdditionalFeetDescription?: string | undefined;
+    /** Returns the chain code for dynamic rate hotels only. Format ChainCode (– N*) - indicates that the property returns only dynamic rates (displayed only if displayroomconf and displaynamedetails are set to Y in Request call) */
+    ChainCode?: string | undefined;
+    /** The number of adults indicated in the request */
+    Adults?: number;
+    /** The number of children indicated in the request */
+    Children?: number;
+
+    constructor(data?: IJonviewRoomRatePlanCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.DayTariffPrice = _data["DayTariffPrice"];
+            this.DynamicInfo = _data["DynamicInfo"];
+            this.DynamicRateProduct = _data["DynamicRateProduct"];
+            this.AdditionalFeetAtProperty = _data["AdditionalFeetAtProperty"];
+            this.AdditionalFeetDescription = _data["AdditionalFeetDescription"];
+            this.ChainCode = _data["ChainCode"];
+            this.Adults = _data["Adults"];
+            this.Children = _data["Children"];
+        }
+    }
+
+    static fromJS(data: any): JonviewRoomRatePlanCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewRoomRatePlanCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["DayTariffPrice"] = this.DayTariffPrice;
+        data["DynamicInfo"] = this.DynamicInfo;
+        data["DynamicRateProduct"] = this.DynamicRateProduct;
+        data["AdditionalFeetAtProperty"] = this.AdditionalFeetAtProperty;
+        data["AdditionalFeetDescription"] = this.AdditionalFeetDescription;
+        data["ChainCode"] = this.ChainCode;
+        data["Adults"] = this.Adults;
+        data["Children"] = this.Children;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewRoomRatePlanCustomData extends IRoomRatePlanCustomData {
+    /** Returns Daily Tariff Pricing per room, i.e. (100.00/100.00/100.00) Price Before Discounts
+Note: Does not apply to Dynamic Rate products
+             */
+    DayTariffPrice?: string | undefined;
+    /** Supplier Information about the dynamic product regarding inclusions, features, etc. (displayed only if displaydynamicrates set to Y in request) */
+    DynamicInfo?: string | undefined;
+    /** The element will appear if the request call include displaydynamicrates set to Y. Indicates whether the product has dynamic rates or not.
+Y: This product is a dynamic rate product
+N: This product is a static rate product */
+    DynamicRateProduct?: boolean;
+    /** The element will appear if the displayroomconf and displaynamedetails are set to Y in request call
+Y: Additional fees must be paid at the property
+N: All fees included in price */
+    AdditionalFeetAtProperty?: boolean | undefined;
+    /** Returns the description of the fee(s) to be paid directly to the property (displayed if displayroomconf and additionalfeeatproperty are both set to Y in Request call) */
+    AdditionalFeetDescription?: string | undefined;
+    /** Returns the chain code for dynamic rate hotels only. Format ChainCode (– N*) - indicates that the property returns only dynamic rates (displayed only if displayroomconf and displaynamedetails are set to Y in Request call) */
+    ChainCode?: string | undefined;
+    /** The number of adults indicated in the request */
+    Adults?: number;
+    /** The number of children indicated in the request */
+    Children?: number;
 }
 
 export abstract class CustomerCustomDataOfRoomRatePlan implements ICustomerCustomDataOfRoomRatePlan {
@@ -8214,6 +8311,11 @@ export abstract class AvailabilityInputCustomData implements IAvailabilityInputC
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewAvailabilityInputCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'AvailabilityInputCustomData' cannot be instantiated.");
     }
 
@@ -9737,6 +9839,126 @@ For all products in that city leave it blank. */
             If it is not specified, the default country for the API will be used (US)
              */
     Nationality?: string | undefined;
+}
+
+export class JonviewAvailabilityInputCustomData extends AvailabilityInputCustomData implements IJonviewAvailabilityInputCustomData {
+    /** Status; if omitted or left blank, it returns Available (Default)
+• AVAILABLE: Retrieves only Available products
+• ON REQUEST: Retrieves only products that are On Request
+• ALL: Retrieves both Available and On Request products */
+    Status?: ERequestStatus | undefined;
+    /** Determine if the response should display the product name
+• Y: Display the product name
+• N: Do not display the product name (Default) */
+    DisplayName?: boolean;
+    /** Determine if the response should display the room configuration as part of the product name details. Returned only if prodtypecode = FIT
+• Y: Display room configuration
+• N: Do not display room configuration (Default)
+If displaynamedetails is combined with displaydynamicrates and displayroomconf (Y), the response will include details on the hotel chain and additional fees applicable to the FIT dynamic rate products */
+    DisplayRoomConfig?: boolean;
+    /** Determine if the response should display daily availability
+• Y: Display daily availability (Default)
+• N: Do not display daily availability */
+    DisplayAvail?: boolean;
+    /** Determine if the response should display product restrictions such as No arrival, Min/Max occupancy, etc.
+• Y: Display restrictions
+• N: Do not display restrictions (Default) */
+    DisplayRestriction?: boolean;
+    /** Determine if the response should display cancellation policies.
+• Y: Display policies
+• N: Do not display policies (Default) */
+    DisplayPolicy?: boolean;
+    /** Determine if the response should display dynamic rates. This is exclusive to partners that have dynamic rates enabled in the partner control sheet.
+• Y: Display dynamic rates
+• N: Do not display dynamic rates (Default) */
+    DisplayDynamicRates?: boolean;
+    /** Determine if the response should display the Latitude and Longitude elements
+• Y: Display the geocodes
+• N: Do not display the geocodes (Default) */
+    DisplayGeoCode?: boolean;
+
+    constructor(data?: IJonviewAvailabilityInputCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.Status = _data["Status"];
+            this.DisplayName = _data["DisplayName"];
+            this.DisplayRoomConfig = _data["DisplayRoomConfig"];
+            this.DisplayAvail = _data["DisplayAvail"];
+            this.DisplayRestriction = _data["DisplayRestriction"];
+            this.DisplayPolicy = _data["DisplayPolicy"];
+            this.DisplayDynamicRates = _data["DisplayDynamicRates"];
+            this.DisplayGeoCode = _data["DisplayGeoCode"];
+        }
+    }
+
+    static fromJS(data: any): JonviewAvailabilityInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewAvailabilityInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Status"] = this.Status;
+        data["DisplayName"] = this.DisplayName;
+        data["DisplayRoomConfig"] = this.DisplayRoomConfig;
+        data["DisplayAvail"] = this.DisplayAvail;
+        data["DisplayRestriction"] = this.DisplayRestriction;
+        data["DisplayPolicy"] = this.DisplayPolicy;
+        data["DisplayDynamicRates"] = this.DisplayDynamicRates;
+        data["DisplayGeoCode"] = this.DisplayGeoCode;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewAvailabilityInputCustomData extends IAvailabilityInputCustomData {
+    /** Status; if omitted or left blank, it returns Available (Default)
+• AVAILABLE: Retrieves only Available products
+• ON REQUEST: Retrieves only products that are On Request
+• ALL: Retrieves both Available and On Request products */
+    Status?: ERequestStatus | undefined;
+    /** Determine if the response should display the product name
+• Y: Display the product name
+• N: Do not display the product name (Default) */
+    DisplayName?: boolean;
+    /** Determine if the response should display the room configuration as part of the product name details. Returned only if prodtypecode = FIT
+• Y: Display room configuration
+• N: Do not display room configuration (Default)
+If displaynamedetails is combined with displaydynamicrates and displayroomconf (Y), the response will include details on the hotel chain and additional fees applicable to the FIT dynamic rate products */
+    DisplayRoomConfig?: boolean;
+    /** Determine if the response should display daily availability
+• Y: Display daily availability (Default)
+• N: Do not display daily availability */
+    DisplayAvail?: boolean;
+    /** Determine if the response should display product restrictions such as No arrival, Min/Max occupancy, etc.
+• Y: Display restrictions
+• N: Do not display restrictions (Default) */
+    DisplayRestriction?: boolean;
+    /** Determine if the response should display cancellation policies.
+• Y: Display policies
+• N: Do not display policies (Default) */
+    DisplayPolicy?: boolean;
+    /** Determine if the response should display dynamic rates. This is exclusive to partners that have dynamic rates enabled in the partner control sheet.
+• Y: Display dynamic rates
+• N: Do not display dynamic rates (Default) */
+    DisplayDynamicRates?: boolean;
+    /** Determine if the response should display the Latitude and Longitude elements
+• Y: Display the geocodes
+• N: Do not display the geocodes (Default) */
+    DisplayGeoCode?: boolean;
+}
+
+export enum ERequestStatus {
+    AVAILABLE = "AVAILABLE",
+    ON_REQUEST = "ON_REQUEST",
+    ALL = "ALL",
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelAvailabilityInput implements ICustomerCustomDataOfJupiterHotelAvailabilityInput {
@@ -12152,6 +12374,11 @@ export abstract class AvailabilityExtrasInputCustomData implements IAvailability
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewAvailabilityExtrasInputCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'AvailabilityExtrasInputCustomData' cannot be instantiated.");
     }
 
@@ -12249,6 +12476,108 @@ export interface ITekuraAvailabilityExtrasInputCustomData extends IAvailabilityE
     RatePlanCode?: string | undefined;
     /** Availability Room Type */
     RoomType?: string | undefined;
+}
+
+export class JonviewAvailabilityExtrasInputCustomData extends AvailabilityExtrasInputCustomData implements IJonviewAvailabilityExtrasInputCustomData {
+    /** Status; if omitted or left blank, it returns Available (Default)
+• AVAILABLE: Retrieves only Available products
+• ON REQUEST: Retrieves only products that are On Request
+• ALL: Retrieves both Available and On Request products */
+    Status?: ERequestStatus | undefined;
+    /** Determine if the response should display the product name
+• Y: Display the product name
+• N: Do not display the product name (Default) */
+    DisplayName?: boolean;
+    /** Determine if the response should display daily availability
+• Y: Display daily availability (Default)
+• N: Do not display daily availability */
+    DisplayAvail?: boolean;
+    /** Determine if the response should display product restrictions such as No arrival, Min/Max occupancy, etc.
+• Y: Display restrictions
+• N: Do not display restrictions (Default) */
+    DisplayRestriction?: boolean;
+    /** Determine if the response should display cancellation policies.
+• Y: Display policies
+• N: Do not display policies (Default) */
+    DisplayPolicy?: boolean;
+    /** Determine if the response should display dynamic rates. This is exclusive to partners that have dynamic rates enabled in the partner control sheet.
+• Y: Display dynamic rates
+• N: Do not display dynamic rates (Default) */
+    DisplayDynamicRates?: boolean;
+    /** Determine if the response should display the Latitude and Longitude elements
+• Y: Display the geocodes
+• N: Do not display the geocodes (Default) */
+    DisplayGeoCode?: boolean;
+
+    constructor(data?: IJonviewAvailabilityExtrasInputCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.Status = _data["Status"];
+            this.DisplayName = _data["DisplayName"];
+            this.DisplayAvail = _data["DisplayAvail"];
+            this.DisplayRestriction = _data["DisplayRestriction"];
+            this.DisplayPolicy = _data["DisplayPolicy"];
+            this.DisplayDynamicRates = _data["DisplayDynamicRates"];
+            this.DisplayGeoCode = _data["DisplayGeoCode"];
+        }
+    }
+
+    static fromJS(data: any): JonviewAvailabilityExtrasInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewAvailabilityExtrasInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["Status"] = this.Status;
+        data["DisplayName"] = this.DisplayName;
+        data["DisplayAvail"] = this.DisplayAvail;
+        data["DisplayRestriction"] = this.DisplayRestriction;
+        data["DisplayPolicy"] = this.DisplayPolicy;
+        data["DisplayDynamicRates"] = this.DisplayDynamicRates;
+        data["DisplayGeoCode"] = this.DisplayGeoCode;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewAvailabilityExtrasInputCustomData extends IAvailabilityExtrasInputCustomData {
+    /** Status; if omitted or left blank, it returns Available (Default)
+• AVAILABLE: Retrieves only Available products
+• ON REQUEST: Retrieves only products that are On Request
+• ALL: Retrieves both Available and On Request products */
+    Status?: ERequestStatus | undefined;
+    /** Determine if the response should display the product name
+• Y: Display the product name
+• N: Do not display the product name (Default) */
+    DisplayName?: boolean;
+    /** Determine if the response should display daily availability
+• Y: Display daily availability (Default)
+• N: Do not display daily availability */
+    DisplayAvail?: boolean;
+    /** Determine if the response should display product restrictions such as No arrival, Min/Max occupancy, etc.
+• Y: Display restrictions
+• N: Do not display restrictions (Default) */
+    DisplayRestriction?: boolean;
+    /** Determine if the response should display cancellation policies.
+• Y: Display policies
+• N: Do not display policies (Default) */
+    DisplayPolicy?: boolean;
+    /** Determine if the response should display dynamic rates. This is exclusive to partners that have dynamic rates enabled in the partner control sheet.
+• Y: Display dynamic rates
+• N: Do not display dynamic rates (Default) */
+    DisplayDynamicRates?: boolean;
+    /** Determine if the response should display the Latitude and Longitude elements
+• Y: Display the geocodes
+• N: Do not display the geocodes (Default) */
+    DisplayGeoCode?: boolean;
 }
 
 export abstract class CustomerCustomDataOfJupiterHotelAvailabilityExtrasInput implements ICustomerCustomDataOfJupiterHotelAvailabilityExtrasInput {
@@ -12757,6 +13086,11 @@ export abstract class SingleHotelDetailResultCustomData implements ISingleHotelD
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewSingleHotelDetailResultCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'SingleHotelDetailResultCustomData' cannot be instantiated.");
     }
 
@@ -12860,6 +13194,52 @@ export class CreoleSingleHotelDetailResultCustomData extends SingleHotelDetailRe
 export interface ICreoleSingleHotelDetailResultCustomData extends ISingleHotelDetailResultCustomData {
     /** Hotel Description List */
     Descriptions?: string[] | undefined;
+}
+
+/** Jonview Custom Data for SingleHotelDetailResult */
+export class JonviewSingleHotelDetailResultCustomData extends SingleHotelDetailResultCustomData implements IJonviewSingleHotelDetailResultCustomData {
+    /** Hotel Activities List */
+    Activities?: AmenityDetail[] | undefined;
+
+    constructor(data?: IJonviewSingleHotelDetailResultCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["Activities"])) {
+                this.Activities = [] as any;
+                for (let item of _data["Activities"])
+                    this.Activities!.push(AmenityDetail.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): JonviewSingleHotelDetailResultCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewSingleHotelDetailResultCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.Activities)) {
+            data["Activities"] = [];
+            for (let item of this.Activities)
+                data["Activities"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+/** Jonview Custom Data for SingleHotelDetailResult */
+export interface IJonviewSingleHotelDetailResultCustomData extends ISingleHotelDetailResultCustomData {
+    /** Hotel Activities List */
+    Activities?: AmenityDetail[] | undefined;
 }
 
 export abstract class CustomerCustomDataOfSingleHotelDetailResult implements ICustomerCustomDataOfSingleHotelDetailResult {
@@ -15241,6 +15621,11 @@ export abstract class RoomToBookCustomData implements IRoomToBookCustomData {
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewRoomToBookCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'RoomToBookCustomData' cannot be instantiated.");
     }
 
@@ -16022,6 +16407,60 @@ export interface ITeamAmericaRoomToBookCustomData extends IRoomToBookCustomData 
     Nationality?: string | undefined;
 }
 
+export class JonviewRoomToBookCustomData extends RoomToBookCustomData implements IJonviewRoomToBookCustomData {
+    /** Room RatePlanCode obtained from Availability.
+Jonview product code.
+Please check the Jonview Canada Tariff for valid Jonview product codes.
+For dynamic rates bookings the product code must include the dynamic rate code. Product code and dynamic code are separated by a dash - (i.e. YVRWX-D1) */
+    RatePlanCode?: string | undefined;
+    /** Passenger Language Code. Defaults to Language Code of the Partner */
+    LanguageCode?: string | undefined;
+    /** Note to Supplier, for example: "Please reserve adjoining rooms..." */
+    Note?: string | undefined;
+
+    constructor(data?: IJonviewRoomToBookCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.RatePlanCode = _data["RatePlanCode"];
+            this.LanguageCode = _data["LanguageCode"];
+            this.Note = _data["Note"];
+        }
+    }
+
+    static fromJS(data: any): JonviewRoomToBookCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewRoomToBookCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["RatePlanCode"] = this.RatePlanCode;
+        data["LanguageCode"] = this.LanguageCode;
+        data["Note"] = this.Note;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewRoomToBookCustomData extends IRoomToBookCustomData {
+    /** Room RatePlanCode obtained from Availability.
+Jonview product code.
+Please check the Jonview Canada Tariff for valid Jonview product codes.
+For dynamic rates bookings the product code must include the dynamic rate code. Product code and dynamic code are separated by a dash - (i.e. YVRWX-D1) */
+    RatePlanCode?: string | undefined;
+    /** Passenger Language Code. Defaults to Language Code of the Partner */
+    LanguageCode?: string | undefined;
+    /** Note to Supplier, for example: "Please reserve adjoining rooms..." */
+    Note?: string | undefined;
+}
+
 export abstract class CustomerCustomDataOfRoomToBook implements ICustomerCustomDataOfRoomToBook {
 
     protected _discriminator: string;
@@ -16272,6 +16711,11 @@ export abstract class HotelBookInputCustomData implements IHotelBookInputCustomD
         }
         if (data["CustomDataConnectorCode"] === "AMERICA_4_YOU") {
             let result = new America4YouHotelBookInputCustomData();
+            result.init(data);
+            return result;
+        }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewHotelBookInputCustomData();
             result.init(data);
             return result;
         }
@@ -17744,6 +18188,40 @@ export class America4YouHotelBookInputCustomData extends HotelBookInputCustomDat
 }
 
 export interface IAmerica4YouHotelBookInputCustomData extends IHotelBookInputCustomData {
+    BookingCode?: string | undefined;
+}
+
+export class JonviewHotelBookInputCustomData extends HotelBookInputCustomData implements IJonviewHotelBookInputCustomData {
+    BookingCode?: string | undefined;
+
+    constructor(data?: IJonviewHotelBookInputCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.BookingCode = _data["BookingCode"];
+        }
+    }
+
+    static fromJS(data: any): JonviewHotelBookInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewHotelBookInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["BookingCode"] = this.BookingCode;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewHotelBookInputCustomData extends IHotelBookInputCustomData {
     BookingCode?: string | undefined;
 }
 
@@ -19825,6 +20303,11 @@ export abstract class SingleRoomBookResultCustomData implements ISingleRoomBookR
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewSingleRoomBookResultCustomData();
+            result.init(data);
+            return result;
+        }
         throw new Error("The abstract class 'SingleRoomBookResultCustomData' cannot be instantiated.");
     }
 
@@ -20032,6 +20515,48 @@ export interface IIHGSingleRoomBookResultCustomData extends ISingleRoomBookResul
     Adults?: number | undefined;
     /** Children Number */
     Children?: number | undefined;
+}
+
+export class JonviewSingleRoomBookResultCustomData extends SingleRoomBookResultCustomData implements IJonviewSingleRoomBookResultCustomData {
+    /** It indicates if it is a room or an extra booked. */
+    IsAnExtra?: boolean;
+    /** Note to Supplier, for example: "Please reserve adjoining rooms..." */
+    Note?: string | undefined;
+
+    constructor(data?: IJonviewSingleRoomBookResultCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.IsAnExtra = _data["IsAnExtra"];
+            this.Note = _data["Note"];
+        }
+    }
+
+    static fromJS(data: any): JonviewSingleRoomBookResultCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewSingleRoomBookResultCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["IsAnExtra"] = this.IsAnExtra;
+        data["Note"] = this.Note;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewSingleRoomBookResultCustomData extends ISingleRoomBookResultCustomData {
+    /** It indicates if it is a room or an extra booked. */
+    IsAnExtra?: boolean;
+    /** Note to Supplier, for example: "Please reserve adjoining rooms..." */
+    Note?: string | undefined;
 }
 
 export abstract class CustomerCustomDataOfSingleRoomBookResult implements ICustomerCustomDataOfSingleRoomBookResult {
@@ -33796,6 +34321,11 @@ export class DestinationListInputCustomData implements IDestinationListInputCust
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "JONVIEW") {
+            let result = new JonviewDestinationListInputCustomData();
+            result.init(data);
+            return result;
+        }
         let result = new DestinationListInputCustomData();
         result.init(data);
         return result;
@@ -34015,6 +34545,46 @@ export class TeamAmericaDestinationListInputCustomData extends DestinationListIn
 }
 
 export interface ITeamAmericaDestinationListInputCustomData extends IDestinationListInputCustomData {
+}
+
+export class JonviewDestinationListInputCustomData extends DestinationListInputCustomData implements IJonviewDestinationListInputCustomData {
+    /** Determine if the response should display the description broken down.
+• True: Break down the city description (Default)
+• False: Do not break down the city description  */
+    DetailedResponse?: boolean;
+
+    constructor(data?: IJonviewDestinationListInputCustomData) {
+        super(data);
+        this._discriminator = "JONVIEW";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            this.DetailedResponse = _data["DetailedResponse"];
+        }
+    }
+
+    static fromJS(data: any): JonviewDestinationListInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new JonviewDestinationListInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["DetailedResponse"] = this.DetailedResponse;
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface IJonviewDestinationListInputCustomData extends IDestinationListInputCustomData {
+    /** Determine if the response should display the description broken down.
+• True: Break down the city description (Default)
+• False: Do not break down the city description  */
+    DetailedResponse?: boolean;
 }
 
 export abstract class CustomerCustomDataOfJupiterDestinationListInput implements ICustomerCustomDataOfJupiterDestinationListInput {
