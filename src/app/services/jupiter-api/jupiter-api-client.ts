@@ -13715,6 +13715,11 @@ export abstract class HotelDetailInputCustomData implements IHotelDetailInputCus
             result.init(data);
             return result;
         }
+        if (data["CustomDataConnectorCode"] === "CREOLE") {
+            let result = new CreoleHotelDetailInputCustomData();
+            result.init(data);
+            return result;
+        }
         if (data["CustomDataConnectorCode"] === "HOTELBEDS") {
             let result = new HotelbedsHotelDetailInputCustomData();
             result.init(data);
@@ -13851,6 +13856,96 @@ export class SabreCSLHotelDetailInputCustomData extends HotelDetailInputCustomDa
 export interface ISabreCSLHotelDetailInputCustomData extends IHotelDetailInputCustomData {
     /** maxItems: 50 - Lists hotels by code. */
     HotelRef?: HotelRef | undefined;
+}
+
+export class CreoleHotelDetailInputCustomData extends HotelDetailInputCustomData implements ICreoleHotelDetailInputCustomData {
+    /** maxItems: 25 - Lists hotels by code or RatePlanCode. */
+    HotelIds?: HotelId[] | undefined;
+
+    constructor(data?: ICreoleHotelDetailInputCustomData) {
+        super(data);
+        this._discriminator = "CREOLE";
+    }
+
+    init(_data?: any) {
+        super.init(_data);
+        if (_data) {
+            if (Array.isArray(_data["HotelIds"])) {
+                this.HotelIds = [] as any;
+                for (let item of _data["HotelIds"])
+                    this.HotelIds!.push(HotelId.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CreoleHotelDetailInputCustomData {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreoleHotelDetailInputCustomData();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.HotelIds)) {
+            data["HotelIds"] = [];
+            for (let item of this.HotelIds)
+                data["HotelIds"].push(item.toJSON());
+        }
+        super.toJSON(data);
+        return data; 
+    }
+}
+
+export interface ICreoleHotelDetailInputCustomData extends IHotelDetailInputCustomData {
+    /** maxItems: 25 - Lists hotels by code or RatePlanCode. */
+    HotelIds?: HotelId[] | undefined;
+}
+
+export class HotelId implements IHotelId {
+    /** Hotel Code */
+    HotelCode?: string | undefined;
+    /** Booking Code
+Note: If the Code and the BookingCode are both sent, the system will take the BookingCode and ignore the Code. */
+    BookingCode?: string | undefined;
+
+    constructor(data?: IHotelId) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.HotelCode = _data["HotelCode"];
+            this.BookingCode = _data["BookingCode"];
+        }
+    }
+
+    static fromJS(data: any): HotelId {
+        data = typeof data === 'object' ? data : {};
+        let result = new HotelId();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["HotelCode"] = this.HotelCode;
+        data["BookingCode"] = this.BookingCode;
+        return data; 
+    }
+}
+
+export interface IHotelId {
+    /** Hotel Code */
+    HotelCode?: string | undefined;
+    /** Booking Code
+Note: If the Code and the BookingCode are both sent, the system will take the BookingCode and ignore the Code. */
+    BookingCode?: string | undefined;
 }
 
 export class HotelbedsHotelDetailInputCustomData extends HotelDetailInputCustomData implements IHotelbedsHotelDetailInputCustomData {

@@ -3,8 +3,9 @@ import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular
 import Utils from '../../../../utility/utils';
 import {
   AvailabilityInputCustomData,
-  BookingDotComAvailabilityInputCustomData, EH2HConnectorCode,
+  BookingDotComAvailabilityInputCustomData, BookingDotComHotelDetailInputCustomData, CreoleHotelDetailInputCustomData, EH2HConnectorCode,
   EH2HOperation,
+  HotelbedsHotelDetailInputCustomData,
   IHGAvailabilityInputCustomData, IHGHotelBookDetailInputCustomData,
   JupiterHotelAvailabilityRQ,
   JupiterHotelAvailabilityRS, JupiterHotelDetailRQ, JupiterHotelDetailRS, PaxRequest, RoomRequest,
@@ -84,6 +85,42 @@ export class HotelDetailComponent implements OnInit {
         //   IhgSsoToken: '',
         //   LastName: 'Doe',
         // });
+        break;
+      case EH2HConnectorCode.BOOKING_DOT_COM:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = [];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new BookingDotComHotelDetailInputCustomData({
+          Rows: 10,
+          Offset: 0,
+          ReturnAcceptedCreditCards: false,
+          ReturnRoomInfo: false,
+          ReturnRoomPhotos: false,
+          ReturnHotelPhotos: true,
+          ReturnHotelPolicies: false,
+          ReturnPaymentDetails: false,
+          ReturnRoomFacilities: false,
+          ReturnHotelFacilities: true,
+          ReturnRoomDescription: false,
+          ReturnHotelDescription: true,
+          ReturnKeyCollectionInfo: false        
+         });
+        break;
+      case EH2HConnectorCode.CREOLE:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['JP046300', 'JP150074', 'JP046391'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.HOTELBEDS:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['265', '138780'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new HotelbedsHotelDetailInputCustomData({
+          UseSecondaryLanguage: false
+        });
+        break;
+      case EH2HConnectorCode.JONVIEW:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['YTODI','YTOCI'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.TEAM_AMERICA:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['55','57'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
         break;
     }
   }
