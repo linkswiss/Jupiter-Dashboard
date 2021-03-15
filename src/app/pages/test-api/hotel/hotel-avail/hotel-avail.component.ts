@@ -296,6 +296,7 @@ export class HotelAvailComponent implements OnInit {
                   HotelRefIds:['4016001','1533015','1408001','1211003'],
                   DestinationRefIds: [],
                   HotelType: EHotelType.ALL,
+                  RatePlanId: null,
                   MealPlanCode: EMealPlanType.ALL,
                   HotelName: true,
                   HotelAddress: true,
