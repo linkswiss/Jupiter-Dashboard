@@ -29,6 +29,7 @@ export class SettingsComponent implements OnInit {
 
   cacheEntriesColumns = [];
   cacheEntriesData: Array<CacheEntry> = [];
+  cacheEntriesDataFiltered: Array<CacheEntry> = [];
   cacheEntriesDefaultSort = [];
   cacheResult: SingleCacheItem = null;
 
@@ -121,6 +122,7 @@ export class SettingsComponent implements OnInit {
   getCacheEntries() {
     this.dashboardApiService.getCacheEntries().subscribe(cacheEntries => {
       this.cacheEntriesData = cacheEntries;
+      this.cacheEntriesDataFiltered = this.cacheEntriesData;
     }, error => {
       console.error(error);
     });
@@ -129,6 +131,7 @@ export class SettingsComponent implements OnInit {
   clearCache() {
     this.dashboardApiService.clearCache().subscribe(cacheEntries => {
       this.cacheEntriesData = cacheEntries;
+      this.cacheEntriesDataFiltered = this.cacheEntriesData;
     }, error => {
       console.error(error);
     });
@@ -150,9 +153,24 @@ export class SettingsComponent implements OnInit {
   clearSingleCacheItem(cacheEntry: CacheEntry) {
     this.dashboardApiService.clearSingleCacheItem(cacheEntry.CachedItemKey).subscribe(cacheEntries => {
       this.cacheEntriesData = cacheEntries;
+      this.cacheEntriesDataFiltered = this.cacheEntriesData;
     }, error => {
       console.error(error);
     });
+  }
+
+  filterCacheItems(event) {
+    const val = event.target.value.toLowerCase();
+
+    // filter our data
+    const temp = this.cacheEntriesData.filter(function (d) {
+      return d.CachedItemType.toLowerCase().indexOf(val) !== -1 || !val;
+    });
+
+    // update the rows
+    this.cacheEntriesDataFiltered = temp;
+    // Whenever the filter changes, always go back to the first page
+    // this.table.offset = 0;
   }
 
   getJsonObject(object: any): string {
