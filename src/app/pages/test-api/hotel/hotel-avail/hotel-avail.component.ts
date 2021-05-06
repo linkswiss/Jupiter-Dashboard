@@ -12,7 +12,7 @@ import {
   EH2HOperation,
   EPaxType, HotelbedsAvailabilityInputCustomData,
   IHGAvailabilityInputCustomData,
-  IHGRoomRequestCustomData,
+  IHGRoomRequestCustomData, JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS,
   JupiterHotelAvailabilityRQ,
   JupiterHotelAvailabilityRS,
   PaxRequest,
@@ -62,8 +62,17 @@ export class HotelAvailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_AVAIL);
-    this.jupiterHotelAvailabilityRq = this.hotelPagesService.initJupiterHotelAvailabilityRQ();
-    this.jupiterHotelAvailabilityRs = this.hotelPagesService.initJupiterHotelAvailabilityRS();
+
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelAvailabilityRq = JupiterHotelAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelAvailabilityRs = JupiterHotelAvailabilityRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterHotelAvailabilityRq = this.hotelPagesService.initJupiterHotelAvailabilityRQ();
+      this.jupiterHotelAvailabilityRs = this.hotelPagesService.initJupiterHotelAvailabilityRS();
+    }
   }
 
   /**

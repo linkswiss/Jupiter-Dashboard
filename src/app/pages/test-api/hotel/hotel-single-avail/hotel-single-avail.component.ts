@@ -51,10 +51,19 @@ export class HotelSingleAvailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_AVAIL_SINGLE);
-    this.jupiterSingleHotelAvailabilityRQ = this.hotelPagesService.initJupiterSingleHotelAvailabilityRQ();
-    this.jupiterSingleHotelAvailabilityRS = this.hotelPagesService.initJupiterSingleHotelAvailabilityRS();
-    if (this.hotelPagesService.availSelectedModel) {
-      this.searchSingleHotelAvailability();
+
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterSingleHotelAvailabilityRQ = JupiterSingleHotelAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterSingleHotelAvailabilityRS = JupiterSingleHotelAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterSingleHotelAvailabilityRQ = this.hotelPagesService.initJupiterSingleHotelAvailabilityRQ();
+      this.jupiterSingleHotelAvailabilityRS = this.hotelPagesService.initJupiterSingleHotelAvailabilityRS();
+      if (this.hotelPagesService.availSelectedModel) {
+        this.searchSingleHotelAvailability();
+      }
     }
   }
 

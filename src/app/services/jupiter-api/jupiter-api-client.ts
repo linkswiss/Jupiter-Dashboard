@@ -2483,6 +2483,49 @@ export class UtilityClient extends ApiClientBase {
     }
     return Promise.resolve<FileResponse>(<any>null);
   }
+
+  /**
+   * Get ElasticSearch Logs
+   */
+  getElasticLogs(request: ElasticLogsRQ): Promise<ElasticLogsRS> {
+    let url_ = this.baseUrl + "/jupiter-api/1/Utility/elastic-logs";
+    url_ = url_.replace(/[?&]$/, "");
+
+    const content_ = JSON.stringify(request);
+
+    let options_ = <RequestInit>{
+      body: content_,
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    };
+
+    return this.transformOptions(options_).then(transformedOptions_ => {
+      return this.http.fetch(url_, transformedOptions_);
+    }).then((_response: Response) => {
+      return this.processGetElasticLogs(_response);
+    });
+  }
+
+  protected processGetElasticLogs(response: Response): Promise<ElasticLogsRS> {
+    const status = response.status;
+    let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+    if (status === 200) {
+      return response.text().then((_responseText) => {
+        let result200: any = null;
+        let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+        result200 = ElasticLogsRS.fromJS(resultData200);
+        return result200;
+      });
+    } else if (status !== 200 && status !== 204) {
+      return response.text().then((_responseText) => {
+        return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+      });
+    }
+    return Promise.resolve<ElasticLogsRS>(<any>null);
+  }
 }
 
 export abstract class BaseRS implements IBaseRS {
@@ -2828,6 +2871,8 @@ export enum EH2HConnectorCode {
   RMH_TOURS = "RMH_TOURS",
   GO_WEST = "GO_WEST",
   AOT = "AOT",
+  RESTEL = "RESTEL",
+  TOURMAPPERS = "TOURMAPPERS",
   A_SAMPLE = "A_SAMPLE",
 }
 
@@ -49819,6 +49864,561 @@ export interface ISwaggerUrlRQ {
   Url?: string | undefined;
   /** The Generated Client ClassName -&gt; {ClassName}{controller}Client */
   ClientClassName?: string | undefined;
+}
+
+export class ElasticLogsRS implements IElasticLogsRS {
+  /** Underline Elastic API Rq/Rs */
+  ElasticUnderlineApiDebug?: ElasticUnderlineApiDebug[] | undefined;
+  /** Total Count of Service Call logs */
+  ServiceCallTotalCount?: number;
+  /** Service Call logs */
+  ServiceCall?: CallLog[] | undefined;
+  /** Total Count of Remote Call logs */
+  RemoteCallTotalCount?: number;
+  /** Connector Remote Call logs */
+  RemoteCall?: CallRemoteConnectorLog[] | undefined;
+  /** Total Count of Custom Call logs */
+  CustomCallTotalCount?: number;
+  /** Custom Call logs */
+  CustomCall?: CallCustomLog[] | undefined;
+
+  constructor(data?: IElasticLogsRS) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      if (Array.isArray(_data["ElasticUnderlineApiDebug"])) {
+        this.ElasticUnderlineApiDebug = [] as any;
+        for (let item of _data["ElasticUnderlineApiDebug"])
+          this.ElasticUnderlineApiDebug!.push(ElasticUnderlineApiDebug.fromJS(item));
+      }
+      this.ServiceCallTotalCount = _data["ServiceCallTotalCount"];
+      if (Array.isArray(_data["ServiceCall"])) {
+        this.ServiceCall = [] as any;
+        for (let item of _data["ServiceCall"])
+          this.ServiceCall!.push(CallLog.fromJS(item));
+      }
+      this.RemoteCallTotalCount = _data["RemoteCallTotalCount"];
+      if (Array.isArray(_data["RemoteCall"])) {
+        this.RemoteCall = [] as any;
+        for (let item of _data["RemoteCall"])
+          this.RemoteCall!.push(CallRemoteConnectorLog.fromJS(item));
+      }
+      this.CustomCallTotalCount = _data["CustomCallTotalCount"];
+      if (Array.isArray(_data["CustomCall"])) {
+        this.CustomCall = [] as any;
+        for (let item of _data["CustomCall"])
+          this.CustomCall!.push(CallCustomLog.fromJS(item));
+      }
+    }
+  }
+
+  static fromJS(data: any): ElasticLogsRS {
+    data = typeof data === 'object' ? data : {};
+    let result = new ElasticLogsRS();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    if (Array.isArray(this.ElasticUnderlineApiDebug)) {
+      data["ElasticUnderlineApiDebug"] = [];
+      for (let item of this.ElasticUnderlineApiDebug)
+        data["ElasticUnderlineApiDebug"].push(item.toJSON());
+    }
+    data["ServiceCallTotalCount"] = this.ServiceCallTotalCount;
+    if (Array.isArray(this.ServiceCall)) {
+      data["ServiceCall"] = [];
+      for (let item of this.ServiceCall)
+        data["ServiceCall"].push(item.toJSON());
+    }
+    data["RemoteCallTotalCount"] = this.RemoteCallTotalCount;
+    if (Array.isArray(this.RemoteCall)) {
+      data["RemoteCall"] = [];
+      for (let item of this.RemoteCall)
+        data["RemoteCall"].push(item.toJSON());
+    }
+    data["CustomCallTotalCount"] = this.CustomCallTotalCount;
+    if (Array.isArray(this.CustomCall)) {
+      data["CustomCall"] = [];
+      for (let item of this.CustomCall)
+        data["CustomCall"].push(item.toJSON());
+    }
+    return data;
+  }
+}
+
+export interface IElasticLogsRS {
+  /** Underline Elastic API Rq/Rs */
+  ElasticUnderlineApiDebug?: ElasticUnderlineApiDebug[] | undefined;
+  /** Total Count of Service Call logs */
+  ServiceCallTotalCount?: number;
+  /** Service Call logs */
+  ServiceCall?: CallLog[] | undefined;
+  /** Total Count of Remote Call logs */
+  RemoteCallTotalCount?: number;
+  /** Connector Remote Call logs */
+  RemoteCall?: CallRemoteConnectorLog[] | undefined;
+  /** Total Count of Custom Call logs */
+  CustomCallTotalCount?: number;
+  /** Custom Call logs */
+  CustomCall?: CallCustomLog[] | undefined;
+}
+
+export class ElasticUnderlineApiDebug implements IElasticUnderlineApiDebug {
+  /** JSON API Request */
+  Request?: string | undefined;
+  /** JSON API Response */
+  Response?: string | undefined;
+
+  constructor(data?: IElasticUnderlineApiDebug) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.Request = _data["Request"];
+      this.Response = _data["Response"];
+    }
+  }
+
+  static fromJS(data: any): ElasticUnderlineApiDebug {
+    data = typeof data === 'object' ? data : {};
+    let result = new ElasticUnderlineApiDebug();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Request"] = this.Request;
+    data["Response"] = this.Response;
+    return data;
+  }
+}
+
+export interface IElasticUnderlineApiDebug {
+  /** JSON API Request */
+  Request?: string | undefined;
+  /** JSON API Response */
+  Response?: string | undefined;
+}
+
+export abstract class BaseCallLog implements IBaseCallLog {
+  /** Call Log ID */
+  Id?: string | undefined;
+  /** Call Pid */
+  Pid?: string | undefined;
+  /** Operation Status */
+  Status?: EOperationStatus;
+  /** Environment Key */
+  Environment?: string | undefined;
+  /** Method */
+  Method?: string | undefined;
+  /** Start Date Time */
+  StartTime?: string;
+  EndTime?: string | undefined;
+  /** Execution Time */
+  ExecutionTime?: number | undefined;
+  /** Exception List */
+  Exceptions?: string[] | undefined;
+  /** Errors List */
+  Errors?: any[] | undefined;
+  /** Warnings List */
+  Warnings?: any[] | undefined;
+  /** Exception Message */
+  ExceptionMessage?: string | undefined;
+
+  constructor(data?: IBaseCallLog) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.Id = _data["Id"];
+      this.Pid = _data["Pid"];
+      this.Status = _data["Status"];
+      this.Environment = _data["Environment"];
+      this.Method = _data["Method"];
+      this.StartTime = _data["StartTime"];
+      this.EndTime = _data["EndTime"];
+      this.ExecutionTime = _data["ExecutionTime"];
+      if (Array.isArray(_data["Exceptions"])) {
+        this.Exceptions = [] as any;
+        for (let item of _data["Exceptions"])
+          this.Exceptions!.push(item);
+      }
+      if (Array.isArray(_data["Errors"])) {
+        this.Errors = [] as any;
+        for (let item of _data["Errors"])
+          this.Errors!.push(item);
+      }
+      if (Array.isArray(_data["Warnings"])) {
+        this.Warnings = [] as any;
+        for (let item of _data["Warnings"])
+          this.Warnings!.push(item);
+      }
+      this.ExceptionMessage = _data["ExceptionMessage"];
+    }
+  }
+
+  static fromJS(data: any): BaseCallLog {
+    data = typeof data === 'object' ? data : {};
+    throw new Error("The abstract class 'BaseCallLog' cannot be instantiated.");
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["Id"] = this.Id;
+    data["Pid"] = this.Pid;
+    data["Status"] = this.Status;
+    data["Environment"] = this.Environment;
+    data["Method"] = this.Method;
+    data["StartTime"] = this.StartTime;
+    data["EndTime"] = this.EndTime;
+    data["ExecutionTime"] = this.ExecutionTime;
+    if (Array.isArray(this.Exceptions)) {
+      data["Exceptions"] = [];
+      for (let item of this.Exceptions)
+        data["Exceptions"].push(item);
+    }
+    if (Array.isArray(this.Errors)) {
+      data["Errors"] = [];
+      for (let item of this.Errors)
+        data["Errors"].push(item);
+    }
+    if (Array.isArray(this.Warnings)) {
+      data["Warnings"] = [];
+      for (let item of this.Warnings)
+        data["Warnings"].push(item);
+    }
+    data["ExceptionMessage"] = this.ExceptionMessage;
+    return data;
+  }
+}
+
+export interface IBaseCallLog {
+  /** Call Log ID */
+  Id?: string | undefined;
+  /** Call Pid */
+  Pid?: string | undefined;
+  /** Operation Status */
+  Status?: EOperationStatus;
+  /** Environment Key */
+  Environment?: string | undefined;
+  /** Method */
+  Method?: string | undefined;
+  /** Start Date Time */
+  StartTime?: string;
+  EndTime?: string | undefined;
+  /** Execution Time */
+  ExecutionTime?: number | undefined;
+  /** Exception List */
+  Exceptions?: string[] | undefined;
+  /** Errors List */
+  Errors?: any[] | undefined;
+  /** Warnings List */
+  Warnings?: any[] | undefined;
+  /** Exception Message */
+  ExceptionMessage?: string | undefined;
+}
+
+export class CallLog extends BaseCallLog implements ICallLog {
+  ObjRQ?: any | undefined;
+  ObjRS?: any | undefined;
+  ConnectorsResponseDetails?: ConnectorResponseDetails[] | undefined;
+  ConnectorMaxExecutionTime?: number | undefined;
+  InternalExecutionTime?: number | undefined;
+
+  constructor(data?: ICallLog) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ObjRQ = _data["ObjRQ"];
+      this.ObjRS = _data["ObjRS"];
+      if (Array.isArray(_data["ConnectorsResponseDetails"])) {
+        this.ConnectorsResponseDetails = [] as any;
+        for (let item of _data["ConnectorsResponseDetails"])
+          this.ConnectorsResponseDetails!.push(ConnectorResponseDetails.fromJS(item));
+      }
+      this.ConnectorMaxExecutionTime = _data["ConnectorMaxExecutionTime"];
+      this.InternalExecutionTime = _data["InternalExecutionTime"];
+    }
+  }
+
+  static fromJS(data: any): CallLog {
+    data = typeof data === 'object' ? data : {};
+    let result = new CallLog();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ObjRQ"] = this.ObjRQ;
+    data["ObjRS"] = this.ObjRS;
+    if (Array.isArray(this.ConnectorsResponseDetails)) {
+      data["ConnectorsResponseDetails"] = [];
+      for (let item of this.ConnectorsResponseDetails)
+        data["ConnectorsResponseDetails"].push(item.toJSON());
+    }
+    data["ConnectorMaxExecutionTime"] = this.ConnectorMaxExecutionTime;
+    data["InternalExecutionTime"] = this.InternalExecutionTime;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ICallLog extends IBaseCallLog {
+  ObjRQ?: any | undefined;
+  ObjRS?: any | undefined;
+  ConnectorsResponseDetails?: ConnectorResponseDetails[] | undefined;
+  ConnectorMaxExecutionTime?: number | undefined;
+  InternalExecutionTime?: number | undefined;
+}
+
+export class CallConnectorLog extends CallLog implements ICallConnectorLog {
+  ConnectorOperation?: EH2HOperation;
+  ConnectorCode?: EH2HConnectorCode;
+
+  constructor(data?: ICallConnectorLog) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorOperation = _data["ConnectorOperation"];
+      this.ConnectorCode = _data["ConnectorCode"];
+    }
+  }
+
+  static fromJS(data: any): CallConnectorLog {
+    data = typeof data === 'object' ? data : {};
+    let result = new CallConnectorLog();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorOperation"] = this.ConnectorOperation;
+    data["ConnectorCode"] = this.ConnectorCode;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ICallConnectorLog extends ICallLog {
+  ConnectorOperation?: EH2HOperation;
+  ConnectorCode?: EH2HConnectorCode;
+}
+
+export class CallRemoteConnectorLog extends CallConnectorLog implements ICallRemoteConnectorLog {
+  ConnectorExtraData?: any | undefined;
+  Endpoint?: string | undefined;
+  XmlRQ?: string | undefined;
+  XmlRS?: string | undefined;
+
+  constructor(data?: ICallRemoteConnectorLog) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ConnectorExtraData = _data["ConnectorExtraData"];
+      this.Endpoint = _data["Endpoint"];
+      this.XmlRQ = _data["XmlRQ"];
+      this.XmlRS = _data["XmlRS"];
+    }
+  }
+
+  static fromJS(data: any): CallRemoteConnectorLog {
+    data = typeof data === 'object' ? data : {};
+    let result = new CallRemoteConnectorLog();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ConnectorExtraData"] = this.ConnectorExtraData;
+    data["Endpoint"] = this.Endpoint;
+    data["XmlRQ"] = this.XmlRQ;
+    data["XmlRS"] = this.XmlRS;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ICallRemoteConnectorLog extends ICallConnectorLog {
+  ConnectorExtraData?: any | undefined;
+  Endpoint?: string | undefined;
+  XmlRQ?: string | undefined;
+  XmlRS?: string | undefined;
+}
+
+export class CallCustomLog extends BaseCallLog implements ICallCustomLog {
+  ObjRQ?: any | undefined;
+  ObjRS?: any | undefined;
+
+  constructor(data?: ICallCustomLog) {
+    super(data);
+  }
+
+  init(_data?: any) {
+    super.init(_data);
+    if (_data) {
+      this.ObjRQ = _data["ObjRQ"];
+      this.ObjRS = _data["ObjRS"];
+    }
+  }
+
+  static fromJS(data: any): CallCustomLog {
+    data = typeof data === 'object' ? data : {};
+    let result = new CallCustomLog();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["ObjRQ"] = this.ObjRQ;
+    data["ObjRS"] = this.ObjRS;
+    super.toJSON(data);
+    return data;
+  }
+}
+
+export interface ICallCustomLog extends IBaseCallLog {
+  ObjRQ?: any | undefined;
+  ObjRS?: any | undefined;
+}
+
+export class ElasticLogsRQ implements IElasticLogsRQ {
+  /** Connector Code */
+  LogSearchType?: ELogSearchType;
+  /** PID of the call */
+  Pid?: string | undefined;
+  /** Query */
+  Query?: string | undefined;
+  /** Operation Status */
+  Status?: EOperationStatus | undefined;
+  /** Connector Code */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** Method */
+  Method?: string | undefined;
+  /** DateFrom Search */
+  DateFrom?: string | undefined;
+  /** DateTo Search */
+  DateTo?: string | undefined;
+  /** Pagination Size */
+  Size?: number;
+  /** Pagination Start From */
+  From?: number;
+  /** Debug Search Log */
+  DebugSearchLog?: boolean;
+
+  constructor(data?: IElasticLogsRQ) {
+    if (data) {
+      for (var property in data) {
+        if (data.hasOwnProperty(property))
+          (<any>this)[property] = (<any>data)[property];
+      }
+    }
+  }
+
+  init(_data?: any) {
+    if (_data) {
+      this.LogSearchType = _data["LogSearchType"];
+      this.Pid = _data["Pid"];
+      this.Query = _data["Query"];
+      this.Status = _data["Status"];
+      this.ConnectorCode = _data["ConnectorCode"];
+      this.Method = _data["Method"];
+      this.DateFrom = _data["DateFrom"];
+      this.DateTo = _data["DateTo"];
+      this.Size = _data["Size"];
+      this.From = _data["From"];
+      this.DebugSearchLog = _data["DebugSearchLog"];
+    }
+  }
+
+  static fromJS(data: any): ElasticLogsRQ {
+    data = typeof data === 'object' ? data : {};
+    let result = new ElasticLogsRQ();
+    result.init(data);
+    return result;
+  }
+
+  toJSON(data?: any) {
+    data = typeof data === 'object' ? data : {};
+    data["LogSearchType"] = this.LogSearchType;
+    data["Pid"] = this.Pid;
+    data["Query"] = this.Query;
+    data["Status"] = this.Status;
+    data["ConnectorCode"] = this.ConnectorCode;
+    data["Method"] = this.Method;
+    data["DateFrom"] = this.DateFrom;
+    data["DateTo"] = this.DateTo;
+    data["Size"] = this.Size;
+    data["From"] = this.From;
+    data["DebugSearchLog"] = this.DebugSearchLog;
+    return data;
+  }
+}
+
+export interface IElasticLogsRQ {
+  /** Connector Code */
+  LogSearchType?: ELogSearchType;
+  /** PID of the call */
+  Pid?: string | undefined;
+  /** Query */
+  Query?: string | undefined;
+  /** Operation Status */
+  Status?: EOperationStatus | undefined;
+  /** Connector Code */
+  ConnectorCode?: EH2HConnectorCode | undefined;
+  /** Method */
+  Method?: string | undefined;
+  /** DateFrom Search */
+  DateFrom?: string | undefined;
+  /** DateTo Search */
+  DateTo?: string | undefined;
+  /** Pagination Size */
+  Size?: number;
+  /** Pagination Start From */
+  From?: number;
+  /** Debug Search Log */
+  DebugSearchLog?: boolean;
+}
+
+export enum ELogSearchType {
+  FLOW = "FLOW",
+  SERVICE_CALL = "SERVICE_CALL",
+  REMOTE_CALL = "REMOTE_CALL",
+  CUSTOM_CALL = "CUSTOM_CALL",
 }
 
 export interface FileResponse {

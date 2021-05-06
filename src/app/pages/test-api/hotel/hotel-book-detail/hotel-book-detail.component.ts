@@ -53,15 +53,37 @@ export class HotelBookDetailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_BOOK_DETAIL);
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
 
-    this.jupiterHotelBookDetailRQ = new JupiterHotelBookDetailRQ({
-      Request: new JupiterHotelBookDetailInput({
-        ConnectorsDebug: null,
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        ConnectorBookingReference: null
-      })
-    });
+      switch (this.jupiterApiService.selectedLogMethod) {
+        case EH2HOperation.HOTEL_BOOK_DETAIL:
+          this.jupiterHotelBookDetailRQ = JupiterHotelBookDetailRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterHotelBookDetailRS = JupiterHotelBookDetailRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+        case EH2HOperation.HOTEL_BOOK_CANCEL:
+          this.jupiterHotelBookCancelRQ = JupiterHotelBookCancelRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterHotelBookCancelRS = JupiterHotelBookCancelRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+      }
+    }
+
+    if(!this.jupiterHotelBookDetailRQ){
+      this.jupiterHotelBookDetailRQ = new JupiterHotelBookDetailRQ({
+        Request: new JupiterHotelBookDetailInput({
+          ConnectorsDebug: null,
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          ConnectorBookingReference: null
+        })
+      });
+    }
+
   }
 
   /**

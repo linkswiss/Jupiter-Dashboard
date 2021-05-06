@@ -2,18 +2,29 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import * as _ from 'lodash';
 import Utils from "../../../../utility/utils";
 import {
-  AmadeusFlightAvailabilityInputCustomData, AmadeusFlightStepRequestCustomData,
+  AmadeusFlightAvailabilityInputCustomData,
+  AmadeusFlightStepRequestCustomData,
   AvailabilityInputCustomData,
   EH2HConnectorCode,
-  EH2HOperation, EmindsTrainAvailabilityInputCustomData, EmindsTrainStepRequestCustomData, ETripType,
+  EH2HOperation,
+  EmindsTrainAvailabilityInputCustomData,
+  EmindsTrainStepRequestCustomData,
+  ETripType,
   FlightStepRequest,
   JupiterFlightAvailabilityInput,
   JupiterFlightAvailabilityRQ,
   JupiterFlightAvailabilityRS,
+  JupiterSingleHotelAvailabilityRQ,
   JupiterTrainAvailabilityInput,
   JupiterTrainAvailabilityRQ,
-  JupiterTrainAvailabilityRS, SabreFlightAvailabilityInputCustomData, SabreFlightStepRequestCustomData, SingleFlightAvailResult, SingleTrainAvailResult, TrainStepRequest,
-  TrainStepRequestCustomData, TravelFusionFlightStepRequestCustomData
+  JupiterTrainAvailabilityRS,
+  SabreFlightAvailabilityInputCustomData,
+  SabreFlightStepRequestCustomData,
+  SingleFlightAvailResult,
+  SingleTrainAvailResult,
+  TrainStepRequest,
+  TrainStepRequestCustomData,
+  TravelFusionFlightStepRequestCustomData
 } from "../../../../services/jupiter-api/jupiter-api-client";
 import {DialogApiErrorComponent} from "../../common/components/dialog-api-error/dialog-api-error.component";
 import {NbAccordionItemComponent, NbDialogService} from "@nebular/theme";
@@ -45,23 +56,31 @@ export class TrainAvailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.TRAIN_AVAIL);
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterTrainAvailabilityRq = JupiterTrainAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterTrainAvailabilityRs = JupiterTrainAvailabilityRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterTrainAvailabilityRq = new JupiterTrainAvailabilityRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterTrainAvailabilityInput({
+          ConnectorsDebug: [],
+          ConnectorsSearch: [],
+          AdultCount: 2,
+          ChildCount: 0,
+          InfantCount: 0,
+          ConnectorCustomData: [],
+          TrainSteps: [],
+        })
+      });
 
-    this.jupiterTrainAvailabilityRq = new JupiterTrainAvailabilityRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterTrainAvailabilityInput({
-        ConnectorsDebug: [],
-        ConnectorsSearch: [],
-        AdultCount: 2,
-        ChildCount: 0,
-        InfantCount: 0,
-        ConnectorCustomData: [],
-        TrainSteps: [],
-      })
-    });
+      // Add 1 step
+      this.addStep();
+    }
 
-    // Add 1 step
-    this.addStep();
   }
 
   /**

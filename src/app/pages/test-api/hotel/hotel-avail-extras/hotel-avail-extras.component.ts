@@ -9,7 +9,7 @@ import {
   JupiterHotelAvailabilityExtrasRQ,
   JupiterHotelAvailabilityExtrasRS,
   JupiterHotelAvailabilityInput,
-  JupiterHotelAvailabilityRQ,
+  JupiterHotelAvailabilityRQ, JupiterHotelAvailabilityRS,
   JupiterHotelDetailRQ,
   JupiterHotelDetailRS, OkkamiExtraAvailCustomData, OkkamiRoomRequestCustomData,
   PaxRequest,
@@ -50,37 +50,50 @@ export class HotelAvailExtrasComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_AVAIL_EXTRAS);
-
     let fromDate = moment().add(1, 'days');
     let toDate = moment().add(5, 'days');
 
-    this.jupiterHotelAvailabilityExtrasRQ = new JupiterHotelAvailabilityExtrasRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterHotelAvailabilityExtrasInput({
-        ConnectorsDebug: [],
-        ConnectorCode: null,
-        HotelRefId: null,
-        ConnectorCustomData: null,
-        FromDate: fromDate.format('YYYY-MM-DD'),
-        ToDate: toDate.format('YYYY-MM-DD'),
-        PreferredCurrency: '',
-        PreferredLanguage: '',
-        Rooms: [
-          new RoomRequest({
-            Paxes: [
-              new PaxRequest({
-                Type: EPaxType.ADULT
-              }),
-              new PaxRequest({
-                Type: EPaxType.ADULT
-              })
-            ],
-            ConnectorCustomData: null,
-          })
-        ]
-      })
-    });
+    if (this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson) {
+      this.jupiterHotelAvailabilityExtrasRQ = JupiterHotelAvailabilityExtrasRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelAvailabilityExtrasRS = JupiterHotelAvailabilityExtrasRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+
+      fromDate = moment(this.jupiterHotelAvailabilityExtrasRQ.Request.FromDate);
+      toDate = moment(this.jupiterHotelAvailabilityExtrasRQ.Request.ToDate);
+
+    } else {
+
+      this.jupiterHotelAvailabilityExtrasRQ = new JupiterHotelAvailabilityExtrasRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterHotelAvailabilityExtrasInput({
+          ConnectorsDebug: [],
+          ConnectorCode: null,
+          HotelRefId: null,
+          ConnectorCustomData: null,
+          FromDate: fromDate.format('YYYY-MM-DD'),
+          ToDate: toDate.format('YYYY-MM-DD'),
+          PreferredCurrency: '',
+          PreferredLanguage: '',
+          Rooms: [
+            new RoomRequest({
+              Paxes: [
+                new PaxRequest({
+                  Type: EPaxType.ADULT
+                }),
+                new PaxRequest({
+                  Type: EPaxType.ADULT
+                })
+              ],
+              ConnectorCustomData: null,
+            })
+          ]
+        })
+      });
+
+    }
 
     // Additional Properties
     this.jupiterHotelAvailabilityExtrasRQ.Request['_MinDate'] = moment();

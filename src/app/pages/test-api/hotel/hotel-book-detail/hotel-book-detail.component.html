@@ -194,7 +194,7 @@
   </nb-card-body>
 </nb-card>
 
-<div *ngIf="jupiterHotelBookDetailRS && jupiterHotelBookDetailRS.Response && jupiterHotelBookCancelRQ">
+<div *ngIf="jupiterHotelBookCancelRQ && jupiterHotelBookCancelRS">
   <jupiter-api-messages-accordion Title="Book Cancel" [ApiRs]="jupiterHotelBookCancelRS"></jupiter-api-messages-accordion>
   <jupiter-api-debug-accordion Title="Book Cancel" [(ApiRq)]="jupiterHotelBookCancelRQ" [ApiRs]="jupiterHotelBookCancelRS"></jupiter-api-debug-accordion>
 </div>

@@ -45,15 +45,31 @@ export class AmadeusCrypticComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.jupiterCrypticRq = new JupiterCrypticRQ({
-      ConnectorsEnvironment: null,
-      Request: new JupiterCrypticInput({
-        // ConnectorsDebug: ['AMADEUS'],
-        ConnectorCode: EH2HConnectorCode.AMADEUS,
-        CrypticRequest: null,
-        SessionConnectorCustomData: null,
-      }),
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterCrypticRq = JupiterCrypticRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterCrypticRs = JupiterCrypticRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+
+      if (this.jupiterCrypticRs && this.jupiterCrypticRs.Response) {
+        this.crypticResponse = this.jupiterCrypticRs.Response.CrypticResponse;
+        this.crypticSession = this.jupiterCrypticRs.Response.SessionConnectorCustomData;
+      } else {
+        this.crypticResponse = 'ERROR';
+      }
+
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterCrypticRq = new JupiterCrypticRQ({
+        ConnectorsEnvironment: null,
+        Request: new JupiterCrypticInput({
+          // ConnectorsDebug: ['AMADEUS'],
+          ConnectorCode: EH2HConnectorCode.AMADEUS,
+          CrypticRequest: null,
+          SessionConnectorCustomData: null,
+        }),
+      });
+    }
   }
 
   changeConnectorsEnvironment() {

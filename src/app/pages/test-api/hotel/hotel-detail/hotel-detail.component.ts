@@ -3,13 +3,23 @@ import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular
 import Utils from '../../../../utility/utils';
 import {
   AvailabilityInputCustomData,
-  BookingDotComAvailabilityInputCustomData, EH2HConnectorCode,
+  BookingDotComAvailabilityInputCustomData,
+  EH2HConnectorCode,
   EH2HOperation,
-  IHGAvailabilityInputCustomData, IHGHotelBookDetailInputCustomData,
+  IHGAvailabilityInputCustomData,
+  IHGHotelBookDetailInputCustomData,
   JupiterHotelAvailabilityRQ,
-  JupiterHotelAvailabilityRS, JupiterHotelDetailRQ, JupiterHotelDetailRS, PaxRequest, RoomRequest,
-  SabreAvailabilityInputCustomData, SabreBookingReference,
-  SabreSynXisAvailabilityInputCustomData, SabreSynXisHotelBookDetailInputCustomData, SabreSynXisRoomRequestCustomData,
+  JupiterHotelAvailabilityRS,
+  JupiterHotelDetailRQ,
+  JupiterHotelDetailRS,
+  JupiterSingleHotelAvailabilityRQ,
+  PaxRequest,
+  RoomRequest,
+  SabreAvailabilityInputCustomData,
+  SabreBookingReference,
+  SabreSynXisAvailabilityInputCustomData,
+  SabreSynXisHotelBookDetailInputCustomData,
+  SabreSynXisRoomRequestCustomData,
   SandalsAvailabilityInputCustomData,
   SingleHotelAvailResult
 } from '../../../../services/jupiter-api/jupiter-api-client';
@@ -47,10 +57,18 @@ export class HotelDetailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_DETAILS);
-    this.jupiterHotelDetailRQ = this.hotelPagesService.initJupiterHotelDetailRQ();
-    this.jupiterHotelDetailRS = this.hotelPagesService.initJupiterHotelDetailRS();
-    if (this.hotelPagesService.availSelectedModel) {
-      this.doHotelDetails();
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelDetailRQ = JupiterHotelDetailRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelDetailRS = JupiterHotelDetailRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterHotelDetailRQ = this.hotelPagesService.initJupiterHotelDetailRQ();
+      this.jupiterHotelDetailRS = this.hotelPagesService.initJupiterHotelDetailRS();
+      if (this.hotelPagesService.availSelectedModel) {
+        this.doHotelDetails();
+      }
     }
   }
 

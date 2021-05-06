@@ -13,7 +13,7 @@ import {
   JupiterHotelBookSearchInput,
   JupiterHotelBookSearchRQ,
   JupiterHotelBookSearchRS, SabreBookingReference, SabreSynXisHotelBookDetailInputCustomData,
-  SabreSynXisHotelBookSearchInputCustomData, SingleBookDetail
+  SabreSynXisHotelBookSearchInputCustomData, SingleBookDetail, JupiterHotelDetailRQ, JupiterHotelDetailRS
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
 import {AppConfigService} from '../../../../services/app-config/app-config.service';
@@ -50,18 +50,30 @@ export class HotelBookSearchComponent implements OnInit {
     let fromDate = moment().add(-10, 'days');
     let toDate = moment().add(10, 'days');
 
-    this.jupiterHotelBookSearchRQ = new JupiterHotelBookSearchRQ({
-      ConnectorsEnvironment: [],
-      Request: new JupiterHotelBookSearchInput({
-        ConnectorsDebug: null,
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        BookingStatus: EBookingStatus.BOOKED,
-        ConnectorBookingReference: '',
-        FromDate: fromDate.format('YYYY-MM-DD'),
-        ToDate: toDate.format('YYYY-MM-DD'),
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelBookSearchRQ = JupiterHotelBookSearchRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelBookSearchRS = JupiterHotelBookSearchRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+
+      fromDate = moment(this.jupiterHotelBookSearchRQ.Request.FromDate);
+      toDate = moment(this.jupiterHotelBookSearchRQ.Request.ToDate);
+
+    }else {
+      this.jupiterHotelBookSearchRQ = new JupiterHotelBookSearchRQ({
+        ConnectorsEnvironment: [],
+        Request: new JupiterHotelBookSearchInput({
+          ConnectorsDebug: null,
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          BookingStatus: EBookingStatus.BOOKED,
+          ConnectorBookingReference: '',
+          FromDate: fromDate.format('YYYY-MM-DD'),
+          ToDate: toDate.format('YYYY-MM-DD'),
+        })
+      });
+    }
 
     // Additional Properties
     this.jupiterHotelBookSearchRQ.Request['_DateRange'] = {

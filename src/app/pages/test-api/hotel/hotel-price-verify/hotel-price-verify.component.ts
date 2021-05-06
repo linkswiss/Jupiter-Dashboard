@@ -9,7 +9,14 @@ import {
   RoomRequest,
   SingleHotelAvailResult,
   EH2HConnectorCode,
-  EH2HOperation, AvailabilityInputCustomData, SabreSynXisAvailabilityInputCustomData, BookingDotComAvailabilityInputCustomData, SabreAvailabilityInputCustomData, SandalsAvailabilityInputCustomData, IHGAvailabilityInputCustomData
+  EH2HOperation,
+  AvailabilityInputCustomData,
+  SabreSynXisAvailabilityInputCustomData,
+  BookingDotComAvailabilityInputCustomData,
+  SabreAvailabilityInputCustomData,
+  SandalsAvailabilityInputCustomData,
+  IHGAvailabilityInputCustomData,
+  JupiterHotelDetailRQ, JupiterHotelDetailRS
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import Utils from '../../../../utility/utils';
 import * as moment from 'moment';
@@ -50,8 +57,16 @@ export class HotelPriceVerifyComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_PRICE_VERIFY);
-    this.jupiterHotelPriceVerifyRq = this.hotelPagesService.initJupiterHotelAvailabilityRQ();
-    this.jupiterHotelPriceVerifyRs = this.hotelPagesService.initJupiterHotelAvailabilityRS();
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelPriceVerifyRq = JupiterHotelPriceVerifyRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelPriceVerifyRs = JupiterHotelPriceVerifyRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterHotelPriceVerifyRq = this.hotelPagesService.initJupiterHotelAvailabilityRQ();
+      this.jupiterHotelPriceVerifyRs = this.hotelPagesService.initJupiterHotelAvailabilityRS();
+    }
   }
 
   /**

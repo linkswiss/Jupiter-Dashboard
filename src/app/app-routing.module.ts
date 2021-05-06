@@ -37,6 +37,7 @@ import {RefreshTokenComponent} from "./pages/auth/refresh-token/refresh-token.co
 import {FlightQueueListComponent} from "./pages/test-api/flight/flight-queue-list/flight-queue-list.component";
 import { CarAvailComponent } from './pages/test-api/car/car-avail/car-avail.component';
 import { CarBookDetailComponent } from './pages/test-api/car/car-book-detail/car-book-detail.component';
+import {LogsComponent} from "./pages/test-api/logs/logs.component";
 
 const routes: Routes = [
   // { path: 'pages', component: LayoutComponent},
@@ -64,6 +65,10 @@ const routes: Routes = [
         resolve: {
           apiDocUrl: ApiDocUrlResolver,
         },
+      },
+      {
+        path: 'logs',
+        component: LogsComponent,
       },
       {
         path: 'test-api',

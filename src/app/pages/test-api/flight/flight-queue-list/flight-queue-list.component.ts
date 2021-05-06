@@ -5,13 +5,19 @@ import {
   EH2HConnectorCode,
   EH2HOperation,
   FlightQueuePnr,
+  JupiterFlightAvailabilityRQ,
+  JupiterFlightAvailabilityRS, JupiterFlightBookRQ, JupiterFlightBookRS,
+  JupiterFlightDetailRQ,
+  JupiterFlightDetailRS,
   JupiterFlightPnrRetrieveInput,
   JupiterFlightPnrRetrieveRQ,
   JupiterFlightPnrRetrieveRS,
   JupiterFlightQueueListInput,
   JupiterFlightQueueListRQ,
-  JupiterFlightQueueListRS, JupiterFlightQueueRemovePnrInput,
-  JupiterFlightQueueRemovePnrRQ, JupiterFlightQueueRemovePnrRS
+  JupiterFlightQueueListRS,
+  JupiterFlightQueueRemovePnrInput,
+  JupiterFlightQueueRemovePnrRQ,
+  JupiterFlightQueueRemovePnrRS
 } from "../../../../services/jupiter-api/jupiter-api-client";
 import {JupiterApiService} from "../../../../services/jupiter-api/jupiter-api.service";
 import {AppConfigService} from "../../../../services/app-config/app-config.service";
@@ -46,16 +52,34 @@ export class FlightQueueListComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.FLIGHT_QUEUE_LIST);
-
-    this.jupiterFlightQueueListRq = new JupiterFlightQueueListRQ({
-      ConnectorsEnvironment: this.connectorsEnvironment,
-      Request: new JupiterFlightQueueListInput({
-        ConnectorsDebug: [],
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        QueueNumber: '',
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      switch (this.jupiterApiService.selectedLogMethod) {
+        case EH2HOperation.FLIGHT_QUEUE_LIST:
+          this.jupiterFlightQueueListRq = JupiterFlightQueueListRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterFlightQueueListRs = JupiterFlightQueueListRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+        case EH2HOperation.FLIGHT_QUEUE_REMOVE_PNR:
+          this.jupiterFlightQueueRemovePnrRq = JupiterFlightQueueRemovePnrRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterFlightQueueRemovePnrRs = JupiterFlightQueueRemovePnrRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+      }
+    }else {
+      this.jupiterFlightQueueListRq = new JupiterFlightQueueListRQ({
+        ConnectorsEnvironment: this.connectorsEnvironment,
+        Request: new JupiterFlightQueueListInput({
+          ConnectorsDebug: [],
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          QueueNumber: '',
+        })
+      });
+    }
   }
 
   /**

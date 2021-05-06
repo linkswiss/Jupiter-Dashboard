@@ -89,23 +89,52 @@ export class FlightSearchComponent implements OnInit {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.FLIGHT_AVAIL);
 
-    this.jupiterFlightAvailabilityRq = new JupiterFlightAvailabilityRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterFlightAvailabilityInput({
-        ConnectorsDebug: [],
-        ConnectorsSearch: [],
-        AdultCount: 2,
-        ChildCount: 0,
-        InfantCount: 0,
-        MergeConnectorResults: false,
-        ConnectorCustomData: [],
-        FlightSteps: [],
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.accordionItemRq.close();
+      switch (this.jupiterApiService.selectedLogMethod) {
+        case EH2HOperation.FLIGHT_AVAIL:
+          this.jupiterFlightAvailabilityRq = JupiterFlightAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterFlightAvailabilityRs = JupiterFlightAvailabilityRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+        case EH2HOperation.FLIGHT_DETAILS:
+          this.jupiterFlightDetailRq = JupiterFlightDetailRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterFlightDetailRs = JupiterFlightDetailRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+        case EH2HOperation.FLIGHT_BOOK:
+          this.jupiterFlightBookRq = JupiterFlightBookRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterFlightBookRs = JupiterFlightBookRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+      }
+    }
 
-    // Add 1 step
-    this.addStep();
+    if(!this.jupiterFlightAvailabilityRq){
+      this.jupiterFlightAvailabilityRq = new JupiterFlightAvailabilityRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterFlightAvailabilityInput({
+          ConnectorsDebug: [],
+          ConnectorsSearch: [],
+          AdultCount: 2,
+          ChildCount: 0,
+          InfantCount: 0,
+          MergeConnectorResults: false,
+          ConnectorCustomData: [],
+          FlightSteps: [],
+        })
+      });
+
+      // Add 1 step
+      this.addStep();
+    }
   }
 
   /**

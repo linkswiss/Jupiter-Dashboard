@@ -72,6 +72,7 @@ import { FlightQueueListComponent } from './test-api/flight/flight-queue-list/fl
 import { CarAvailComponent } from './test-api/car/car-avail/car-avail.component';
 import { CarSegmentResultComponent } from './test-api/car/components/car-segment-result/car-segment-result.component';
 import { CarBookDetailComponent } from './test-api/car/car-book-detail/car-book-detail.component';
+import { LogsComponent } from './test-api/logs/logs.component';
 
 // import 'brace/ext/searchbox';
 
@@ -150,7 +151,8 @@ FullCalendarModule.registerPlugins([ // register FullCalendar plugins
     FlightQueueListComponent,
     CarAvailComponent,
     CarSegmentResultComponent,
-    CarBookDetailComponent
+    CarBookDetailComponent,
+    LogsComponent
   ],
   entryComponents: [DialogApiErrorComponent, DialogMessageComponent],
   providers: [
