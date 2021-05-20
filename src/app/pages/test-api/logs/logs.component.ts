@@ -119,6 +119,19 @@ export class LogsComponent implements OnInit {
     }
   }
 
+  downloadFile(data, filename, filetype) {
+    const blob = new Blob([data], { type: filetype });
+    // const url= window.URL.createObjectURL(blob);
+    // window.open(url);
+
+    var a = document.createElement("a");
+    a.href = window.URL.createObjectURL(blob);
+    a.download = filename;
+    // start download
+    a.click();
+
+  }
+
   getFlow(callLog: BaseCallLog) {
     let search = new ElasticLogsRQ({
       LogSearchType: ELogSearchType.FLOW,

@@ -178,11 +178,13 @@
               <div class="row">
                 <div class="col-md-6">
                   <h6>JSON Request:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'service_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                   <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
                        style="height: 650px; width:100%; overflow: scroll;"></ace>
                 </div>
                 <div class="col-sm-6">
                   <h6>JSON Response:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRS, 'service_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                   <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
                        style="height: 650px; width:100%; overflow: scroll;"></ace>
                 </div>
@@ -222,11 +224,13 @@
                 <div class="row">
                   <div class="col-md-6">
                     <h6>JSON Request:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'remote_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                     <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
                          style="height: 650px; width:100%; overflow: scroll;"></ace>
                   </div>
                   <div class="col-sm-6">
                     <h6>JSON Response:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'remote_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                     <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
                          style="height: 650px; width:100%; overflow: scroll;"></ace>
                   </div>
@@ -236,11 +240,13 @@
                 <div class="row">
                   <div class="col-md-6">
                     <h6>XML Request:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.XmlRQ, 'remote_'+call.Method+'_RQ.xml', 'text/xml')"><i class="fas fa-download"></i> Download</button>
                     <ace [mode]="'xml'" [theme]="'monokai'" value="{{call.XmlRQ}}"
                          style="height: 650px; width:100%; overflow: scroll;"></ace>
                   </div>
                   <div class="col-sm-6">
                     <h6>XML Response:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.XmlRS, 'remote_'+call.Method+'_RS.xml', 'text/xml')"><i class="fas fa-download"></i> Download</button>
                     <ace [mode]="'xml'" [theme]="'monokai'" value="{{call.XmlRS}}"
                          style="height: 650px; width:100%; overflow: scroll;"></ace>
                   </div>
@@ -276,11 +282,13 @@
               <div class="row">
                 <div class="col-md-6">
                   <h6>JSON Request:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'custom_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                   <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
                        style="height: 650px; width:100%; overflow: scroll;"></ace>
                 </div>
                 <div class="col-sm-6">
                   <h6>JSON Response:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRS, 'custom_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
                   <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
                        style="height: 650px; width:100%; overflow: scroll;"></ace>
                 </div>
