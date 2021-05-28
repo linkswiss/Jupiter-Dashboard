@@ -74,17 +74,13 @@
         </div>
         <!-- END INPUT CUSTOM DATA -->
 
-        <!-- ROOMS
-        <h6>Rooms
-          <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button>
-        </h6>
-        <div *ngFor="let room of jupiterHotelAvailabilityRq.Request.Rooms; let i = index;" class="border-box">
+        <!-- ROOMS -->
+        <h6>Rooms <button nbButton size="tiny" (click)="addRoom()" ngbTooltip="Add a Room" placement="top" container="body"><i class="fas fa-plus"></i></button></h6>
+        <div *ngFor="let room of jupiterHotelPriceVerifyRq.Request.Rooms; let i = index;" class="border-box">
           <div class="float-right">
             <button *ngIf="i > 0" nbButton size="tiny" status="danger" (click)="removeRoom(i)" ngbTooltip="Delete this Room" placement="top" container="body"><i class="fas fa-trash"></i></button>
           </div>
-          <div>Room {{i}} Paxes
-            <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button>
-          </div>
+          <div>Room {{i}} Paxes <button nbButton size="tiny" (click)="addPax(room)" ngbTooltip="Add a Pax" placement="top" container="body"><i class="fas fa-plus"></i></button></div>
 
           <div class="row m-1">
             <div *ngFor="let pax of room.Paxes; let paxIndex = index;" class="col-md-4 border-box">
@@ -103,8 +99,8 @@
               </div>
             </div>
           </div>
-          -->
-          <!-- ROOM CUSTOM DATA
+
+          <!-- ROOM CUSTOM DATA -->
           <div>Room Custom Data</div>
           <hr>
           <div class="row">
@@ -120,7 +116,7 @@
               </div>
             </div>
           </div>
-          -->
+          
           <!-- TODO LIST OF CUSTOM DATA ON ROOMS -->
           <!--          <div *ngIf="room.ConnectorCustomData">-->
           <!--            <nb-accordion class="shadow-none border-box">-->
@@ -138,9 +134,9 @@
           <!--            </nb-accordion>-->
           <!--          </div>-->
 
-          <!-- END ROOM CUSTOM DATA
+          <!-- END ROOM CUSTOM DATA -->
 
-        </div>-->
+        </div>
         <!-- END ROOMS -->
 
       </form>
@@ -148,7 +144,7 @@
       <div class="row">
         <div class="col-sm-12 text-center">
           <hr>
-          <!--<button nbButton size="small" (click)="priceVerify()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>-->
+          <button nbButton size="small" (click)="priceVerify()"><i class="fas fa-exchange-alt"></i>&nbsp;Search</button>
         </div>
       </div>
 
@@ -156,3 +152,5 @@
   </nb-accordion-item>
 </nb-accordion>
 
+<jupiter-api-messages-accordion Title="Price Verify" [ApiRs]="jupiterHotelPriceVerifyRs"></jupiter-api-messages-accordion>
+<jupiter-api-debug-accordion Title="Price Verify" [(ApiRq)]="jupiterHotelPriceVerifyRq" [ApiRs]="jupiterHotelPriceVerifyRs"></jupiter-api-debug-accordion>

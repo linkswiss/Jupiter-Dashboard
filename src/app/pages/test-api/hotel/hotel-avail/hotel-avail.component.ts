@@ -4,17 +4,25 @@ import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
   AicAvailabilityInputCustomData,
+  AlliedHotelAvailabilityInputCustomData,
+  America4YouAvailabilityInputCustomData,
   AvailabilityInputCustomData,
   BookingDotComAvailabilityInputCustomData,
   CreoleHotelAvailabilityInputCustomData,
   EAvailabilityType,
   EH2HConnectorCode,
   EH2HOperation,
-  EPaxType, HotelbedsAvailabilityInputCustomData,
+  EHotelCategory,
+  EHotelType,
+  EMealPlanType,
+  EPaxType, ERequestStatus, HotelbedsAvailabilityInputCustomData,
   IHGAvailabilityInputCustomData,
   IHGRoomRequestCustomData, JupiterFlightPnrRetrieveRQ, JupiterFlightPnrRetrieveRS,
+  JonviewAvailabilityInputCustomData,
+  JtbAvailabilityInputCustomData,
   JupiterHotelAvailabilityRQ,
   JupiterHotelAvailabilityRS,
+  LatLng,
   PaxRequest,
   RoomRatePlan,
   RoomRequest,
@@ -23,6 +31,8 @@ import {
   SabreSynXisRoomRequestCustomData,
   SandalsAvailabilityInputCustomData,
   SingleHotelAvailResult,
+  TeamAmericaAvailabilityInputCustomData,
+  TekuraAvailabilityInputCustomData,
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
 import {AppConfigService} from '../../../../services/app-config/app-config.service';
@@ -233,15 +243,102 @@ export class HotelAvailComponent implements OnInit {
         case EH2HConnectorCode.AIC:
             if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
               return c['_discriminator'] === EH2HConnectorCode.AIC;
-            })) {
+            })) {             
               this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new AicAvailabilityInputCustomData({
+                HotelRefIds: [],
                 DestinationRefIds: ['PAR'],
+                Position: new LatLng({Lat: null, Lng:null}),
+                Radius: null,
                 Nationality: 'IT',
-                AvailabilityTypes: [EAvailabilityType.AVAILONLY]
-                // Add others properties
+                AvailabilityTypes: [EAvailabilityType.AVAILONLY],
+                HotelCategory: null,
+                StarsPreferred: []
               }));
             }
             break;
+        case EH2HConnectorCode.ALLIED:
+            if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+              return c['_discriminator'] === EH2HConnectorCode.ALLIED;
+            })) {
+              this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new AlliedHotelAvailabilityInputCustomData({
+                HotelRefIds:['159511'],
+                DestinationRefIds: [],
+                Nationality: '',
+                RegionRefId: null,
+                MaxRatePlanCount: null
+              }));
+            }
+            break;
+        case EH2HConnectorCode.AMERICA_4_YOU:
+              if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+                return c['_discriminator'] === EH2HConnectorCode.AMERICA_4_YOU;
+              })) {
+                this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new America4YouAvailabilityInputCustomData({
+                  HotelRefIds:[],
+                  DestinationRefIds: ['ARZ']
+                }));
+              }
+              break;
+        case EH2HConnectorCode.JONVIEW:
+              if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+                return c['_discriminator'] === EH2HConnectorCode.JONVIEW;
+              })) {
+                this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new JonviewAvailabilityInputCustomData({
+                  HotelRefIds:[],
+                  DestinationRefIds: ['YTO'],
+                  Status:ERequestStatus.AVAILABLE,
+                  DisplayName: true,
+                  DisplayAvail: true,
+                  DisplayRoomConfig: true,
+                  DisplayRestriction: false,
+                  DisplayPolicy: true,
+                  DisplayDynamicRates: false,
+                  DisplayGeoCode: false
+                }));
+              }
+              break;
+        case EH2HConnectorCode.JTB:
+              if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+                return c['_discriminator'] === EH2HConnectorCode.JTB;
+              })) {
+                this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new JtbAvailabilityInputCustomData({
+                  HotelRefIds:['4016001','1533015','1408001','1211003'],
+                  DestinationRefIds: [],
+                  HotelType: EHotelType.ALL,
+                  RatePlanId: null,
+                  MealPlanCode: EMealPlanType.ALL,
+                  HotelName: true,
+                  HotelAddress: true,
+                  RatePlanName: true,
+                  RatePlanShortName: true,
+                  CancelPolicyFlag: true
+                }));
+              }
+              break;
+        case EH2HConnectorCode.TEAM_AMERICA:
+              if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+                return c['_discriminator'] === EH2HConnectorCode.TEAM_AMERICA;
+              })) {
+                this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new TeamAmericaAvailabilityInputCustomData({
+                  HotelRefIds:[],
+                  DestinationRefIds: ['NYC'],
+                  ProductCode: '',
+                  Nationality: '',
+                  DisplayClosedOut: false,
+                  DisplayOnRequest: false
+                }));
+              }
+              break;
+        case EH2HConnectorCode.TEKURA:
+              if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+                return c['_discriminator'] === EH2HConnectorCode.TEKURA;
+              })) {
+                this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new TekuraAvailabilityInputCustomData({
+                  HotelRefIds:[],
+                  DestinationRefIds: ['MOZ']
+                }));
+              }
+              break;
           // case EH2HConnectorCode.PACIFIC_DESTINATIONS_AU:
         //   if (!_.some(this.hotelSearchModel.ConnectorSettings, function (c: AvailabilityInputCustomData) {
         //     return c['_discriminator'] === EH2HConnectorCode.PACIFIC_DESTINATIONS_AU;
@@ -296,6 +393,7 @@ export class HotelAvailComponent implements OnInit {
           ProductTypeCode: ''
         });
         break;
+      
     }
   }
 

@@ -6,6 +6,9 @@ import {
   EPaxType, JupiterHotelAvailabilityInput,
   JupiterHotelAvailabilityRQ,
   JupiterHotelAvailabilityRS, JupiterHotelDetailInput, JupiterHotelDetailRQ, JupiterHotelDetailRS,
+  JupiterHotelPriceVerifyInput,
+  JupiterHotelPriceVerifyRQ,
+  JupiterHotelPriceVerifyRS,
   JupiterSingleHotelAvailabilityInput,
   JupiterSingleHotelAvailabilityRQ, JupiterSingleHotelAvailabilityRS,
   PaxRequest, RoomDetails, RoomRatePlan,
@@ -89,7 +92,7 @@ export class HotelPagesService {
   }
 
   /**
-   * Init JupiterSingleHotelAvailabilityRQ
+   * Init JupiterHotelAvailabilityRQ
    */
   initJupiterHotelAvailabilityRQ(): JupiterHotelAvailabilityRQ {
     let jupiterHotelAvailabilityRQ: JupiterHotelAvailabilityRQ = null;
@@ -148,7 +151,7 @@ export class HotelPagesService {
   }
 
   /**
-   * Init JupiterSingleHotelAvailabilityRS
+   * Init JupiterHotelAvailabilityRS
    */
   initJupiterHotelAvailabilityRS(): JupiterHotelAvailabilityRS {
     let jupiterHotelAvailabilityRS: JupiterHotelAvailabilityRS = null;
@@ -287,6 +290,69 @@ export class HotelPagesService {
     }
     return null;
   }
+
+/**
+ * Init JupiterHotelPriceVerifyRQ
+ */
+initJupiterHotelPriceVerifyRQ(): JupiterHotelPriceVerifyRQ {
+  let jupiterHotelPriceVerifyRQ: JupiterHotelPriceVerifyRQ = null;
+  
+  // Empty the Service Model
+  this.emptyServiceModels();
+
+  let fromDate = moment().add(1, 'days');
+  let toDate = moment().add(5, 'days');
+
+  jupiterHotelPriceVerifyRQ = new JupiterHotelPriceVerifyRQ({
+    ConnectorsEnvironment: [],
+    Request: new JupiterHotelPriceVerifyInput({
+      ConnectorsDebug: [],
+      // ConnectorCode: EH2HConnectorCode.SABRE_SYNXIS,
+      ConnectorsSearchOnly: [],
+      ConnectorsSettings: [],
+      // FromDate: null,
+      // ToDate: null,
+      FromDate: fromDate.format('YYYY-MM-DD'),
+      ToDate: toDate.format('YYYY-MM-DD'),
+      PreferredCurrency: '',
+      PreferredLanguage: '',
+      Rooms: [
+        new RoomRequest({
+          Paxes: [
+            new PaxRequest({
+              Type: EPaxType.ADULT
+            }),
+            new PaxRequest({
+              Type: EPaxType.ADULT
+            })
+          ],
+          ConnectorCustomData: null,
+        })
+      ]
+    })
+  });
+
+  // Additional Properties
+  jupiterHotelPriceVerifyRQ.Request['_MinDate'] = moment();
+  jupiterHotelPriceVerifyRQ.Request['_DateRange'] = {
+    start: fromDate,
+    end: toDate
+  };
+  
+  return jupiterHotelPriceVerifyRQ;
+}
+
+/**
+ * Init JupiterHotelPriceVerifyRS
+ */
+initJupiterHotelPriceVerifyRS(): JupiterHotelPriceVerifyRS {
+  let jupiterHotelHotelPriceVerifyRS: JupiterHotelPriceVerifyRS = null;
+
+  // Empty the Service Model
+  this.emptyServiceModels();
+  
+  return jupiterHotelHotelPriceVerifyRS;
+}
 
   /**
    * Init JupiterHotelDetailRQ
