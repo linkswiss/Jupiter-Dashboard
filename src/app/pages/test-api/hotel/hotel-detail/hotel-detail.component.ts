@@ -2,9 +2,11 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AotHotelDetailInputCustomData,
   AvailabilityInputCustomData,
   BookingDotComAvailabilityInputCustomData, BookingDotComHotelDetailInputCustomData, CreoleHotelDetailInputCustomData, EH2HConnectorCode,
   EH2HOperation,
+  ExpediaHotelDetailInputCustomData,
   HotelbedsHotelDetailInputCustomData,
   IHGAvailabilityInputCustomData, IHGHotelBookDetailInputCustomData,
   JupiterHotelAvailabilityRQ,
@@ -136,6 +138,28 @@ export class HotelDetailComponent implements OnInit {
         break;
       case EH2HConnectorCode.TEAM_AMERICA:
         this.jupiterHotelDetailRQ.Request.HotelRefIds = ['55','57'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.AOT:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['188SYD','57HSYD'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new AotHotelDetailInputCustomData({
+          LocationCode:'1252',
+          LocationType:'T'
+        });
+        break;
+      // case EH2HConnectorCode.EXPEDIA:
+      //   this.jupiterHotelDetailRQ.Request.HotelRefIds = [];
+      //   this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new ExpediaHotelDetailInputCustomData({
+      //     FromDate:'',
+      //     ToDate:''
+      //   });
+      //   break;
+      case EH2HConnectorCode.RESTEL:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['745388'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.TRAVALCO:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['249','243'];
         this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
         break;
     }
