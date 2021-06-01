@@ -125,7 +125,7 @@ export class HotelPriceVerifyComponent implements OnInit {
             }));
           }
           break;
-        
+
         // case EH2HConnectorCode.SABRE_CSL:
         //   if (!_.some(this.hotelSearchModel.ConnectorSettings, function (c: AvailabilityInputCustomData) {
         //     return c['_discriminator'] === EH2HConnectorCode.SABRE_CSL;
@@ -157,11 +157,12 @@ export class HotelPriceVerifyComponent implements OnInit {
    room.ConnectorCustomData = null;
    switch (connector) {
      case EH2HConnectorCode.ALLIED:
+       //TODO Paolo Verificare questo!! HotelId, MealId e RateCode non sono presenti sul modello!
        room.ConnectorCustomData = new AlliedRoomRequestCustomData({
-       HotelId : 159511,
-       MealId: 1,
-       RoomId: 1325458,
-       RateCode:'1325458_1_0_False_14_201731150£282076377',
+       // HotelId : 159511,
+       // MealId: 1,
+       RoomId: '1325458',
+       // RateCode:'1325458_1_0_False_14_201731150£282076377',
        GuestName: 'Test name',
        ProviderId: 14,
        ExpectedBookingPrice: 10
