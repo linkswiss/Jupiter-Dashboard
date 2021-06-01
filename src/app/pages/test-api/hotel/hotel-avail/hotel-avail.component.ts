@@ -160,6 +160,7 @@ export class HotelAvailComponent implements OnInit {
           }
           break;
         case EH2HConnectorCode.BOOKING_DOT_COM:
+          this.jupiterHotelAvailabilityRq.Request.PreferredLanguage = "en";
           if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
             return c['_discriminator'] === EH2HConnectorCode.BOOKING_DOT_COM;
           })) {
