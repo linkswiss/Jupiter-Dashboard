@@ -283,6 +283,19 @@ export class AppConfigService implements OnInit {
   }
 
   /**
+   * Check if any Car Connector is enabled
+   */
+  isAnyCarConnectorEnabled(): boolean {
+    let connectors = _.filter(this.jupiterRemoteAppSettings.Connectors.ConnectorSettings, (c) => {
+      return _.find(c['EnabledConnectorTypes'], (t) => {
+        return t === 'CAR';
+      });
+    });
+
+    return connectors && connectors.length > 0;
+  }
+
+  /**
    * check if a connector is Enabled
    * @param connectorCode
    */

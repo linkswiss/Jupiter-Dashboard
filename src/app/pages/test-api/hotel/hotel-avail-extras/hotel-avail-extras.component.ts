@@ -2,19 +2,23 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AotAvailabilityExtrasInputCustomData,
   EH2HConnectorCode,
   EH2HOperation,
-  EPaxType, IHGRoomRequestCustomData,
+  EPaxType, ERequestStatus, IHGRoomRequestCustomData,
+  JonviewAvailabilityExtrasInputCustomData,
   JupiterHotelAvailabilityExtrasInput,
   JupiterHotelAvailabilityExtrasRQ,
   JupiterHotelAvailabilityExtrasRS,
   JupiterHotelAvailabilityInput,
-  JupiterHotelAvailabilityRQ,
+  JupiterHotelAvailabilityRQ, JupiterHotelAvailabilityRS,
   JupiterHotelDetailRQ,
   JupiterHotelDetailRS, OkkamiExtraAvailCustomData, OkkamiRoomRequestCustomData,
+  PacificDestinationsAvailabilityExtrasInputCustomData,
   PaxRequest,
-  RoomRequest, SabreSynXisAvailabilityExtrasInputCustomData, SabreSynXisRoomRequestCustomData,
-  SingleHotelAvailResult
+  RoomRequest, RosieAvailabilityExtrasInputCustomData, SabreSynXisAvailabilityExtrasInputCustomData, SabreSynXisRoomRequestCustomData,
+  SingleHotelAvailResult,
+  TekuraAvailabilityExtrasInputCustomData
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {HotelPagesService} from '../../common/services/hotel-pages.service';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
@@ -50,37 +54,50 @@ export class HotelAvailExtrasComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_AVAIL_EXTRAS);
-
     let fromDate = moment().add(1, 'days');
     let toDate = moment().add(5, 'days');
 
-    this.jupiterHotelAvailabilityExtrasRQ = new JupiterHotelAvailabilityExtrasRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterHotelAvailabilityExtrasInput({
-        ConnectorsDebug: [],
-        ConnectorCode: null,
-        HotelRefId: null,
-        ConnectorCustomData: null,
-        FromDate: fromDate.format('YYYY-MM-DD'),
-        ToDate: toDate.format('YYYY-MM-DD'),
-        PreferredCurrency: '',
-        PreferredLanguage: '',
-        Rooms: [
-          new RoomRequest({
-            Paxes: [
-              new PaxRequest({
-                Type: EPaxType.ADULT
-              }),
-              new PaxRequest({
-                Type: EPaxType.ADULT
-              })
-            ],
-            ConnectorCustomData: null,
-          })
-        ]
-      })
-    });
+    if (this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson) {
+      this.jupiterHotelAvailabilityExtrasRQ = JupiterHotelAvailabilityExtrasRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelAvailabilityExtrasRS = JupiterHotelAvailabilityExtrasRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+
+      fromDate = moment(this.jupiterHotelAvailabilityExtrasRQ.Request.FromDate);
+      toDate = moment(this.jupiterHotelAvailabilityExtrasRQ.Request.ToDate);
+
+    } else {
+
+      this.jupiterHotelAvailabilityExtrasRQ = new JupiterHotelAvailabilityExtrasRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterHotelAvailabilityExtrasInput({
+          ConnectorsDebug: [],
+          ConnectorCode: null,
+          HotelRefId: null,
+          ConnectorCustomData: null,
+          FromDate: fromDate.format('YYYY-MM-DD'),
+          ToDate: toDate.format('YYYY-MM-DD'),
+          PreferredCurrency: '',
+          PreferredLanguage: '',
+          Rooms: [
+            new RoomRequest({
+              Paxes: [
+                new PaxRequest({
+                  Type: EPaxType.ADULT
+                }),
+                new PaxRequest({
+                  Type: EPaxType.ADULT
+                })
+              ],
+              ConnectorCustomData: null,
+            })
+          ]
+        })
+      });
+
+    }
 
     // Additional Properties
     this.jupiterHotelAvailabilityExtrasRQ.Request['_MinDate'] = moment();
@@ -136,6 +153,44 @@ export class HotelAvailExtrasComponent implements OnInit {
         // '000-000-0054' //Maxwell
         // ];
 
+        break;
+      case EH2HConnectorCode.JONVIEW:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.HotelRefId = 'YTODI';
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new JonviewAvailabilityExtrasInputCustomData({
+          DisplayName: false,
+          DisplayAvail: true,
+          DisplayRestriction: false,
+          DisplayPolicy: false,
+          DisplayDynamicRates: false,
+          DisplayGeoCode: false,
+          Status: ERequestStatus.AVAILABLE
+        });
+
+        break;
+      case EH2HConnectorCode.TEKURA:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredCurrency = "USD";
+        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage = "EN";
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new TekuraAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'BOBACMPOBTI',
+          RoomType: 'SG'
+        });
+        break;
+      case EH2HConnectorCode.AOT:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new AotAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'SYDACDARSYDRMS'
+        });
+        break;
+      case EH2HConnectorCode.PACIFIC_DESTINATIONS:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new PacificDestinationsAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'CHCACCHCIBIA04A',
+          RoomType:'SG'
+        });
+        break;
+      case EH2HConnectorCode.ROSIE:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new RosieAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'MAMACMUSM20AB58',
+          RoomType:'SG'
+        });
         break;
     }
   }

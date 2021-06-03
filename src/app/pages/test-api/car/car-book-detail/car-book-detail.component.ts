@@ -4,7 +4,7 @@ import Utils from '../../../../utility/utils';
 import {
   EBookingStatus,
   EH2HConnectorCode,
-  EH2HOperation,
+  EH2HOperation, JupiterCarAvailabilityRQ, JupiterCarAvailabilityRS,
   JupiterCarBookCancelInput,
   JupiterCarBookCancelRQ,
   JupiterCarBookCancelRS,
@@ -32,13 +32,13 @@ export class CarBookDetailComponent implements OnInit {
   showPricePerDay = false;
   // Todo Calculate daysCount
   daysCount = 0;
-  
+
   jupiterCarBookCancelRq: JupiterCarBookCancelRQ = null;
   jupiterCarBookCancelRs: JupiterCarBookCancelRS = null;
-  
+
   jupiterCarBookDetailRq: JupiterCarBookDetailRQ = null;
   jupiterCarBookDetailRs: JupiterCarBookDetailRS = null;
-  
+
   EBookingStatus = EBookingStatus;
   EH2HConnectorCode = EH2HConnectorCode;
 
@@ -50,15 +50,34 @@ export class CarBookDetailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.CAR_BOOK_DETAIL);
-
-    this.jupiterCarBookDetailRq = new JupiterCarBookDetailRQ({
-      Request: new JupiterCarBookDetailInput({
-        ConnectorsDebug: null,
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        PnrNumber: null
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      switch (this.jupiterApiService.selectedLogMethod) {
+        case EH2HOperation.CAR_BOOK_DETAIL:
+          this.jupiterCarBookDetailRq = JupiterCarBookDetailRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterCarBookDetailRs = JupiterCarBookDetailRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+        case EH2HOperation.CAR_BOOK_CANCEL:
+          this.jupiterCarBookCancelRq = JupiterCarBookCancelRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+          this.jupiterCarBookCancelRs = JupiterCarBookCancelRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+          this.jupiterApiService.selectedLogMethod = null;
+          this.jupiterApiService.selectedLogRqJson = null;
+          this.jupiterApiService.selectedLogRsJson = null;
+          break;
+          break;
+      }
+    }else {
+      this.jupiterCarBookDetailRq = new JupiterCarBookDetailRQ({
+        Request: new JupiterCarBookDetailInput({
+          ConnectorsDebug: null,
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          PnrNumber: null
+        })
+      });
+    }
   }
 
   /**

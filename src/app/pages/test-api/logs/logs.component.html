@@ -1,0 +1,304 @@
+<div [nbSpinner]="loading" nbSpinnerStatus="primary">
+  <nb-accordion class="mb-2">
+    <nb-accordion-item #accordionItemRq expanded="true">
+      <nb-accordion-item-header class="font-weight-bold">Logs Search</nb-accordion-item-header>
+      <nb-accordion-item-body>
+
+        <form *ngIf="jupiterApiService.elasticLogsRQ">
+          <div class="row">
+
+            <div class="form-group col-sm-3">
+              <label class="label">Date From</label>
+              <input nbInput id="DateFrom" name="DateFrom" fullWidth [nbDatepicker]="dateFrom"
+                     [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateFromMoment']">
+              <nb-datepicker #dateFrom format="DD/MM/YYYY"
+                             (dateChange)="handleDateFromChange($event)"></nb-datepicker>
+<!--              <input nbInput fullWidth id="DateFromTime" name="DateFromTime" placeholder="Date From Time" [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateFromTime']">-->
+              <ngb-timepicker #timepicker name="DateFromTime" [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateFromTime']" [seconds]="false" [hourStep]="1" [minuteStep]="5" ></ngb-timepicker>
+            </div>
+            <div class="form-group col-sm-3">
+              <label class="label">Date To</label>
+              <input nbInput id="DateTo" name="DateTo" fullWidth [nbDatepicker]="dateTo"
+                     [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateToMoment']">
+              <nb-datepicker #dateTo format="DD/MM/YYYY"
+                             (dateChange)="handleDateToChange($event)"></nb-datepicker>
+<!--              <input nbInput fullWidth id="DateToTime" name="DateToTime" placeholder="Date To Time" [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateToTime']">-->
+              <ngb-timepicker name="DateToTime" [(ngModel)]="jupiterApiService.elasticLogsRQ['_DateToTime']" [seconds]="false" [hourStep]="1" [minuteStep]="5" ></ngb-timepicker>
+            </div>
+
+            <div class="form-group col-sm-6">
+              <label for="Pid" class="label">Pid</label>
+              <input nbInput fullWidth id="Pid" name="Pid" placeholder="Call Pid" [(ngModel)]="jupiterApiService.elasticLogsRQ.Pid">
+
+              <div class="mt-1">
+                <label for="Query" class="label">Query</label>
+                <input nbInput fullWidth id="Query" name="Query" placeholder="Query" [(ngModel)]="jupiterApiService.elasticLogsRQ.Query">
+              </div>
+
+              <div class="mt-3 row">
+                <div class="col mt-4">
+                  <nb-checkbox fullWidth name="DebugSearchLog" [(ngModel)]="jupiterApiService.elasticLogsRQ.DebugSearchLog">Debug Search Logs</nb-checkbox>
+                </div>
+
+                <div class="col">
+                  <label for="From" class="label">From</label>
+                  <input nbInput fullWidth id="From" name="From" placeholder="From" [(ngModel)]="jupiterApiService.elasticLogsRQ.From">
+                </div>
+
+                <div class="col">
+                  <label for="Size" class="label">Size</label>
+                  <input nbInput fullWidth id="Size" name="Size" placeholder="Size" [(ngModel)]="jupiterApiService.elasticLogsRQ.Size">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group col-sm-3">
+              <label for="method" class="label">Log Search Type</label>
+              <nb-select #selectLogType fullWidth id="logType" placeholder="Log Search Type" [multiple]="false" [outline]="true"
+                         [(selected)]="jupiterApiService.elasticLogsRQ.LogSearchType">
+                <nb-option *ngFor="let searchType of ELogSearchType" [value]="searchType">{{searchType}}</nb-option>
+              </nb-select>
+            </div>
+
+
+            <div class="form-group col-sm-3">
+              <label for="method" class="label">Connector</label>
+              <nb-select #selectConnector fullWidth id="connector" placeholder="Connector" [multiple]="false" [outline]="true"
+                         [(selected)]="jupiterApiService.elasticLogsRQ.ConnectorCode">
+                <nb-option *ngFor="let connector of EH2HConnectorCode" [value]="connector">{{connector}}</nb-option>
+              </nb-select>
+            </div>
+
+            <div class="form-group col-sm-3">
+              <label for="method" class="label">Method</label>
+              <nb-select #selectMethod fullWidth id="method" placeholder="Method" [multiple]="false" [outline]="true"
+                         (selectedChange)="methodChanged($event);selectMethod.hide();"
+                         [(selected)]="jupiterApiService.elasticLogsRQ['_MethodDropdown']">
+                <nb-option [value]="'All'">All</nb-option>
+                <nb-option [value]="'Manual'">Manual</nb-option>
+                <nb-option *ngFor="let operation of EH2HOperation" [value]="operation">{{operation}}</nb-option>
+              </nb-select>
+              <div *ngIf="jupiterApiService.elasticLogsRQ['_MethodDropdown'] === 'Manual'">
+                <input nbInput fullWidth id="methodText" name="methodText" placeholder="Method"
+                       [(ngModel)]="jupiterApiService.elasticLogsRQ.Method">
+              </div>
+            </div>
+            <div class="form-group col-sm-3">
+              <label for="method" class="label">Status</label>
+              <nb-select #selectMethod fullWidth id="status" placeholder="Status" [multiple]="false" [outline]="true"
+                         (selectedChange)="statusChanged($event);selectMethod.hide();"
+                         [(selected)]="jupiterApiService.elasticLogsRQ['_StatusDropdown']">
+                <nb-option [value]="'All'">All</nb-option>
+                <nb-option *ngFor="let status of EOperationStatus" [value]="status">{{status}}</nb-option>
+              </nb-select>
+            </div>
+          </div>
+
+        </form>
+
+        <!-- SEARCH BTN -->
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <button class="btn btn-sm btn-primary" (click)="searchLogs()"><i class="fas fa-exchange-alt"></i> Search
+            </button>
+          </div>
+        </div>
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <!-- END FLIGHT AVAIL RQ -->
+
+  <!-- DEBUG/ELASTIC UNDERLINE -->
+  <nb-accordion *ngIf="jupiterApiService.elasticLogsRS && jupiterApiService.elasticLogsRS.ElasticUnderlineApiDebug" class="mb-2">
+    <nb-accordion-item expanded="false">
+      <nb-accordion-item-header class="font-weight-bold">Debug Search Logs</nb-accordion-item-header>
+      <nb-accordion-item-body>
+        <ng-container *ngIf="jupiterApiService.elasticLogsRS.ElasticUnderlineApiDebug">
+          <h6>Undeline Elastic Calls</h6>
+          <nb-accordion *ngFor="let apiCall of jupiterApiService.elasticLogsRS.ElasticUnderlineApiDebug; let callIndex = index;"
+                        class="mb-2">
+            <nb-accordion-item expanded="false">
+              <nb-accordion-item-header class="font-weight-bold">Elastic Api Call {{callIndex}}</nb-accordion-item-header>
+              <nb-accordion-item-body>
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6>JSON Request:</h6>
+                    <ace [mode]="'json'" [theme]="'monokai'" value="{{apiCall.Request}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                  <div class="col-sm-6">
+                    <h6>JSON Response:</h6>
+                    <ace [mode]="'json'" [theme]="'monokai'" value="{{apiCall.Response}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                </div>
+              </nb-accordion-item-body>
+            </nb-accordion-item>
+          </nb-accordion>
+        </ng-container>
+
+<!--        <div class="row">-->
+<!--          <div class="col-md-6">-->
+<!--            <h6>JSON Request:</h6>-->
+<!--            <ace [mode]="'json'" [theme]="'monokai'" value="{{jupiterApiService.elasticLogsRQ | json}}"-->
+<!--                 style="height: 650px; width:100%; overflow: scroll;"></ace>-->
+<!--          </div>-->
+<!--          <div class="col-sm-6">-->
+<!--            <h6>JSON Response:</h6>-->
+<!--            <ace [mode]="'json'" [theme]="'monokai'" value="{{jupiterApiService.elasticLogsRS | json}}"-->
+<!--                 style="height: 650px; width:100%; overflow: scroll;"></ace>-->
+<!--          </div>-->
+<!--        </div>-->
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <!-- END DEBUG/ELASTIC UNDERLINE -->
+
+  <!-- SERVICE CALL -->
+  <nb-accordion *ngIf="jupiterApiService.elasticLogsRS && jupiterApiService.elasticLogsRS.ServiceCall" class="mb-2">
+    <nb-accordion-item expanded="true">
+      <nb-accordion-item-header class="font-weight-bold">
+        Service Api Calls ({{jupiterApiService.elasticLogsRS.ServiceCall.length}} of {{jupiterApiService.elasticLogsRS.ServiceCallTotalCount}})
+        <button *ngIf="jupiterApiService.elasticLogsRS.ServiceCallTotalCount > jupiterApiService.elasticLogsRS.ServiceCall.length" class="ml-1 btn btn-sm btn-primary" (click)="loadMore()"><i class="fas fa-search"></i> Next {{jupiterApiService.elasticLogsRQ.Size}}</button>
+      </nb-accordion-item-header>
+      <nb-accordion-item-body>
+
+        <nb-accordion *ngFor="let call of jupiterApiService.elasticLogsRS.ServiceCall; let callIndex = index;" class="mb-2">
+          <nb-accordion-item expanded="false">
+            <nb-accordion-item-header class="font-weight-bold">
+              <span>{{call.StartTime}}</span>
+              <jupiter-api-response-status [status]="call.Status"></jupiter-api-response-status>
+              <span class="badge badge-pill badge-info">{{call.Method}}</span>
+              <button class="ml-1 btn btn-sm btn-primary" (click)="getFlow(call)"><i class="fas fa-exchange-alt"></i> Get Flow</button>
+              <button class="ml-1 btn btn-sm btn-primary" (click)="view(call)"><i class="fas fa-search"></i> View</button>
+              </nb-accordion-item-header>
+            <nb-accordion-item-body>
+              <jupiter-api-messages-accordion Title="Api Messages" [ApiRs]="call['_ParsedObjRS']"></jupiter-api-messages-accordion>
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>JSON Request:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'service_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                  <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
+                       style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+                <div class="col-sm-6">
+                  <h6>JSON Response:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRS, 'service_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                  <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
+                       style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+              </div>
+
+            </nb-accordion-item-body>
+          </nb-accordion-item>
+        </nb-accordion>
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <!-- END SERVICE CALL -->
+
+
+  <!-- REMOTE CALL -->
+  <nb-accordion *ngIf="jupiterApiService.elasticLogsRS && jupiterApiService.elasticLogsRS.RemoteCall" class="mb-2">
+    <nb-accordion-item expanded="false">
+      <nb-accordion-item-header class="font-weight-bold">
+        Remote Api Calls ({{jupiterApiService.elasticLogsRS.RemoteCall.length}} of {{jupiterApiService.elasticLogsRS.RemoteCallTotalCount}})
+        <button *ngIf="jupiterApiService.elasticLogsRQ.LogSearchType !== eLogSearchType.FLOW && jupiterApiService.elasticLogsRS.RemoteCallTotalCount > jupiterApiService.elasticLogsRS.RemoteCall.length" class="ml-1 btn btn-sm btn-primary" (click)="loadMore()"><i class="fas fa-search"></i> Next {{jupiterApiService.elasticLogsRQ.Size}}</button>
+      </nb-accordion-item-header>
+      <nb-accordion-item-body>
+
+        <nb-accordion *ngFor="let call of jupiterApiService.elasticLogsRS.RemoteCall; let callIndex = index;" class="mb-2">
+          <nb-accordion-item expanded="false">
+            <nb-accordion-item-header class="font-weight-bold">
+              <span>{{call.StartTime}}</span>
+              <jupiter-api-response-status [status]="call.Status"></jupiter-api-response-status>
+              <span class="badge badge-pill badge-info">{{call.ConnectorOperation}}</span>
+              <span class="ml-1 badge badge-pill badge-primary">{{call.ConnectorCode}}</span>
+              <span class="ml-1">({{call.Method}})</span>
+              <button class="ml-1 btn btn-sm btn-primary" (click)="getFlow(call)"><i class="fas fa-exchange-alt"></i> Get Flow</button>
+            </nb-accordion-item-header>
+            <nb-accordion-item-body>
+              <ng-container *ngIf="call.ObjRQ && call.ObjRS">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6>JSON Request:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'remote_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                    <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                  <div class="col-sm-6">
+                    <h6>JSON Response:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'remote_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                    <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                </div>
+              </ng-container>
+              <ng-container *ngIf="call.XmlRQ && call.XmlRS">
+                <div class="row">
+                  <div class="col-md-6">
+                    <h6>XML Request:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.XmlRQ, 'remote_'+call.Method+'_RQ.xml', 'text/xml')"><i class="fas fa-download"></i> Download</button>
+                    <ace [mode]="'xml'" [theme]="'monokai'" value="{{call.XmlRQ}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                  <div class="col-sm-6">
+                    <h6>XML Response:</h6>
+                    <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.XmlRS, 'remote_'+call.Method+'_RS.xml', 'text/xml')"><i class="fas fa-download"></i> Download</button>
+                    <ace [mode]="'xml'" [theme]="'monokai'" value="{{call.XmlRS}}"
+                         style="height: 650px; width:100%; overflow: scroll;"></ace>
+                  </div>
+                </div>
+              </ng-container>
+            </nb-accordion-item-body>
+          </nb-accordion-item>
+        </nb-accordion>
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <!-- END SERVICE CALL -->
+
+  <!-- CUSTOM CALL -->
+  <nb-accordion *ngIf="jupiterApiService.elasticLogsRS && jupiterApiService.elasticLogsRS.CustomCall" class="mb-2">
+    <nb-accordion-item expanded="false">
+      <nb-accordion-item-header class="font-weight-bold">
+        Custom Api Calls ({{jupiterApiService.elasticLogsRS.CustomCall.length}} of {{jupiterApiService.elasticLogsRS.CustomCallTotalCount}})
+        <button *ngIf="jupiterApiService.elasticLogsRQ.LogSearchType !== eLogSearchType.FLOW && jupiterApiService.elasticLogsRS.CustomCallTotalCount > jupiterApiService.elasticLogsRS.CustomCall.length" class="ml-1 btn btn-sm btn-primary" (click)="loadMore()"><i class="fas fa-search"></i> Next {{jupiterApiService.elasticLogsRQ.Size}}</button>
+      </nb-accordion-item-header>
+      <nb-accordion-item-body>
+
+        <nb-accordion *ngFor="let call of jupiterApiService.elasticLogsRS.CustomCall; let callIndex = index;" class="mb-2">
+          <nb-accordion-item expanded="false">
+            <nb-accordion-item-header class="font-weight-bold">
+              <span>{{call.StartTime}}</span>
+              <jupiter-api-response-status [status]="call.Status"></jupiter-api-response-status>
+              <span class="badge badge-pill badge-info">{{call.Method}}</span>
+              <button class="ml-1 btn btn-sm btn-primary" (click)="getFlow(call)"><i class="fas fa-exchange-alt"></i> Get Flow</button>
+            </nb-accordion-item-header>
+            <nb-accordion-item-body>
+              <div class="row">
+                <div class="col-md-6">
+                  <h6>JSON Request:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRQ, 'custom_'+call.Method+'_RQ.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                  <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRQ}}"
+                       style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+                <div class="col-sm-6">
+                  <h6>JSON Response:</h6>
+                  <button class="ml-1 btn btn-sm btn-primary" (click)="downloadFile(call.ObjRS, 'custom_'+call.Method+'_RS.json', 'text/json')"><i class="fas fa-download"></i> Download</button>
+                  <ace [mode]="'json'" [theme]="'monokai'" value="{{call.ObjRS}}"
+                       style="height: 650px; width:100%; overflow: scroll;"></ace>
+                </div>
+              </div>
+            </nb-accordion-item-body>
+          </nb-accordion-item>
+        </nb-accordion>
+
+      </nb-accordion-item-body>
+    </nb-accordion-item>
+  </nb-accordion>
+  <!-- END SERVICE CALL -->
+</div>

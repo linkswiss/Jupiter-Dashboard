@@ -6,7 +6,7 @@ import {
   EH2HOperation,
   EOperationStatus,
   EPaxType,
-  IHGHotelCalendarAvailabilityInputCustomData,
+  IHGHotelCalendarAvailabilityInputCustomData, JupiterHotelAvailabilityRQ, JupiterHotelAvailabilityRS,
   JupiterHotelCalendarAvailabilityInput,
   JupiterHotelCalendarAvailabilityRQ,
   JupiterHotelCalendarAvailabilityRS,
@@ -64,28 +64,41 @@ export class HotelCalendarAvailComponent implements OnInit {
     let fromDate = moment().add(1, 'days');
     let toDate = moment().add(30, 'days');
 
-    this.jupiterHotelCalendarAvailabilityRq = new JupiterHotelCalendarAvailabilityRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterHotelCalendarAvailabilityInput({
-        ConnectorsDebug: null,
-        // ConnectorCode: EH2HConnectorCode.SABRE_SYNXIS,
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        // FromDate: null,
-        // ToDate: null,
-        FromDate: fromDate.format('YYYY-MM-DD'),
-        ToDate: toDate.format('YYYY-MM-DD'),
-        Duration: 1,
-        HotelRefId: '',
-        PreferredCurrency: '',
-        PreferredLanguage: '',
-        Rooms: []
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelCalendarAvailabilityRq = JupiterHotelCalendarAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelCalendarAvailabilityRs = JupiterHotelCalendarAvailabilityRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
 
-    // Add 1 room
-    this.addRoom();
+      fromDate = moment(this.jupiterHotelCalendarAvailabilityRq.Request.FromDate);
+      toDate = moment(this.jupiterHotelCalendarAvailabilityRq.Request.ToDate);
+      this.processResponse();
+
+    }else {
+      this.jupiterHotelCalendarAvailabilityRq = new JupiterHotelCalendarAvailabilityRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterHotelCalendarAvailabilityInput({
+          ConnectorsDebug: null,
+          // ConnectorCode: EH2HConnectorCode.SABRE_SYNXIS,
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          // FromDate: null,
+          // ToDate: null,
+          FromDate: fromDate.format('YYYY-MM-DD'),
+          ToDate: toDate.format('YYYY-MM-DD'),
+          Duration: 1,
+          HotelRefId: '',
+          PreferredCurrency: '',
+          PreferredLanguage: '',
+          Rooms: []
+        })
+      });
+
+      // Add 1 room
+      this.addRoom();
+    }
 
     // Additional Properties
     this.jupiterHotelCalendarAvailabilityRq.Request['_MinDate'] = moment();

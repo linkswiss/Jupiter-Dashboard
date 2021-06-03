@@ -28,6 +28,27 @@ export default class Utils {
     return resultXml;
   }
 
+  static prettifyJson(sourceJson): string{
+    let formatted = sourceJson;
+    try {
+      let testParsed = JSON.parse(sourceJson);
+    } catch (e) {
+      console.warn('NOT VALID JSON - Try fix Execution', e);
+      let regex = /X{3,}/g;
+      formatted = formatted.replace(regex, '');
+    }
+
+    try {
+      // Try to format JSON
+      let parsed = JSON.parse(formatted);
+      formatted = JSON.stringify(parsed, null, 2);
+    } catch (e) {
+      console.warn('NOT VALID JSON - Unable to Format Load it anyway', e);
+    }
+
+    return formatted;
+  }
+
   static parseInt(value): number {
     return parseInt(value, null);
   }

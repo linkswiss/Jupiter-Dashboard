@@ -2,14 +2,25 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AotHotelDetailInputCustomData,
   AvailabilityInputCustomData,
-  BookingDotComAvailabilityInputCustomData, EH2HConnectorCode,
+  BookingDotComAvailabilityInputCustomData, BookingDotComHotelDetailInputCustomData, CreoleHotelDetailInputCustomData, EH2HConnectorCode,
   EH2HOperation,
+  ExpediaHotelDetailInputCustomData,
+  HotelbedsHotelDetailInputCustomData,
   IHGAvailabilityInputCustomData, IHGHotelBookDetailInputCustomData,
   JupiterHotelAvailabilityRQ,
-  JupiterHotelAvailabilityRS, JupiterHotelDetailRQ, JupiterHotelDetailRS, PaxRequest, RoomRequest,
-  SabreAvailabilityInputCustomData, SabreBookingReference,
-  SabreSynXisAvailabilityInputCustomData, SabreSynXisHotelBookDetailInputCustomData, SabreSynXisRoomRequestCustomData,
+  JupiterHotelAvailabilityRS,
+  JupiterHotelDetailRQ,
+  JupiterHotelDetailRS,
+  JupiterSingleHotelAvailabilityRQ,
+  PaxRequest,
+  RoomRequest,
+  SabreAvailabilityInputCustomData,
+  SabreBookingReference,
+  SabreSynXisAvailabilityInputCustomData,
+  SabreSynXisHotelBookDetailInputCustomData,
+  SabreSynXisRoomRequestCustomData,
   SandalsAvailabilityInputCustomData,
   SingleHotelAvailResult
 } from '../../../../services/jupiter-api/jupiter-api-client';
@@ -47,10 +58,18 @@ export class HotelDetailComponent implements OnInit {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.HOTEL_DETAILS);
-    this.jupiterHotelDetailRQ = this.hotelPagesService.initJupiterHotelDetailRQ();
-    this.jupiterHotelDetailRS = this.hotelPagesService.initJupiterHotelDetailRS();
-    if (this.hotelPagesService.availSelectedModel) {
-      this.doHotelDetails();
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterHotelDetailRQ = JupiterHotelDetailRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterHotelDetailRS = JupiterHotelDetailRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterHotelDetailRQ = this.hotelPagesService.initJupiterHotelDetailRQ();
+      this.jupiterHotelDetailRS = this.hotelPagesService.initJupiterHotelDetailRS();
+      if (this.hotelPagesService.availSelectedModel) {
+        this.doHotelDetails();
+      }
     }
   }
 
@@ -84,6 +103,64 @@ export class HotelDetailComponent implements OnInit {
         //   IhgSsoToken: '',
         //   LastName: 'Doe',
         // });
+        break;
+      case EH2HConnectorCode.BOOKING_DOT_COM:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = [];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new BookingDotComHotelDetailInputCustomData({
+          Rows: 10,
+          Offset: 0,
+          ReturnAcceptedCreditCards: false,
+          ReturnRoomInfo: false,
+          ReturnRoomPhotos: false,
+          ReturnHotelPhotos: true,
+          ReturnHotelPolicies: false,
+          ReturnPaymentDetails: false,
+          ReturnRoomFacilities: false,
+          ReturnHotelFacilities: true,
+          ReturnRoomDescription: false,
+          ReturnHotelDescription: true,
+          ReturnKeyCollectionInfo: false        
+         });
+        break;
+      case EH2HConnectorCode.CREOLE:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['JP046300', 'JP150074', 'JP046391'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.HOTELBEDS:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['265', '138780'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new HotelbedsHotelDetailInputCustomData({
+          UseSecondaryLanguage: false
+        });
+        break;
+      case EH2HConnectorCode.JONVIEW:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['YTODI','YTOCI'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.TEAM_AMERICA:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['55','57'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.AOT:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['188SYD','57HSYD'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new AotHotelDetailInputCustomData({
+          LocationCode:'1252',
+          LocationType:'T'
+        });
+        break;
+      // case EH2HConnectorCode.EXPEDIA:
+      //   this.jupiterHotelDetailRQ.Request.HotelRefIds = [];
+      //   this.jupiterHotelDetailRQ.Request.ConnectorCustomData = new ExpediaHotelDetailInputCustomData({
+      //     FromDate:'',
+      //     ToDate:''
+      //   });
+      //   break;
+      case EH2HConnectorCode.RESTEL:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['745388'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
+      case EH2HConnectorCode.TRAVALCO:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['249','243'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
         break;
     }
   }

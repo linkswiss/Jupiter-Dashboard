@@ -8,14 +8,14 @@ import {
   CarRequestCustomData,
   EH2HConnectorCode,
   EH2HOperation,
-  EPaxType, 
-  ESpecialEquipmentType, 
-  EVendorType, 
-  HertzCarAvailabilityInputCustomData, 
-  HertzCarRequestCustomData, 
-  JupiterCarAvailabilityInput, 
+  EPaxType,
+  ESpecialEquipmentType,
+  EVendorType,
+  HertzCarAvailabilityInputCustomData,
+  HertzCarRequestCustomData,
+  JupiterCarAvailabilityInput,
   JupiterCarAvailabilityRQ,
-  JupiterCarAvailabilityRS,
+  JupiterCarAvailabilityRS, JupiterTrainAvailabilityRQ, JupiterTrainAvailabilityRS,
   SingleCarAvailResult,
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
@@ -54,35 +54,44 @@ export class CarAvailComponent implements OnInit {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.CAR_AVAIL);
 
-    let depTime = "08:00";
-    let arrTime = "08:00";
-    let depDate = moment().add(1, 'days');
-    let arrDate = moment().add(5, 'days');
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterCarAvailabilityRq = JupiterCarAvailabilityRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterCarAvailabilityRs = JupiterCarAvailabilityRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      let depTime = "08:00";
+      let arrTime = "08:00";
+      let depDate = moment().add(1, 'days');
+      let arrDate = moment().add(5, 'days');
 
-    let carRequest = new CarRequest({
-      DepartureDate: depDate.format('YYYY-MM-DD') + ' ' + depTime,
-      ArrivalDate: arrDate.format('YYYY-MM-DD') + ' ' + arrTime,
-      DepartureLocation: '',
-      ArrivalLocation: '',
-      ConnectorCustomData: []
-    });
+      let carRequest = new CarRequest({
+        DepartureDate: depDate.format('YYYY-MM-DD') + ' ' + depTime,
+        ArrivalDate: arrDate.format('YYYY-MM-DD') + ' ' + arrTime,
+        DepartureLocation: '',
+        ArrivalLocation: '',
+        ConnectorCustomData: []
+      });
 
-    // Additional Properties
-    carRequest['_DepartureDateMoment'] = depDate;
-    carRequest['_DepartureTimeMoment'] = depTime;
-    carRequest['_ArrivalDateMoment'] = arrDate;
-    carRequest['_ArrivalTimeMoment'] = arrTime;
+      // Additional Properties
+      carRequest['_DepartureDateMoment'] = depDate;
+      carRequest['_DepartureTimeMoment'] = depTime;
+      carRequest['_ArrivalDateMoment'] = arrDate;
+      carRequest['_ArrivalTimeMoment'] = arrTime;
 
-    this.jupiterCarAvailabilityRq = new JupiterCarAvailabilityRQ({
-      ForceNotCachedResponse: true,
-      ConnectorsEnvironment: [],
-      Request: new JupiterCarAvailabilityInput({
-        ConnectorsDebug: [],
-        ConnectorsSearch: [],
-        ConnectorCustomData: [],
-        CarRequest: carRequest
-      })
-    });
+      this.jupiterCarAvailabilityRq = new JupiterCarAvailabilityRQ({
+        ForceNotCachedResponse: true,
+        ConnectorsEnvironment: [],
+        Request: new JupiterCarAvailabilityInput({
+          ConnectorsDebug: [],
+          ConnectorsSearch: [],
+          ConnectorCustomData: [],
+          CarRequest: carRequest
+        })
+      });
+    }
+
   }
 
   /**

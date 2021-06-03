@@ -47,6 +47,11 @@ export class MenuComponent {
           icon: 'fa-cloud',
           link: '/test-api',
         },
+        {
+          title: 'Logs',
+          icon: 'fa-file-alt',
+          link: '/logs',
+        },
       );
 
       if (this.appConfigService.isAnyFlightConnectorEnabled()) {

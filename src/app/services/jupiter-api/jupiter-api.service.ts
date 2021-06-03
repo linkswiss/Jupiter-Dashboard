@@ -56,7 +56,7 @@ import {
   JupiterCarBookDetailRQ,
   JupiterCarBookDetailRS,
   JupiterCarBookCancelRQ,
-  JupiterCarBookCancelRS,
+  JupiterCarBookCancelRS, ElasticLogsRQ, ElasticLogsRS,
 } from './jupiter-api-client';
 import * as _ from 'lodash';
 
@@ -64,6 +64,13 @@ import * as _ from 'lodash';
   providedIn: 'root',
 })
 export class JupiterApiService {
+
+  selectedLogMethod: string = null;
+  selectedLogRqJson: string = null;
+  selectedLogRsJson: string = null;
+  elasticLogsRQ: ElasticLogsRQ;
+  elasticLogsRS: ElasticLogsRS;
+
   constructor(private appConfigService: AppConfigService, private userService: UserService, private httpClient: HttpClient) {
   }
 
@@ -148,6 +155,19 @@ export class JupiterApiService {
           console.log(error);
           obs.error(error);
         });
+    });
+  }
+
+  elasticLogs(elasticLogsRQ: ElasticLogsRQ): Observable<ElasticLogsRS> {
+    return new Observable(obs => {
+      let utilityClient = new UtilityClient({token: this.userService.currentUser.Token}, this.appConfigService.config.jupiterApi.baseApiUrl);
+
+      utilityClient.getElasticLogs(elasticLogsRQ).then(result => {
+        obs.next(result);
+      }).catch(error => {
+        console.log(error);
+        obs.error(error);
+      });
     });
   }
 

@@ -3,7 +3,7 @@ import {
   AmadeusFlightQueuePlacePnrInputCustomData,
   ConnectorEnvironment,
   EH2HConnectorCode,
-  EH2HOperation,
+  EH2HOperation, JupiterFlightAvailabilityRQ, JupiterFlightAvailabilityRS,
   JupiterFlightPnrDeleteInput,
   JupiterFlightPnrDeleteRQ,
   JupiterFlightPnrDeleteRS,
@@ -54,15 +54,23 @@ export class FlightPnrRetrieveComponent implements OnInit, OnChanges {
   ngOnInit() {
     // Get Connectors Enabled to operation
     this.connectors = this.appConfigService.getConnectorsEnabledToOperation(EH2HOperation.FLIGHT_PNR_RETRIEVE);
-    this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-      ConnectorsEnvironment: this.connectorsEnvironment,
-      Request: new JupiterFlightPnrRetrieveInput({
-        ConnectorsDebug: [],
-        ConnectorCode: null,
-        ConnectorCustomData: null,
-        PnrNumber: '',
-      })
-    });
+    if(this.jupiterApiService.selectedLogMethod && this.jupiterApiService.selectedLogRqJson && this.jupiterApiService.selectedLogRsJson){
+      this.jupiterFlightPnrRetrieveRq = JupiterFlightPnrRetrieveRQ.fromJS(JSON.parse(this.jupiterApiService.selectedLogRqJson));
+      this.jupiterFlightPnrRetrieveRs = JupiterFlightPnrRetrieveRS.fromJS(JSON.parse(this.jupiterApiService.selectedLogRsJson));
+      this.jupiterApiService.selectedLogMethod = null;
+      this.jupiterApiService.selectedLogRqJson = null;
+      this.jupiterApiService.selectedLogRsJson = null;
+    }else {
+      this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+        ConnectorsEnvironment: this.connectorsEnvironment,
+        Request: new JupiterFlightPnrRetrieveInput({
+          ConnectorsDebug: [],
+          ConnectorCode: null,
+          ConnectorCustomData: null,
+          PnrNumber: '',
+        })
+      });
+    }
   }
 
   ngOnChanges() {
