@@ -2,6 +2,7 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDateService, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AotAvailabilityExtrasInputCustomData,
   EH2HConnectorCode,
   EH2HOperation,
   EPaxType, ERequestStatus, IHGRoomRequestCustomData,
@@ -13,8 +14,9 @@ import {
   JupiterHotelAvailabilityRQ, JupiterHotelAvailabilityRS,
   JupiterHotelDetailRQ,
   JupiterHotelDetailRS, OkkamiExtraAvailCustomData, OkkamiRoomRequestCustomData,
+  PacificDestinationsAvailabilityExtrasInputCustomData,
   PaxRequest,
-  RoomRequest, SabreSynXisAvailabilityExtrasInputCustomData, SabreSynXisRoomRequestCustomData,
+  RoomRequest, RosieAvailabilityExtrasInputCustomData, SabreSynXisAvailabilityExtrasInputCustomData, SabreSynXisRoomRequestCustomData,
   SingleHotelAvailResult,
   TekuraAvailabilityExtrasInputCustomData
 } from '../../../../services/jupiter-api/jupiter-api-client';
@@ -167,10 +169,27 @@ export class HotelAvailExtrasComponent implements OnInit {
         break;
       case EH2HConnectorCode.TEKURA:
         this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredCurrency = "USD";
-        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage = "EN",
+        this.jupiterHotelAvailabilityExtrasRQ.Request.PreferredLanguage = "EN";
         this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new TekuraAvailabilityExtrasInputCustomData({
           RatePlanCode: 'BOBACMPOBTI',
           RoomType: 'SG'
+        });
+        break;
+      case EH2HConnectorCode.AOT:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new AotAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'SYDACDARSYDRMS'
+        });
+        break;
+      case EH2HConnectorCode.PACIFIC_DESTINATIONS:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new PacificDestinationsAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'CHCACCHCIBIA04A',
+          RoomType:'SG'
+        });
+        break;
+      case EH2HConnectorCode.ROSIE:
+        this.jupiterHotelAvailabilityExtrasRQ.Request.ConnectorCustomData = new RosieAvailabilityExtrasInputCustomData({
+          RatePlanCode: 'MAMACMUSM20AB58',
+          RoomType:'SG'
         });
         break;
     }

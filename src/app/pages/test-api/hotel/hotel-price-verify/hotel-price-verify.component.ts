@@ -9,7 +9,7 @@ import {
   RoomRequest,
   SingleHotelAvailResult,
   EH2HConnectorCode,
-  EH2HOperation, AvailabilityInputCustomData, SabreSynXisAvailabilityInputCustomData, BookingDotComAvailabilityInputCustomData, SabreAvailabilityInputCustomData, SandalsAvailabilityInputCustomData, IHGAvailabilityInputCustomData, EPaxType, AlliedRoomRequestCustomData, AlliedHotelAvailabilityInputCustomData, PaxRequest, AicAvailabilityInputCustomData, HotelbedsAvailabilityInputCustomData
+  EH2HOperation, AvailabilityInputCustomData, SabreSynXisAvailabilityInputCustomData, BookingDotComAvailabilityInputCustomData, SabreAvailabilityInputCustomData, SandalsAvailabilityInputCustomData, IHGAvailabilityInputCustomData, EPaxType, AlliedRoomRequestCustomData, AlliedHotelAvailabilityInputCustomData, PaxRequest, AicAvailabilityInputCustomData, HotelbedsAvailabilityInputCustomData, MecaRoomRequestCustomData, OlympiaAvailabilityInputCustomData, EMealPlanType2, TravalcoAvailabilityInputCustomData
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import Utils from '../../../../utility/utils';
 import * as moment from 'moment';
@@ -125,7 +125,26 @@ export class HotelPriceVerifyComponent implements OnInit {
             }));
           }
           break;
-
+        case EH2HConnectorCode.OLYMPIA:
+          if (!_.some(this.jupiterHotelPriceVerifyRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+            return c['_discriminator'] === EH2HConnectorCode.OLYMPIA;
+          })) {
+            this.jupiterHotelPriceVerifyRq.Request.ConnectorsSettings.push(new OlympiaAvailabilityInputCustomData({
+              HotelRefIds: ['124287'],
+              GuestCountry: 'IT',
+              MealPlans:[EMealPlanType2.ROOM_ONLY]
+              }));
+          }
+          break;
+        case EH2HConnectorCode.TRAVALCO:
+          if (!_.some(this.jupiterHotelPriceVerifyRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+            return c['_discriminator'] === EH2HConnectorCode.TRAVALCO;
+          })) {
+            this.jupiterHotelPriceVerifyRq.Request.ConnectorsSettings.push(new TravalcoAvailabilityInputCustomData({
+              HotelRefIds: ['249'],
+            }));
+          }
+          break;
         // case EH2HConnectorCode.SABRE_CSL:
         //   if (!_.some(this.hotelSearchModel.ConnectorSettings, function (c: AvailabilityInputCustomData) {
         //     return c['_discriminator'] === EH2HConnectorCode.SABRE_CSL;
@@ -159,13 +178,17 @@ export class HotelPriceVerifyComponent implements OnInit {
      case EH2HConnectorCode.ALLIED:
        //TODO Paolo Verificare questo!! HotelId, MealId e RateCode non sono presenti sul modello!
        room.ConnectorCustomData = new AlliedRoomRequestCustomData({
-       // HotelId : 159511,
-       // MealId: 1,
+       MealPlanCode: '1',
        RoomId: '1325458',
-       // RateCode:'1325458_1_0_False_14_201731150£282076377',
+       RatePlanCode:'1325458_1_0_False_14_201731150£282076377',
        GuestName: 'Test name',
        ProviderId: 14,
        ExpectedBookingPrice: 10
+      });
+      break;
+    case EH2HConnectorCode.MECA:
+       room.ConnectorCustomData = new MecaRoomRequestCustomData({
+       RatePlanCode:'1306906d-72c0-4575#VFJBVkVMSU9fQlVZ#-1#9bb651ae-410b-4f4c#null#null#null#null#IN_AGREEMENT#null#3aa31d8a-3d18-4b67#28873975-ebbd-4989#3634c21e-e25a-4a2a#-1#228.00#PUBLIC#-1#ac1c7ee5-f53d-45fe#SELL#Ssq+7iwpUCZxZ/BmY/I66GMQk90='
       });
       break;
     }
