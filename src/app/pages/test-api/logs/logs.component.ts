@@ -57,7 +57,7 @@ export class LogsComponent implements OnInit {
   utils = Utils;
 
   constructor(
-    private jupiterApiService: JupiterApiService,
+    public jupiterApiService: JupiterApiService,
     private dialogService: NbDialogService,
     private router: Router
   ) {
