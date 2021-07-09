@@ -61,15 +61,17 @@ export class FlightPnrRetrieveComponent implements OnInit, OnChanges {
       this.jupiterApiService.selectedLogRqJson = null;
       this.jupiterApiService.selectedLogRsJson = null;
     }else {
-      this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
-        ConnectorsEnvironment: this.connectorsEnvironment,
-        Request: new JupiterFlightPnrRetrieveInput({
-          ConnectorsDebug: [],
-          ConnectorCode: null,
-          ConnectorCustomData: null,
-          PnrNumber: '',
-        })
-      });
+      if(!this.jupiterFlightPnrRetrieveRq) {
+        this.jupiterFlightPnrRetrieveRq = new JupiterFlightPnrRetrieveRQ({
+          ConnectorsEnvironment: this.connectorsEnvironment,
+          Request: new JupiterFlightPnrRetrieveInput({
+            ConnectorsDebug: [],
+            ConnectorCode: null,
+            ConnectorCustomData: null,
+            PnrNumber: '',
+          })
+        });
+      }
     }
   }
 

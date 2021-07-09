@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
-  AmadeusFlightAvailabilityInputCustomData,
+  AmadeusFlightAvailabilityInputCustomData, AmadeusFlightBookInputCustomData,
   AmadeusFlightBookPnrCustomData,
   AmadeusFlightDetailInputCustomData,
   AmadeusFlightPnrCustomData,
@@ -494,7 +494,7 @@ export class FlightSearchComponent implements OnInit {
       PnrNumber: this.jupiterFlightDetailRs.Response.Pnr.PnrNumber,
       PseudoCityCode: this.jupiterFlightDetailRs.Response.Pnr.PseudoCityCode,
       Remarks: this.jupiterFlightDetailRs.Response.Pnr.Remarks,
-      TravelCompany: this.jupiterFlightDetailRs.Response.Pnr.TravelCompany
+      TravelCompany: this.jupiterFlightDetailRs.Response.Pnr.TravelCompany,
     });
 
     //Close the PNR
@@ -517,6 +517,15 @@ export class FlightSearchComponent implements OnInit {
             ReceivedFrom: 'John Agent',
             TkXlAutoDeleteDate: moment().add(2, 'days').format('YYYY-MM-DD HH:mm:ss'),
           })
+        });
+
+        //Add AP and EMAIL
+        this.jupiterFlightBookRq.Request.ConnectorCustomData = new AmadeusFlightBookInputCustomData( {
+          PreBookCrypticCommands: [
+            'AP',
+            'SR CTCE-contacts//linkswiss.com'
+          ],
+          PostBookCrypticCommands: null
         });
 
         //Send CC make the FOP Call
