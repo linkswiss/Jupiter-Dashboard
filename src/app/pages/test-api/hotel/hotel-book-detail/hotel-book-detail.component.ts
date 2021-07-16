@@ -2,10 +2,15 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {NbAccordionItemComponent, NbDialogService} from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AicHotelBookCancelInputCustomData,
   AicHotelBookDetailInputCustomData,
+  AlliedHotelBookCancelInputCustomData,
+  AlliedHotelBookDetailInputCustomData,
+  CreoleHotelBookCancelInputCustomData,
+  CreoleHotelBookDetailInputCustomData,
   EBookingStatus, EH2HConnectorCode,
-  EH2HOperation, EIHGReservationRetrieveMode, IHGHotelBookCancelInputCustomData, IHGHotelBookDetailInputCustomData,
-  IHGHotelBookSearchInputCustomData, JupiterHotelBookCancelInput,
+  EH2HOperation, EIHGReservationRetrieveMode, ExpediaHotelBookCancelInputCustomData, ExpediaHotelBookDetailInputCustomData, IHGHotelBookCancelInputCustomData, IHGHotelBookDetailInputCustomData,
+  IHGHotelBookSearchInputCustomData, JtbHotelBookCancelInputCustomData, JupiterHotelBookCancelInput,
   JupiterHotelBookCancelRQ,
   JupiterHotelBookCancelRS,
   JupiterHotelBookDetailInput,
@@ -13,7 +18,7 @@ import {
   JupiterHotelBookDetailRS,
   JupiterHotelBookSearchInput,
   JupiterHotelBookSearchRQ,
-  JupiterHotelBookSearchRS, OkkamiHotelBookCancelInputCustomData, OkkamiHotelBookDetailInputCustomData, SabreBookingReference, SabreSynXisHotelBookCancelInputCustomData, SabreSynXisHotelBookDetailInputCustomData,
+  JupiterHotelBookSearchRS, OkkamiHotelBookCancelInputCustomData, OkkamiHotelBookDetailInputCustomData, OlympiaHotelBookCancelInputCustomData, OlympiaHotelBookDetailInputCustomData, RestelHotelBookCancelInputCustomData, RestelHotelBookDetailInputCustomData, SabreBookingReference, SabreSynXisHotelBookCancelInputCustomData, SabreSynXisHotelBookDetailInputCustomData,
   SabreSynXisHotelBookSearchInputCustomData, SabreSynXisSingleBookDetailCustomData, SingleBookDetail
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
@@ -130,15 +135,53 @@ export class HotelBookDetailComponent implements OnInit {
           // PropertyUid: '000-000-0055' // Six Istanbul
         });
         break;
-        case EH2HConnectorCode.AIC:
-          this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = 'aicbookcode001';
+      case EH2HConnectorCode.AIC:
+        this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = 'aicbookcode001';
 
-          this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new AicHotelBookDetailInputCustomData({
-            BookingCode: '20-3252'
-          });
-          break;
+        this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new AicHotelBookDetailInputCustomData({
+          BookingCode: '20-3252'
+        });
+        break;
+      case EH2HConnectorCode.ALLIED:
+        this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = '169665';
+
+        this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new AlliedHotelBookDetailInputCustomData({
+          PreferredLanguage: 'EN',
+          PreferredCurrency: 'USD'
+        });
+        break;
+      case EH2HConnectorCode.CREOLE:
+        this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = '6XB5H1';
+
+        this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new CreoleHotelBookDetailInputCustomData({
+          BreakdownPrice: true
+        });
+        break;
+      // case EH2HConnectorCode.EXPEDIA:
+      //   this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = 'testbooking';
+
+      //   this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new ExpediaHotelBookDetailInputCustomData({
+      //     UserEmail:'mail@mail.com'
+      //   });
+      //   break;
+      case EH2HConnectorCode.OLYMPIA:
+        this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = '1348153';
+
+        this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new OlympiaHotelBookDetailInputCustomData({
+          LocatorCode: 1824064
+        });
+        break;
+      case EH2HConnectorCode.RESTEL:
+        this.jupiterHotelBookDetailRQ.Request.ConnectorBookingReference = '33211535';
+
+        this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData = new RestelHotelBookDetailInputCustomData({
+          PreferredLanguage: 'EN',
+          PreBookingReference:'36846167'
+        });
+        break;
     }
   }
+  
 
   /**
    * Delete custom data
@@ -198,6 +241,57 @@ export class HotelBookDetailComponent implements OnInit {
     if (bookDetail.ConnectorCode === EH2HConnectorCode.SABRE_SYNXIS) {
       this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new SabreSynXisHotelBookCancelInputCustomData({
         HotelCode: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as SabreSynXisHotelBookDetailInputCustomData).HotelCode
+      });
+    }
+
+    // Add AIC required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.AIC) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new AicHotelBookCancelInputCustomData({
+        BookingCode: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as AicHotelBookDetailInputCustomData).BookingCode
+      });
+    }
+
+    // Add ALLIED required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.ALLIED) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new AlliedHotelBookCancelInputCustomData({
+        PreferredLanguage: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as AlliedHotelBookDetailInputCustomData).PreferredLanguage,
+        PreferredCurrency: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as AlliedHotelBookDetailInputCustomData).PreferredCurrency
+      });
+    }
+
+    // Add CREOLE required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.CREOLE) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new CreoleHotelBookCancelInputCustomData({
+        BreakdownPrice: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as CreoleHotelBookDetailInputCustomData).BreakdownPrice
+      });
+    }
+
+    // // Add EXPEDIA required custom data that should be present in the detail RQ
+    // if (bookDetail.ConnectorCode === EH2HConnectorCode.EXPEDIA) {
+    //   this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new ExpediaHotelBookCancelInputCustomData({
+    //     UserEmail: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as ExpediaHotelBookDetailInputCustomData).UserEmail
+    //   });
+    // }
+
+    // Add JTB required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.JTB) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new JtbHotelBookCancelInputCustomData({
+        RatePlanCode: '',
+        CheckInDate: null
+      });
+    }
+
+    // Add OLYMPIA required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.OLYMPIA) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new OlympiaHotelBookCancelInputCustomData({
+        LocatorCode: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as OlympiaHotelBookDetailInputCustomData).LocatorCode
+      });
+    }
+
+    // Add RESTEL required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.RESTEL) {
+      this.jupiterHotelBookCancelRQ.Request.ConnectorCustomData = new RestelHotelBookCancelInputCustomData({
+        PreBookingReference: (this.jupiterHotelBookDetailRQ.Request.ConnectorCustomData as RestelHotelBookDetailInputCustomData).PreBookingReference
       });
     }
 

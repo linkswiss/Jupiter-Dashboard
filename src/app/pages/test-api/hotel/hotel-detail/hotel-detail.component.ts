@@ -162,6 +162,10 @@ export class HotelDetailComponent implements OnInit {
         this.jupiterHotelDetailRQ.Request.HotelRefIds = ['249','243'];
         this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
         break;
+      case EH2HConnectorCode.BONOTEL:
+        this.jupiterHotelDetailRQ.Request.HotelRefIds = ['6273'];
+        this.jupiterHotelDetailRQ.Request.ConnectorCustomData = null;
+        break;
     }
   }
 

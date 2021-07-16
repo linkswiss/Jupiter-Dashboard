@@ -18,7 +18,7 @@
       <jupiter-single-room-details [room]="room" [openDetails]="false"></jupiter-single-room-details>
 
       <!-- RATES -->
-      <div>Rates: {{room.Rates.length}}</div>
+      <div>Rates: {{room.Rates?.length}}</div>
       <div *ngFor="let rate of room.Rates" class="border-box">
         <div class="row">
           <div class="col-sm-8">

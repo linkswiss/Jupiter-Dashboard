@@ -1,9 +1,15 @@
 import {Injectable} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import {
-  AvailabilityInputCustomData, BookingDotComAvailabilityInputCustomData, BookingDotComSingleHotelAvailabilityInputCustomData,
+  AicAvailabilityInputCustomData,
+  AicSingleHotelAvailabilityInputCustomData,
+  AlliedSingleHotelAvailabilityInputCustomData,
+  AotSingleHotelAvailabilityInputCustomData,
+  ArabianSingleHotelAvailabilityInputCustomData,
+  AtiSingleHotelAvailabilityInputCustomData,
+  AvailabilityInputCustomData, BonotelSingleHotelAvailabilityInputCustomData, BookingDotComAvailabilityInputCustomData, BookingDotComSingleHotelAvailabilityInputCustomData,
   EH2HConnectorCode,
-  EPaxType, JupiterHotelAvailabilityInput,
+  EPaxType, GoWestSingleHotelAvailabilityInputCustomData, JtbAvailabilityInputCustomData, JtbSingleHotelAvailabilityInputCustomData, JupiterHotelAvailabilityInput,
   JupiterHotelAvailabilityRQ,
   JupiterHotelAvailabilityRS, JupiterHotelDetailInput, JupiterHotelDetailRQ, JupiterHotelDetailRS,
   JupiterHotelPriceVerifyInput,
@@ -11,10 +17,18 @@ import {
   JupiterHotelPriceVerifyRS,
   JupiterSingleHotelAvailabilityInput,
   JupiterSingleHotelAvailabilityRQ, JupiterSingleHotelAvailabilityRS,
-  PaxRequest, RoomDetails, RoomRatePlan,
-  RoomRequest, SabreSynXisAvailabilityInputCustomData,
+  MecaSingleHotelAvailabilityInputCustomData,
+  OlympiaAvailabilityInputCustomData,
+  OlympiaSingleHotelAvailabilityInputCustomData,
+  PacificDestinationsSingleHotelAvailabilityInputCustomData,
+  PaxRequest, RMHToursSingleHotelAvailabilityInputCustomData, RoomDetails, RoomRatePlan,
+  RoomRequest, RosieSingleHotelAvailabilityInputCustomData, SabreSynXisAvailabilityInputCustomData,
   SabreSynXisSingleHotelAvailabilityInputCustomData,
-  SingleHotelAvailResult
+  SingleHotelAvailResult,
+  TekuraSingleHotelAvailabilityInputCustomData,
+  TourMappersSingleHotelAvailabilityInputCustomData,
+  TravalcoSingleHotelAvailabilityInputCustomData,
+  WtsSingleHotelAvailabilityInputCustomData
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import * as moment from 'moment';
 import * as _ from 'lodash';
@@ -76,7 +90,7 @@ export class HotelPagesService {
   }
 
   /**
-   * Save model and Navigate form HotelAvail to HotelSingleAvail
+   * Save model and Navigate form HotelAvail to HotelDetail
    */
   navigateFormHotelAvailToHotelDetail(jupiterHotelAvailabilityRq: JupiterHotelAvailabilityRQ, jupiterHotelAvailabilityRs: JupiterHotelAvailabilityRS, selectedHotel: SingleHotelAvailResult, connectorCode: EH2HConnectorCode) {
     this.availSelectedModel = new HotelAvailSelectedModel({
@@ -219,6 +233,147 @@ export class HotelPagesService {
           });
 
           jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(bookingCustomData);
+          break;
+        case EH2HConnectorCode.AIC:
+          let aicAvailCustomData: AicAvailabilityInputCustomData = _.find(this.availSelectedModel.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, (c: AvailabilityInputCustomData) => {
+            return c['_discriminator'] === EH2HConnectorCode.AIC;
+          });
+          let aicCustomData = new AicSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId,
+            Nationality: 'IT',
+            AvailabilityTypes: aicAvailCustomData.AvailabilityTypes
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(aicCustomData);
+          break;
+        case EH2HConnectorCode.ALLIED:
+          let alliedCustomData = new AlliedSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId,
+            Nationality: 'IT'
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(alliedCustomData);
+          break;
+        case EH2HConnectorCode.AOT:
+          let aotCustomData = new AotSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(aotCustomData);
+          break;
+        case EH2HConnectorCode.ATI:
+          let atiCustomData = new AtiSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(atiCustomData);
+          break;
+        case EH2HConnectorCode.GO_WEST:
+          let goWestCustomData = new GoWestSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(goWestCustomData);
+          break;
+        case EH2HConnectorCode.JTB:
+          let jtbAvailCustomData: JtbAvailabilityInputCustomData = _.find(this.availSelectedModel.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, (c: AvailabilityInputCustomData) => {
+            return c['_discriminator'] === EH2HConnectorCode.JTB;
+          });
+          let jtbCustomData = new JtbSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId,
+            HotelType: jtbAvailCustomData.HotelType,
+              RatePlanId: jtbAvailCustomData.RatePlanId,
+              MealPlanCode: jtbAvailCustomData.MealPlanCode,
+              HotelName: jtbAvailCustomData.HotelName,
+              HotelAddress: jtbAvailCustomData.HotelAddress,
+              RatePlanName: jtbAvailCustomData.RatePlanName,
+              RatePlanShortName: jtbAvailCustomData.RatePlanShortName,
+              CancelPolicyFlag: jtbAvailCustomData.CancelPolicyFlag
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(jtbCustomData);
+          break;
+        case EH2HConnectorCode.MECA:
+          let mecaCustomData = new MecaSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(mecaCustomData);
+          break;
+        case EH2HConnectorCode.OLYMPIA:
+          let olympiaAvailCustomData: OlympiaAvailabilityInputCustomData = _.find(this.availSelectedModel.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, (c: AvailabilityInputCustomData) => {
+            return c['_discriminator'] === EH2HConnectorCode.OLYMPIA;
+          });
+          let olympiaCustomData = new OlympiaSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId,
+            GuestCountry:olympiaAvailCustomData.GuestCountry,
+            MealPlans: olympiaAvailCustomData.MealPlans
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(olympiaCustomData);
+          break;
+        case EH2HConnectorCode.PACIFIC_DESTINATIONS:
+          let pacificDestinationCustomData = new PacificDestinationsSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(pacificDestinationCustomData);
+          break;
+        case EH2HConnectorCode.RMH_TOURS:
+          let rmhToursCustomData = new RMHToursSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(rmhToursCustomData);
+          break;
+        case EH2HConnectorCode.ROSIE:
+          let rosieCustomData = new RosieSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(rosieCustomData);
+          break;
+        case EH2HConnectorCode.TEKURA:
+          let tekuraCustomData = new TekuraSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(tekuraCustomData);
+          break;
+        case EH2HConnectorCode.TOURMAPPERS:
+          let tourMappersCustomData = new TourMappersSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(tourMappersCustomData);
+          break;
+        case EH2HConnectorCode.TRAVALCO:
+          let travalcoCustomData = new TravalcoSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(travalcoCustomData);
+          break;
+        case EH2HConnectorCode.WTS:
+          let wtsCustomData = new WtsSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(wtsCustomData);
+          break;
+        case EH2HConnectorCode.ARABIAN:
+          let arabianCustomData = new ArabianSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(arabianCustomData);
+          break;
+        case EH2HConnectorCode.BONOTEL:
+          let bonotelCustomData = new BonotelSingleHotelAvailabilityInputCustomData({
+            HotelRefId: this.availSelectedModel.selectedHotel.ConnectorsMatch[0].RefId
+          });
+
+          jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(bonotelCustomData);
           break;
       }
 

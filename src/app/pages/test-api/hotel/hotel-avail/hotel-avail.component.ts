@@ -46,6 +46,8 @@ import {
   TourMappersAvailabilityInputCustomData,
   TravalcoAvailabilityInputCustomData,
   WtsAvailabilityInputCustomData,
+  ArabianAvailabilityInputCustomData,
+  BonotelAvailabilityInputCustomData,
 } from '../../../../services/jupiter-api/jupiter-api-client';
 import {JupiterApiService} from '../../../../services/jupiter-api/jupiter-api.service';
 import {AppConfigService} from '../../../../services/app-config/app-config.service';
@@ -494,6 +496,27 @@ export class HotelAvailComponent implements OnInit {
               }));
             }
             break;
+        case EH2HConnectorCode.ARABIAN:
+            if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+              return c['_discriminator'] === EH2HConnectorCode.ARABIAN;
+            })) {
+              this.jupiterHotelAvailabilityRq.Request.PreferredLanguage = "en";
+              this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new ArabianAvailabilityInputCustomData({
+                HotelRefIds:[],
+                DestinationRefIds: ['DXB']
+              }));
+            }
+            break;
+        case EH2HConnectorCode.BONOTEL:
+            if (!_.some(this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+              return c['_discriminator'] === EH2HConnectorCode.BONOTEL;
+            })) {
+              this.jupiterHotelAvailabilityRq.Request.ConnectorsSettings.push(new BonotelAvailabilityInputCustomData({
+                HotelRefIds:[],
+                DestinationRefIds: ['CY82']
+              }));
+            }
+            break;
           // case EH2HConnectorCode.PACIFIC_DESTINATIONS_AU:
         //   if (!_.some(this.hotelSearchModel.ConnectorSettings, function (c: AvailabilityInputCustomData) {
         //     return c['_discriminator'] === EH2HConnectorCode.PACIFIC_DESTINATIONS_AU;
@@ -654,7 +677,7 @@ export class HotelAvailComponent implements OnInit {
       this.dialogService.open(DialogMessageComponent, {
         context: {
           title: 'Connector Not Enabled',
-          message: `The Connector ${connectorCode} is not enabled to ${EH2HOperation.HOTEL_AVAIL_SINGLE}`,
+          message: `The Connector ${connectorCode} is not enabled to ${EH2HOperation.HOTEL_DETAILS}`,
           status: 'danger'
         },
       });

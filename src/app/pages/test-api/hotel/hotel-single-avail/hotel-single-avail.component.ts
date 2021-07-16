@@ -5,8 +5,10 @@ import {
   AicSingleHotelAvailabilityInputCustomData,
   AlliedSingleHotelAvailabilityInputCustomData,
   AotSingleHotelAvailabilityInputCustomData,
+  ArabianSingleHotelAvailabilityInputCustomData,
   AtiSingleHotelAvailabilityInputCustomData,
   AvailabilityInputCustomData,
+  BonotelSingleHotelAvailabilityInputCustomData,
   BookingDotComAvailabilityInputCustomData, BookingDotComSingleHotelAvailabilityInputCustomData, EAvailabilityType, EH2HConnectorCode,
   EH2HOperation, EHotelType, EMealPlanType, EMealPlanType2, EPaxType, GoWestSingleHotelAvailabilityInputCustomData, IHGAvailabilityInputCustomData,
   JtbSingleHotelAvailabilityInputCustomData,
@@ -271,6 +273,24 @@ export class HotelSingleAvailComponent implements OnInit {
           })) {
             this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(new WtsSingleHotelAvailabilityInputCustomData({
               HotelRefId: 'CHA032',
+            }));
+          }
+          break;
+        case EH2HConnectorCode.ARABIAN:
+          if (!_.some(this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+            return c['_discriminator'] === EH2HConnectorCode.ARABIAN;
+          })) {
+            this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(new ArabianSingleHotelAvailabilityInputCustomData({
+              HotelRefId: '232069',
+            }));
+          }
+          break;
+        case EH2HConnectorCode.BONOTEL:
+          if (!_.some(this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings, function (c: AvailabilityInputCustomData) {
+            return c['_discriminator'] === EH2HConnectorCode.BONOTEL;
+          })) {
+            this.jupiterSingleHotelAvailabilityRQ.Request.ConnectorsSettings.push(new BonotelSingleHotelAvailabilityInputCustomData({
+              HotelRefId: '6273',
             }));
           }
           break;
