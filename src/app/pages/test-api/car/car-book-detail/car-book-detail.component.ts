@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { NbAccordionItemComponent, NbDialogService } from '@nebular/theme';
 import Utils from '../../../../utility/utils';
 import {
+  AlamoCarBookCancelInputCustomData,
+  AlamoCarBookDetailInputCustomData,
   EBookingStatus,
   EH2HConnectorCode,
   EH2HOperation, JupiterCarAvailabilityRQ, JupiterCarAvailabilityRS,
@@ -89,6 +91,14 @@ export class CarBookDetailComponent implements OnInit {
       case EH2HConnectorCode.HERTZ:
         this.jupiterCarBookDetailRq.Request.PnrNumber = 'J64841346B1';
         break;
+      case EH2HConnectorCode.ALAMO:
+        this.jupiterCarBookDetailRq.Request.PnrNumber = '2001521262COUNT';
+
+        this.jupiterCarBookDetailRq.Request.ConnectorCustomData = new AlamoCarBookDetailInputCustomData({
+          DriverName: 'LUIGI',
+          DriverSurname: 'JUPITER'
+        });
+        break;
     }
   }
 
@@ -130,6 +140,14 @@ export class CarBookDetailComponent implements OnInit {
       }),
       ConnectorsEnvironment: this.jupiterCarBookDetailRq.ConnectorsEnvironment
     });
+
+    // Add ALAMO required custom data that should be present in the detail RQ
+    if (bookDetail.ConnectorCode === EH2HConnectorCode.ALAMO) {
+      this.jupiterCarBookCancelRq.Request.ConnectorCustomData = new AlamoCarBookCancelInputCustomData({
+        DriverSurname: (this.jupiterCarBookDetailRq.Request.ConnectorCustomData as AlamoCarBookDetailInputCustomData).DriverSurname,
+        DriverName: (this.jupiterCarBookDetailRq.Request.ConnectorCustomData as AlamoCarBookDetailInputCustomData).DriverName
+      });
+    }
 
     this.jupiterApiService.carBookCancel(this.jupiterCarBookCancelRq).subscribe(response => {
       this.jupiterCarBookCancelRs = response;

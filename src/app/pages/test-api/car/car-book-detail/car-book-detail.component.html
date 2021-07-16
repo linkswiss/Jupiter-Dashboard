@@ -128,7 +128,7 @@
                   <span>{{jupiterCarBookDetailRs.Response.FareBooked?.Amount?.Currency}}</span>
                 </div>
                 <div class="mt-1">Taxes
-                  <div *ngIf="jupiterCarBookDetailRs.Response.FareBooked.Amount && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes.TaxList">
+                  <div *ngIf="jupiterCarBookDetailRs.Response.FareBooked?.Amount && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes && jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes.TaxList">
                     <div *ngFor="let tax of jupiterCarBookDetailRs.Response.FareBooked.Amount.Taxes.TaxList">
                       <span class="pt-1 pl-1 cursor-pointer" ngbTooltip="{{tax.Description}}" placement="left" container="body"> <i class="fas fa-info-circle info-icon"></i> {{tax.Code}} - {{tax.Currency}} {{tax.Amount | number}}</span>
                     </div>
@@ -144,13 +144,13 @@
                 <div>Reservation To Date: {{jupiterCarBookDetailRs.Response.CarBooked?.ArrivalDate | amDateFormat: 'DD/MM/YYYY hh:mm'}}
                 </div>
               </div>
-              <div>Fare Name: {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.FareName}}</div>
-              <div>Fare Id: {{jupiterCarBookDetailRs.Response.FareBooked.Id}}</div>
-              <div>Payment Type: {{jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.PaymentType}}</div>
+              <div>Fare Name: {{jupiterCarBookDetailRs.Response.FareBooked?.FareDetail?.FareName}}</div>
+              <div>Fare Id: {{jupiterCarBookDetailRs.Response.FareBooked?.Id}}</div>
+              <div>Payment Type: {{jupiterCarBookDetailRs.Response.FareBooked?.FareDetail?.PaymentType}}</div>
 
               <!-- FARE DISTANCE ALLOWANCE-->
               <div class="mt-1">Distance Allowance Terms:
-                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.FareDetail && jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance">
+                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked?.FareDetail && jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance">
                   <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-success">Unlimited</span>
                   <span *ngIf="!jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="badge badge-pill badge-warning">Limited</span>
                   <span *ngIf="!jupiterCarBookDetailRs.Response.FareBooked.FareDetail.DistanceAllowance.IsUnlimitedDistance" class="pt-1 pl-1 cursor-pointer">
@@ -164,21 +164,21 @@
 
               <!-- FARE DROPOFF AMOUNT-->
               <div class="mt-1">Drop Off Amount:
-                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount">
+                <span *ngIf="jupiterCarBookDetailRs.Response.FareBooked?.DropOffAmount">
                   <span class="badge badge-pill badge-warning">Total: {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Currency}} {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Amount | number}}</span>
                   <span class="badge badge-pill badge-warning">Net: {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.Currency}} {{jupiterCarBookDetailRs.Response.FareBooked.DropOffAmount?.AmountWithoutTax | number}}</span>
                 </span>
               </div>
                                       
               <div>Equipments: 
-                <div *ngFor="let equip of jupiterCarBookDetailRs.Response.FareBooked.FareDetail?.Equipments">
+                <div *ngFor="let equip of jupiterCarBookDetailRs.Response.FareBooked?.FareDetail?.Equipments">
                   <span class="badge badge-info text-white p-2 m-1" ngbTooltip="{{equip.Name}}" placement="left" container="body" >{{equip.Code}}</span>
                   <span>Amount : {{equip.Amount?.Currency}} {{equip.Amount?.Amount | number}}</span>
                 </div>
               </div>
 
               <div>Custom Data:</div>
-              <pre class="border-box bg-light">{{jupiterCarBookDetailRs.Response.FareBooked.ConnectorCustomData | json}}</pre>
+              <pre class="border-box bg-light">{{jupiterCarBookDetailRs.Response.FareBooked?.ConnectorCustomData | json}}</pre>
 
             </nb-card-body>
           </nb-card>
@@ -188,7 +188,7 @@
         <div class="col-sm-6">
           <nb-card class="shadow-none">
             <nb-card-header>Driver Details</nb-card-header>
-            <nb-card-body *ngIf="jupiterCarBookDetailRs.Response.CarBooked.Driver">
+            <nb-card-body *ngIf="jupiterCarBookDetailRs.Response.CarBooked?.Driver">
               <div>
                 <div>Title: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.PaxTitle}}</div>
                 <div>FirstName: {{jupiterCarBookDetailRs.Response.CarBooked.Driver.FirstName}}</div>
@@ -217,7 +217,7 @@
           
               </div>
             </nb-card-body>
-            <nb-card-body *ngIf="!jupiterCarBookDetailRs.Response.CarBooked.Driver">
+            <nb-card-body *ngIf="!jupiterCarBookDetailRs.Response.CarBooked?.Driver">
               Missing Infos
             </nb-card-body>
           </nb-card>

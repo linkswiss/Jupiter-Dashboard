@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import {Moment} from 'moment';
 import {
+  AlamoCarAvailabilityInputCustomData,
   CarAvailabilityInputCustomData,
   CarRequest,
   CarRequestCustomData,
@@ -107,8 +108,24 @@ export class CarAvailComponent implements OnInit {
             if (!_.some(this.jupiterCarAvailabilityRq.Request.ConnectorCustomData, function (c: CarAvailabilityInputCustomData) {
               return c['_discriminator'] === EH2HConnectorCode.HERTZ;
             })) {
+              this.jupiterCarAvailabilityRq.Request.CarRequest.DepartureLocation = 'PHX';
+              this.jupiterCarAvailabilityRq.Request.CarRequest.ArrivalLocation = 'PHX';
+
               this.jupiterCarAvailabilityRq.Request.ConnectorCustomData.push(new HertzCarAvailabilityInputCustomData({
                 Vendors: [EVendorType.HERTZ, EVendorType.DOLLAR]
+              }));
+            }
+            break;
+        case EH2HConnectorCode.ALAMO:
+            if (!_.some(this.jupiterCarAvailabilityRq.Request.ConnectorCustomData, function (c: CarAvailabilityInputCustomData) {
+              return c['_discriminator'] === EH2HConnectorCode.ALAMO;
+            })) {
+              this.jupiterCarAvailabilityRq.Request.CarRequest.DepartureLocation = 'DABT71';
+              this.jupiterCarAvailabilityRq.Request.CarRequest.ArrivalLocation = 'DABT71';
+              this.jupiterCarAvailabilityRq.Request.DriverAge = 30;
+
+              this.jupiterCarAvailabilityRq.Request.ConnectorCustomData.push(new AlamoCarAvailabilityInputCustomData({
+                VendorCode: 'AL'
               }));
             }
             break;
